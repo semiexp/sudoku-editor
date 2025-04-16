@@ -1,7 +1,13 @@
+import { useState } from "react";
+
+import { Editor, defaultProblem } from "./editor"
+
 function App() {
+  const [problem, setProblem] = useState(defaultProblem(9));
+
   return (
     <>
-      Sudoku Editor
+      <Editor problem={problem} onChangeProblem={setProblem} />
     </>
   )
 }
