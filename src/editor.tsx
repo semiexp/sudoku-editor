@@ -117,12 +117,53 @@ export const Editor = (props: EditorProps) => {
 
   const svgMouseDown = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left - margin) / cellSize);
-    const y = Math.floor((e.clientY - rect.top - margin) / cellSize);
 
-    if (dispatchEventRef.current) {
+    if (dispatchEventRef.current === null) {
+      return;
+    }
+    const dispatchEvent = dispatchEventRef.current;
+
+    // cell
+    {
+      const x = Math.floor((e.clientX - rect.left - margin) / cellSize);
+      const y = Math.floor((e.clientY - rect.top - margin) / cellSize);
+
       const event: EditorEvent = { type: "cellMouseDown", x: x, y: y };
-      dispatchEventRef.current(event);
+      dispatchEvent(event);
+    }
+
+    // edge
+    {
+      const px = e.clientX - rect.left - margin;
+      const py = e.clientY - rect.top - margin;
+
+      const x = Math.floor(px / cellSize);
+      const y = Math.floor(py / cellSize);
+
+      const edgeCands: {x: number; y: number; direction: "horizontal" | "vertical"; distance: number }[] = [
+        { x: x, y: y, direction: "horizontal", distance: py - y * cellSize },
+        { x: x, y: y, direction: "vertical", distance: px - x * cellSize },
+        { x: x, y: y + 1, direction: "horizontal", distance: (y + 1) * cellSize - py },
+        { x: x + 1, y: y, direction: "vertical", distance: (x + 1) * cellSize - px },
+      ];
+
+      const minEdge = edgeCands.reduce((prev, curr) => {
+        if (prev.distance < curr.distance) {
+          return prev;
+        } else {
+          return curr;
+        }
+      });
+
+      if (minEdge.distance < cellSize * 0.3) {
+        const event: EditorEvent = {
+          type: "edgeMouseDown",
+          x: minEdge.x,
+          y: minEdge.y,
+          direction: minEdge.direction,
+        };
+        dispatchEvent(event);
+      }
     }
   };
 

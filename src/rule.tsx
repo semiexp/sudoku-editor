@@ -2,9 +2,10 @@ import { ReactElement } from "react";
 
 export type EditorEvent =
   | { type: "cellMouseDown"; y: number; x: number }
+  | { type: "edgeMouseDown"; y: number; x: number; direction: "horizontal" | "vertical" }
   | { type: "keyDown"; key: string };
 
-export type EditorEventType = "cellMouseDown" | "keyDown";
+export type EditorEventType = "cellMouseDown" | "edgeMouseDown" | "keyDown";
 
 export type RenderOptions = {
   cellSize: number;
