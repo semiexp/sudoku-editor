@@ -49,7 +49,7 @@ export const blocksRule: Rule<BlocksState, BlocksData> = {
       const x = event.x;
 
       if (event.direction === "horizontal") {
-        if (!(1 <= y && y <= data.horizontalBorder.length && 0 <= x && x < data.horizontalBorder[y].length)) {
+        if (!(1 <= y && y <= data.horizontalBorder.length && 0 <= x && x < data.horizontalBorder[y - 1].length)) {
           return {};
         }
         const newHorizontalBorder = data.horizontalBorder.map((row) => [...row]);
