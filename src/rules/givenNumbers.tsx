@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { EditorEvent, Rule } from "../rule";
+import { Rule, PRIORITY_CLUE_NUMBERS, PRIORITY_SELECTED_CELL_MARKER } from "../rule";
 
 type GivenNumbersState = {
   selectedCell: { y: number; x: number } | null;
@@ -127,13 +127,26 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
       }
     }
 
-    return {
-      background,
-      foreground: (
-        <g>
-          {foregroundItems}
-        </g>
-      ),
-    };
+    const items = [
+      {
+        priority: PRIORITY_CLUE_NUMBERS,
+        item: (
+          <g>
+            {foregroundItems}
+          </g>
+        ),
+      }
+    ];
+    if (background) {
+      items.push({
+        priority: PRIORITY_SELECTED_CELL_MARKER,
+        item: (
+          <g>
+            {background}
+          </g>
+        ),
+      });
+    }
+    return items;
   },
 };

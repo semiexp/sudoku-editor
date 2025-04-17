@@ -23,7 +23,11 @@ export interface Rule<State, Data> {
     data?: Data;
   };
   render: (state: State | null, data: Data, options: RenderOptions) => {
-    background?: ReactElement;
-    foreground?: ReactElement;
-  };
+    priority: number;
+    item: ReactElement;
+  }[];
 };
+
+export const PRIORITY_SELECTED_CELL_MARKER = -100;
+export const PRIORITY_BORDER = 0;
+export const PRIORITY_CLUE_NUMBERS = 100;

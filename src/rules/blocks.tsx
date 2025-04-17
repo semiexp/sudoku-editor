@@ -1,4 +1,4 @@
-import { EditorEvent, Rule } from "../rule";
+import { Rule, PRIORITY_BORDER } from "../rule";
 
 type BlocksState = {
   // TODO
@@ -104,10 +104,11 @@ export const blocksRule: Rule<BlocksState, BlocksData> = {
         }
       }
     }
-    return {
-      background: (<g>
+    return [{
+      priority: PRIORITY_BORDER,
+      item: (<g>
         {backgroundItems}
       </g>)
-    };
+    }];
   },
 };

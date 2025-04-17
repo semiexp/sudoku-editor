@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 
 import { EditorEvent } from "./rule";
 import { allRules } from "./rules/rules";
@@ -69,12 +69,11 @@ export const Editor = (props: EditorProps) => {
     );
   }
 
-  const svgBackgroundItems = [];
-  const svgForegroundItems = [];
   const renderOptions = {
     cellSize: cellSize,
     margin: margin,
   };
+  const renderResults: { priority: number; item: ReactElement }[] = [];
 
   for (let i = 0; i < allRules.length; ++i) {
     const rule = allRules[i];
@@ -82,13 +81,18 @@ export const Editor = (props: EditorProps) => {
     const data = problem.ruleData.get(rule.name);
 
     const renderResult = rule.render(state, data, renderOptions);
-    if (renderResult.background) {
-      svgBackgroundItems.push(renderResult.background);
-    }
-    if (renderResult.foreground) {
-      svgForegroundItems.push(renderResult.foreground);
+    for (const item of renderResult) {
+      renderResults.push(item);
     }
   }
+
+  renderResults.push({
+    priority: 0,
+    item: (<g>
+      {defaultBorders}
+    </g>),
+  });
+  renderResults.sort((a, b) => a.priority - b.priority);
 
   const dispatchEventRef = useRef<(event: EditorEvent) => void | null>(null);
 
@@ -184,9 +188,7 @@ export const Editor = (props: EditorProps) => {
   return <div>
     <div>
       <svg width={svgSize} height={svgSize} onMouseDown={svgMouseDown}>
-        {svgBackgroundItems}
-        {defaultBorders}
-        {svgForegroundItems}
+        {renderResults.map((c) => c.item)}
       </svg>
     </div>
     <div>
