@@ -5,6 +5,7 @@ import { allRules } from "./rules/rules";
 
 export type Problem = {
   size: number;
+  enabledRules: string[];
   ruleData: Map<string, any>;
 };
 
@@ -20,6 +21,7 @@ export const defaultProblem = (size: number): Problem => {
   }
   return {
     size: size,
+    enabledRules: ["givenNumbers", "blocks"],
     ruleData: ruleData,
   };
 }
@@ -80,6 +82,11 @@ export const Editor = (props: EditorProps) => {
     const state = i === ruleState.selectedRuleIndex ? ruleState.ruleState : null;
     const data = problem.ruleData.get(rule.name);
 
+    // check if the rule is enabled
+    if (problem.enabledRules.indexOf(rule.name) < 0) {
+      continue;
+    }
+
     const renderResult = rule.render(state, data, renderOptions);
     for (const item of renderResult) {
       renderResults.push(item);
@@ -100,9 +107,17 @@ export const Editor = (props: EditorProps) => {
     dispatchEventRef.current = (event: EditorEvent) => {
       if (ruleState.selectedRuleIndex >= 0) {
         const rule = allRules[ruleState.selectedRuleIndex];
+
+        // currently selected rule is not enabled
+        if (problem.enabledRules.indexOf(rule.name) < 0) {
+          return;
+        }
+
+        // the rule does not handle this event
         if (rule.eventTypes.indexOf(event.type) < 0) {
           return;
         }
+
         const result = rule.reducer(ruleState.ruleState, problem.ruleData.get(rule.name), event);
         if (result.state) {
           setRuleState({ ...ruleState, ruleState: result.state });
@@ -185,6 +200,23 @@ export const Editor = (props: EditorProps) => {
     };
   }, []);
 
+  const onChangeEnabledRules = (targetRule: string, stateAfterChange: boolean) => {
+    const current = problem.enabledRules.indexOf(targetRule) >= 0;
+    if (current === stateAfterChange) {
+      return;
+    }
+
+    const newEnabledRules = stateAfterChange
+      ? [...problem.enabledRules, targetRule]
+      : problem.enabledRules.filter((rule) => rule !== targetRule);
+    const newProblem = {
+      ...problem,
+      enabledRules: newEnabledRules,
+    };
+
+    props.onChangeProblem(newProblem);
+  };
+
   return <div>
     <div>
       <svg width={svgSize} height={svgSize} onMouseDown={svgMouseDown}>
@@ -196,7 +228,11 @@ export const Editor = (props: EditorProps) => {
         const bgColor = ruleState.selectedRuleIndex === index ? "lightblue" : "white";
         return <div
           key={`rule-${index}`}
-          onClick={() => {
+          onClick={(e) => {
+            // TODO: maybe ad-hoc?
+            if (e.target instanceof HTMLInputElement) {
+              return;
+            }
             if (ruleState.selectedRuleIndex !== index) {
               setRuleState({ selectedRuleIndex: index, ruleState: rule.initialState });
             }
@@ -209,6 +245,9 @@ export const Editor = (props: EditorProps) => {
             cursor: "pointer",
           }}
         >
+          <input type="checkbox" onChange={(e) => {
+            onChangeEnabledRules(rule.name, e.target.checked);
+          }} checked={problem.enabledRules.indexOf(rule.name) >= 0} />
           {rule.description}
         </div>
       })}
