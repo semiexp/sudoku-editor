@@ -245,9 +245,14 @@ export const Editor = (props: EditorProps) => {
             cursor: "pointer",
           }}
         >
-          <input type="checkbox" onChange={(e) => {
-            onChangeEnabledRules(rule.name, e.target.checked);
-          }} checked={problem.enabledRules.indexOf(rule.name) >= 0} />
+          <input
+            type="checkbox"
+            onChange={(e) => {
+              onChangeEnabledRules(rule.name, e.target.checked);
+            }}
+            checked={problem.enabledRules.indexOf(rule.name) >= 0}
+            disabled={rule.name === "givenNumbers"}
+          />
           {rule.description}
         </div>
       })}
