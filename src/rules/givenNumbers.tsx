@@ -20,6 +20,7 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
     }
     return { numbers };
   },
+  eventTypes: ["cellMouseDown", "keyDown"],
   reducer: (state, data, event) => {
     if (state === undefined) {
       return {};

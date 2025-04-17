@@ -4,6 +4,8 @@ export type EditorEvent =
   | { type: "cellMouseDown"; y: number; x: number }
   | { type: "keyDown"; key: string };
 
+export type EditorEventType = "cellMouseDown" | "keyDown";
+
 export type RenderOptions = {
   cellSize: number;
   margin: number;
@@ -14,6 +16,7 @@ export interface Rule<State, Data> {
   description: string;
   initialState: State;
   initialData: (size: number) => Data;
+  eventTypes: EditorEventType[];
   reducer: (state: State, data: Data, event: EditorEvent) => {
     state?: State;
     data?: Data;

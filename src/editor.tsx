@@ -96,12 +96,14 @@ export const Editor = (props: EditorProps) => {
     dispatchEventRef.current = (event: EditorEvent) => {
       if (ruleState.selectedRuleIndex >= 0) {
         const rule = allRules[ruleState.selectedRuleIndex];
+        if (rule.eventTypes.indexOf(event.type) < 0) {
+          return;
+        }
         const result = rule.reducer(ruleState.ruleState, problem.ruleData.get(rule.name), event);
         if (result.state) {
           setRuleState({ ...ruleState, ruleState: result.state });
         }
         if (result.data) {
-          // problem.ruleData.set(rule.name, result.data);
           const newRuleData = new Map(problem.ruleData);
           newRuleData.set(rule.name, result.data);
           props.onChangeProblem({
