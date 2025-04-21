@@ -1,7 +1,8 @@
 use serde::Serialize;
 
 use crate::puzzle::{
-    Blocks, GivenNumbers, OddEven, Puzzle, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD,
+    Blocks, GivenNumbers, NonConsecutive, OddEven, Puzzle, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT,
+    ODDEVEN_ODD,
 };
 
 use cspuz_rs::solver::{IntVarArray2D, Solver};
@@ -70,6 +71,10 @@ fn add_constraints(solver: &mut Solver, nums: &IntVarArray2D, puzzle: &Puzzle) {
 
     if let Some(odd_even) = &puzzle.odd_even {
         add_constraints_odd_even(solver, nums, odd_even);
+    }
+
+    if let Some(non_consecutive) = &puzzle.non_consecutive {
+        add_non_consecutive_constraints(solver, nums, non_consecutive);
     }
 }
 
@@ -195,6 +200,32 @@ fn add_constraints_odd_even(solver: &mut Solver, nums: &IntVarArray2D, odd_even:
                 if kind == ODDEVEN_EVEN && !(n % 2 == 0) {
                     solver.add_expr(nums.at((y, x)).ne(n));
                 }
+            }
+        }
+    }
+}
+
+fn add_non_consecutive_constraints(
+    solver: &mut Solver,
+    nums: &IntVarArray2D,
+    non_consecutive: &NonConsecutive,
+) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    for y in 0..h {
+        for x in 0..w {
+            let a = nums.at((y, x));
+            if x > 0 {
+                let b = &nums.at((y, x - 1));
+                solver.add_expr(a.ne(b - 1));
+                solver.add_expr(a.ne(b + 1));
+            }
+
+            if y > 0 {
+                let b = &nums.at((y - 1, x));
+                solver.add_expr(a.ne(b - 1));
+                solver.add_expr(a.ne(b + 1));
             }
         }
     }
