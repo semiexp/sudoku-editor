@@ -1,0 +1,195 @@
+use serde::Serialize;
+
+use crate::puzzle::{Blocks, GivenNumbers, OddEven, Puzzle, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD};
+
+use cspuz_rs::solver::{IntVarArray2D, Solver};
+
+#[derive(Debug, Clone, Serialize)]
+pub struct IrrefutableFacts {
+    #[serde(rename = "decidedNumbers")]
+    pub decided_nums: Vec<Vec<Option<i32>>>,
+
+    #[serde(rename = "candidates")]
+    pub candidates: Vec<Vec<Vec<bool>>>,
+}
+
+pub fn irrefutable_facts(puzzle: &Puzzle) -> Option<IrrefutableFacts> {
+    let n = puzzle.size;
+
+    let mut solver = Solver::new();
+    let nums = &solver.int_var_2d((n, n), 1, n as i32);
+    solver.add_answer_key_int(nums);
+
+    let mut indicators = vec![];
+    for y in 0..n {
+        let mut row = vec![];
+        for x in 0..n {
+            let v = solver.bool_var_1d(n);
+            for i in 0..n {
+                solver.add_expr(v.at(i).iff(nums.at((y, x)).eq(i as i32 + 1)));
+            }
+            solver.add_answer_key_bool(&v);
+            row.push(v);
+        }
+        indicators.push(row);
+    }
+
+    add_constraints(&mut solver, nums, puzzle);
+
+    let res = solver.irrefutable_facts()?;
+    let decided_nums = res.get(nums);
+    let mut candidates = vec![];
+    for y in 0..n {
+        let mut row = vec![];
+        for x in 0..n {
+            let mut cell = vec![];
+            for i in 0..n {
+                cell.push(res.get(&indicators[y][x].at(i)) != Some(false));
+            }
+            row.push(cell);
+        }
+        candidates.push(row);
+    }
+
+    Some(IrrefutableFacts {
+        decided_nums,
+        candidates,
+    })
+}
+
+fn add_constraints(solver: &mut Solver, nums: &IntVarArray2D, puzzle: &Puzzle) {
+    add_constraints_rows_columns(solver, nums);
+
+    add_constraints_given_numbers(solver, nums, &puzzle.given_numbers);
+
+    if let Some(blocks) = &puzzle.blocks {
+        add_constraints_blocks(solver, nums, blocks);
+    }
+
+    if let Some(odd_even) = &puzzle.odd_even {
+        add_constraints_odd_even(solver, nums, odd_even);
+    }
+}
+
+fn add_complete_set(solver: &mut Solver, nums: &IntVarArray2D, cells: &[(usize, usize)]) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+    assert_eq!(cells.len(), h);
+
+    // TODO: some variants may use the number set other than {1, 2, ..., n}
+    let cells = &nums.select(cells);
+    solver.all_different(cells);
+
+    for n in 1..=(h as i32) {
+        solver.add_expr(cells.eq(n).count_true().eq(1));
+    }
+}
+
+fn add_constraints_rows_columns(solver: &mut Solver, nums: &IntVarArray2D) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    for y in 0..h {
+        let cells = (0..w).map(|x| (y, x)).collect::<Vec<_>>();
+        add_complete_set(solver, nums, &cells);
+    }
+
+    for x in 0..w {
+        let cells = (0..h).map(|y| (y, x)).collect::<Vec<_>>();
+        add_complete_set(solver, nums, &cells);
+    }
+}
+
+fn add_constraints_given_numbers(solver: &mut Solver, nums: &IntVarArray2D, given_numbers: &GivenNumbers) {
+    let (h, w) = nums.shape();
+    assert_eq!(given_numbers.numbers.len(), h);
+
+    for y in 0..h {
+        assert_eq!(given_numbers.numbers[y].len(), w);
+
+        for x in 0..w {
+            if let Some(n) = given_numbers.numbers[y][x] {
+                solver.add_expr(nums.at((y, x)).eq(n));
+            }
+        }
+    }
+}
+
+fn add_constraints_blocks(solver: &mut Solver, nums: &IntVarArray2D, blocks: &Blocks) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+    let n = h;
+
+    assert_eq!(blocks.horizontal.len(), n - 1);
+    for y in 0..(n - 1) {
+        assert_eq!(blocks.horizontal[y].len(), n);
+    }
+
+    assert_eq!(blocks.vertical.len(), n);
+    for x in 0..n {
+        assert_eq!(blocks.vertical[x].len(), n - 1);
+    }
+
+    let mut visited = vec![vec![false; n]; n];
+    for y in 0..n {
+        for x in 0..n {
+            if visited[y][x] {
+                continue;
+            }
+
+            let mut cells = vec![];
+            let mut queue = vec![(y, x)];
+
+            while let Some((y, x)) = queue.pop() {
+                if visited[y][x] {
+                    continue;
+                }
+                visited[y][x] = true;
+                cells.push((y, x));
+
+                if y < n - 1 && !blocks.horizontal[y][x] {
+                    queue.push((y + 1, x));
+                }
+                if x < n - 1 && !blocks.vertical[y][x] {
+                    queue.push((y, x + 1));
+                }
+                if y > 0 && !blocks.horizontal[y - 1][x] {
+                    queue.push((y - 1, x));
+                }
+                if x > 0 && !blocks.vertical[y][x - 1] {
+                    queue.push((y, x - 1));
+                }
+            }
+
+            if cells.len() == n {
+                add_complete_set(solver, nums, &cells);
+            }
+        }
+    }
+}
+
+fn add_constraints_odd_even(solver: &mut Solver, nums: &IntVarArray2D, odd_even: &OddEven) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+    assert_eq!(odd_even.cell_kind.len(), h);
+
+    for y in 0..h {
+        assert_eq!(odd_even.cell_kind[y].len(), w);
+
+        for x in 0..w {
+            let kind = odd_even.cell_kind[y][x];
+            if kind == ODDEVEN_NO_CONSTRAINT {
+                continue;
+            }
+
+            for n in 1..=(h as i32) {
+                if kind == ODDEVEN_ODD && !(n % 2 == 1) {
+                    solver.add_expr(nums.at((y, x)).ne(n));
+                }
+                if kind == ODDEVEN_EVEN && !(n % 2 == 0) {
+                    solver.add_expr(nums.at((y, x)).ne(n));
+                }
+            }
+        }
+    }
+}

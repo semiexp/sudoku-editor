@@ -2,12 +2,8 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 
 import { EditorEvent } from "./rule";
 import { allRules } from "./rules/rules";
-
-export type Problem = {
-  size: number;
-  enabledRules: string[];
-  ruleData: Map<string, any>;
-};
+import { solve } from "./solver";
+import { Answer, Problem } from "./puzzle";
 
 export type EditorProps = {
   problem: Problem;
@@ -26,6 +22,69 @@ export const defaultProblem = (size: number): Problem => {
   };
 }
 
+const autoSolverItems = (problem: Problem, answer: Answer, cellSize: number, margin: number) => {
+  if (answer === null) {
+    return [];
+  }
+
+  const size = problem.size;
+
+  const hasClue = [];
+  const givenNumbersRule: any = problem.ruleData.get("givenNumbers");
+  for (let y = 0; y < size; ++y) {
+    const row = [];
+    for (let x = 0; x < size; ++x) {
+      row.push(givenNumbersRule.numbers[y][x] !== null);
+    }
+    hasClue.push(row);
+  }
+
+  const items = [];
+  for (let y = 0; y < size; ++y) {
+    for (let x = 0; x < size; ++x) {
+      if (hasClue[y][x]) {
+        continue;
+      }
+
+      if (answer.decidedNumbers[y][x] !== null) {
+        items.push(<text
+          key={`auto-solver-${y}-${x}`}
+          x={margin + x * cellSize + cellSize * 0.5}
+          y={margin + y * cellSize + cellSize * 0.5}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontSize={cellSize * 0.7}
+          style={{ userSelect: "none" }}
+          fill="green"
+        >
+          {answer.decidedNumbers[y][x]}
+        </text>);
+      } else {
+        const candidates = answer.candidates[y][x];
+        const w = 3;  // TODO
+        for (let i = 0; i < size; ++i) {
+          if (candidates[i]) {
+            items.push(<text
+              key={`auto-solver-candidate-${y}-${x}-${i}`}
+              x={margin + x * cellSize + (i % w + 0.5) / w * cellSize}
+              y={margin + y * cellSize + (Math.floor(i / w) + 0.5) / w * cellSize}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize={cellSize * 0.3}
+              style={{ userSelect: "none" }}
+              fill="green"
+            >
+              {i + 1}
+            </text>);
+          }
+        }
+      }
+    }
+  }
+
+  return items;
+};
+
 export const Editor = (props: EditorProps) => {
   const problem = props.problem;
   const size = problem.size;
@@ -34,6 +93,7 @@ export const Editor = (props: EditorProps) => {
     selectedRuleIndex: -1,
     ruleState: null,
   });
+  const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
 
   const cellSize = 40;  // TODO: make this dynamic
   const margin = cellSize + 10;
@@ -99,9 +159,20 @@ export const Editor = (props: EditorProps) => {
       {defaultBorders}
     </g>),
   });
+  renderResults.push({
+    priority: 100,
+    item: (<g>
+      {autoSolverItems(problem, autoSolverAnswer, cellSize, margin)}
+    </g>)
+  });
+
   renderResults.sort((a, b) => a.priority - b.priority);
 
   const dispatchEventRef = useRef<(event: EditorEvent) => void | null>(null);
+
+  useEffect(() => {
+    setAutoSolverAnswer(solve(problem));
+  }, [problem]);
 
   useEffect(() => {
     dispatchEventRef.current = (event: EditorEvent) => {

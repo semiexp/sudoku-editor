@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Solver build files
+solver/target/*
+solver/Cargo.lock
+src/solver/*
