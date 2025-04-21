@@ -1,6 +1,8 @@
 use serde::Serialize;
 
-use crate::puzzle::{Blocks, GivenNumbers, OddEven, Puzzle, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD};
+use crate::puzzle::{
+    Blocks, GivenNumbers, OddEven, Puzzle, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD,
+};
 
 use cspuz_rs::solver::{IntVarArray2D, Solver};
 
@@ -100,7 +102,11 @@ fn add_constraints_rows_columns(solver: &mut Solver, nums: &IntVarArray2D) {
     }
 }
 
-fn add_constraints_given_numbers(solver: &mut Solver, nums: &IntVarArray2D, given_numbers: &GivenNumbers) {
+fn add_constraints_given_numbers(
+    solver: &mut Solver,
+    nums: &IntVarArray2D,
+    given_numbers: &GivenNumbers,
+) {
     let (h, w) = nums.shape();
     assert_eq!(given_numbers.numbers.len(), h);
 

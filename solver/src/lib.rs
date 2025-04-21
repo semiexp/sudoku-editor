@@ -6,10 +6,10 @@ static mut SHARED_ARRAY: Vec<u8> = Vec::new();
 #[no_mangle]
 fn solve_problem(puzzle_json: *const u8, len: usize) -> *const u8 {
     let puzzle_json = unsafe { std::slice::from_raw_parts(puzzle_json, len) };
-    let puzzle: puzzle::Puzzle = serde_json::from_slice(puzzle_json).unwrap();  // TODO: handle error
+    let puzzle: puzzle::Puzzle = serde_json::from_slice(puzzle_json).unwrap(); // TODO: handle error
 
     let answer = solver::irrefutable_facts(&puzzle);
-    let answer_str = serde_json::to_string(&answer).unwrap();  // TODO: handle error
+    let answer_str = serde_json::to_string(&answer).unwrap(); // TODO: handle error
 
     unsafe {
         let answer_len = answer_str.len();
