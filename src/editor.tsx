@@ -93,6 +93,7 @@ export const Editor = (props: EditorProps) => {
     selectedRuleIndex: -1,
     ruleState: null,
   });
+  const [enableSolver, setEnableSolver] = useState(false);
   const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
 
   const cellSize = 40;  // TODO: make this dynamic
@@ -171,8 +172,12 @@ export const Editor = (props: EditorProps) => {
   const dispatchEventRef = useRef<(event: EditorEvent) => void | null>(null);
 
   useEffect(() => {
-    setAutoSolverAnswer(solve(problem));
-  }, [problem]);
+    if (enableSolver) {
+      setAutoSolverAnswer(solve(problem));
+    } else {
+      setAutoSolverAnswer(null);
+    }
+  }, [problem, enableSolver]);
 
   useEffect(() => {
     dispatchEventRef.current = (event: EditorEvent) => {
@@ -288,45 +293,59 @@ export const Editor = (props: EditorProps) => {
     props.onChangeProblem(newProblem);
   };
 
-  return <div>
-    <div>
+  return <div style={{display: "flex"}}>
+    <div style={{border: "1px solid black"}}>
       <svg width={svgSize} height={svgSize} onMouseDown={svgMouseDown}>
         {renderResults.map((c) => c.item)}
       </svg>
     </div>
-    <div>
-      {allRules.map((rule, index) => {
-        const bgColor = ruleState.selectedRuleIndex === index ? "lightblue" : "white";
-        return <div
-          key={`rule-${index}`}
-          onClick={(e) => {
-            // TODO: maybe ad-hoc?
-            if (e.target instanceof HTMLInputElement) {
-              return;
-            }
-            if (ruleState.selectedRuleIndex !== index) {
-              setRuleState({ selectedRuleIndex: index, ruleState: rule.initialState });
-            }
-          }}
-          style={{
-            backgroundColor: bgColor,
-            padding: "10px",
-            margin: "5px",
-            border: "1px solid black",
-            cursor: "pointer",
-          }}
-        >
+    <div style={{width: "100%"}}>
+      <div>
+        <label>
           <input
             type="checkbox"
+            checked={enableSolver}
             onChange={(e) => {
-              onChangeEnabledRules(rule.name, e.target.checked);
+              setEnableSolver(e.target.checked);
             }}
-            checked={problem.enabledRules.indexOf(rule.name) >= 0}
-            disabled={rule.name === "givenNumbers"}
           />
-          {rule.description}
-        </div>
-      })}
+          Auto solver
+        </label>
+      </div>
+      <div style={{overflowY: "scroll", height: "100%"}}>
+        {allRules.map((rule, index) => {
+          const bgColor = ruleState.selectedRuleIndex === index ? "lightblue" : "white";
+          return <div
+            key={`rule-${index}`}
+            onClick={(e) => {
+              // TODO: maybe ad-hoc?
+              if (e.target instanceof HTMLInputElement) {
+                return;
+              }
+              if (ruleState.selectedRuleIndex !== index) {
+                setRuleState({ selectedRuleIndex: index, ruleState: rule.initialState });
+              }
+            }}
+            style={{
+              backgroundColor: bgColor,
+              padding: "10px",
+              margin: "5px",
+              border: "1px solid black",
+              cursor: "pointer",
+            }}
+          >
+            <input
+              type="checkbox"
+              onChange={(e) => {
+                onChangeEnabledRules(rule.name, e.target.checked);
+              }}
+              checked={problem.enabledRules.indexOf(rule.name) >= 0}
+              disabled={rule.name === "givenNumbers"}
+            />
+            {rule.description}
+          </div>
+        })}
+      </div>
     </div>
   </div>
 };
