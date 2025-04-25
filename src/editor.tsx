@@ -5,7 +5,7 @@ import { allRules } from "./rules/rules";
 import { solve } from "./solver";
 import { Answer, Problem } from "./puzzle";
 import { Box, Checkbox, FormControlLabel, Switch, Toolbar, Typography, IconButton } from "@mui/material";
-import { Undo } from "@mui/icons-material";
+import UndoIcon from '@mui/icons-material/Undo';
 
 
 export type EditorProps = {
@@ -313,7 +313,7 @@ export const Editor = (props: EditorProps) => {
         onClick={undo}
         disabled={history.length === 0}
       >
-        <Undo />
+        <UndoIcon />
       </IconButton>
       <FormControlLabel
         control={
