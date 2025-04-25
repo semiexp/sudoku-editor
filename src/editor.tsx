@@ -4,7 +4,7 @@ import { EditorEvent } from "./rule";
 import { allRules } from "./rules/rules";
 import { solve } from "./solver";
 import { Answer, Problem } from "./puzzle";
-import { Box, Checkbox, FormControlLabel, Switch, Toolbar } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, Switch, Toolbar, Typography } from "@mui/material";
 
 export type EditorProps = {
   problem: Problem;
@@ -311,39 +311,47 @@ export const Editor = (props: EditorProps) => {
       </Toolbar>
       <div style={{overflowY: "scroll", height: "100%"}}>
         {allRules.map((rule, index) => {
-          const bgColor = ruleState.selectedRuleIndex === index ? "lightblue" : "white";
+          const isSelected = ruleState.selectedRuleIndex === index;
           return <div
             key={`rule-${index}`}
-            onClick={(e) => {
-              // TODO: maybe ad-hoc?
-              if (e.target instanceof HTMLInputElement) {
-                return;
-              }
-              if (ruleState.selectedRuleIndex !== index) {
-                setRuleState({ selectedRuleIndex: index, ruleState: rule.initialState });
-              }
-            }}
             style={{
-              backgroundColor: bgColor,
-              padding: "10px",
               margin: "5px",
               border: "1px solid black",
-              borderRadius: "5px",
-              cursor: "pointer",
             }}
           >
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={(e) => {
-                    onChangeEnabledRules(rule.name, e.target.checked);
-                  }}
-                  checked={problem.enabledRules.indexOf(rule.name) >= 0}
-                  disabled={rule.name === "givenNumbers"}
-                />
+            <Box
+              sx={isSelected ? {width: "100%", borderBottom: "1px solid black", backgroundColor: "lightblue", cursor: "pointer"} : {width: "100%", cursor: "pointer"}}
+              onClick={(e) => {
+                // TODO: maybe ad-hoc?
+                if (e.target instanceof HTMLInputElement) {
+                  return;
                 }
-              label={rule.description}
-            />
+                if (ruleState.selectedRuleIndex !== index) {
+                  setRuleState({ selectedRuleIndex: index, ruleState: rule.initialState });
+                }
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onChange={(e) => {
+                      onChangeEnabledRules(rule.name, e.target.checked);
+                    }}
+                    checked={problem.enabledRules.indexOf(rule.name) >= 0}
+                    disabled={rule.name === "givenNumbers"}
+                  />
+                  }
+                label={rule.description}
+                sx={{ padding: "5px 5px 5px 10px" }}
+              />
+            </Box>
+            { isSelected && (
+              <Box sx={{ padding: "5px" }}>
+                <Typography>
+                  Explanation
+                </Typography>
+              </Box>
+            )}
           </div>
         })}
       </div>
