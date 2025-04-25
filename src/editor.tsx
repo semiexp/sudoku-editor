@@ -294,67 +294,69 @@ export const Editor = (props: EditorProps) => {
     props.onChangeProblem(newProblem);
   };
 
-  return <Box style={{display: "flex"}}>
-    <div style={{border: "1px solid black"}}>
-      <svg width={svgSize} height={svgSize} onMouseDown={svgMouseDown}>
-        {renderResults.map((c) => c.item)}
-      </svg>
-    </div>
-    <Box style={{width: "100%"}}>
-      <Toolbar variant="dense" sx={{ backgroundColor: "#dddddd" }}>
-        <FormControlLabel
-          control={
-            <Switch checked={enableSolver} onChange={(e) => setEnableSolver(e.target.checked)} />
-          }
-          label="Auto solver"
-        />
-      </Toolbar>
-      <div style={{overflowY: "scroll", height: "100%"}}>
-        {allRules.map((rule, index) => {
-          const isSelected = ruleState.selectedRuleIndex === index;
-          return <div
-            key={`rule-${index}`}
-            style={{
-              margin: "5px",
-              border: "1px solid black",
-            }}
-          >
-            <Box
-              sx={isSelected ? {width: "100%", borderBottom: "1px solid black", backgroundColor: "lightblue", cursor: "pointer"} : {width: "100%", cursor: "pointer"}}
-              onClick={(e) => {
-                // TODO: maybe ad-hoc?
-                if (e.target instanceof HTMLInputElement) {
-                  return;
-                }
-                if (ruleState.selectedRuleIndex !== index) {
-                  setRuleState({ selectedRuleIndex: index, ruleState: rule.initialState });
-                }
+  return <Box>
+    <Toolbar variant="dense" sx={{ backgroundColor: "#dddddd" }}>
+      <FormControlLabel
+        control={
+          <Switch checked={enableSolver} onChange={(e) => setEnableSolver(e.target.checked)} />
+        }
+        label="Auto solver"
+      />
+    </Toolbar>
+    <Box sx={{display: "flex"}}>
+      <Box sx={{border: "1px solid black", margin: "5px"}}>
+        <svg width={svgSize} height={svgSize} onMouseDown={svgMouseDown}>
+          {renderResults.map((c) => c.item)}
+        </svg>
+      </Box>
+      <Box sx={{width: "100%"}}>
+        <div style={{overflowY: "scroll", height: "100%"}}>
+          {allRules.map((rule, index) => {
+            const isSelected = ruleState.selectedRuleIndex === index;
+            return <div
+              key={`rule-${index}`}
+              style={{
+                margin: "5px",
+                border: "1px solid black",
               }}
             >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    onChange={(e) => {
-                      onChangeEnabledRules(rule.name, e.target.checked);
-                    }}
-                    checked={problem.enabledRules.indexOf(rule.name) >= 0}
-                    disabled={rule.name === "givenNumbers"}
-                  />
+              <Box
+                sx={isSelected ? {width: "100%", borderBottom: "1px solid black", backgroundColor: "lightblue", cursor: "pointer"} : {width: "100%", cursor: "pointer"}}
+                onClick={(e) => {
+                  // TODO: maybe ad-hoc?
+                  if (e.target instanceof HTMLInputElement) {
+                    return;
                   }
-                label={rule.description}
-                sx={{ padding: "5px 5px 5px 10px" }}
-              />
-            </Box>
-            { isSelected && (
-              <Box sx={{ padding: "5px" }}>
-                <Typography>
-                  Explanation
-                </Typography>
+                  if (ruleState.selectedRuleIndex !== index) {
+                    setRuleState({ selectedRuleIndex: index, ruleState: rule.initialState });
+                  }
+                }}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={(e) => {
+                        onChangeEnabledRules(rule.name, e.target.checked);
+                      }}
+                      checked={problem.enabledRules.indexOf(rule.name) >= 0}
+                      disabled={rule.name === "givenNumbers"}
+                    />
+                    }
+                  label={rule.description}
+                  sx={{ padding: "5px 5px 5px 10px" }}
+                />
               </Box>
-            )}
-          </div>
-        })}
-      </div>
+              { isSelected && (
+                <Box sx={{ padding: "5px" }}>
+                  <Typography>
+                    Explanation
+                  </Typography>
+                </Box>
+              )}
+            </div>
+          })}
+        </div>
+      </Box>
     </Box>
   </Box>
 };
