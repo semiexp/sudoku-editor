@@ -14,6 +14,7 @@ import {
   IconButton,
 } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
+import RedoIcon from "@mui/icons-material/Redo";
 
 export type EditorProps = {
   problem: Problem;
@@ -122,6 +123,7 @@ export const Editor = (props: EditorProps) => {
   const [enableSolver, setEnableSolver] = useState(false);
   const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
   const [history, setHistory] = useState<Problem[]>([]); // History stack for undo functionality
+  const [redoHistory, setRedoHistory] = useState<Problem[]>([]); // Redo stack for redo functionality
 
   const cellSize = 40; // TODO: make this dynamic
   const margin = cellSize + 10;
@@ -230,6 +232,7 @@ export const Editor = (props: EditorProps) => {
           const newRuleData = new Map(problem.ruleData);
           newRuleData.set(rule.name, result.data);
           setHistory((prevHistory) => [...prevHistory, problem]);
+          setRedoHistory([]);
           props.onChangeProblem({
             ...problem,
             ruleData: newRuleData,
@@ -338,6 +341,7 @@ export const Editor = (props: EditorProps) => {
     };
 
     setHistory([...history, problem]); // Save current state to history before changing
+    setRedoHistory([]); // Clear redo history
     props.onChangeProblem(newProblem);
   };
 
@@ -345,7 +349,17 @@ export const Editor = (props: EditorProps) => {
     if (history.length > 0) {
       const previousProblem = history[history.length - 1];
       setHistory(history.slice(0, -1)); // Remove the last state from history
+      setRedoHistory([props.problem, ...redoHistory]); // Save current state to redo stack
       props.onChangeProblem(previousProblem); // Revert to the previous state
+    }
+  };
+
+  const redo = () => {
+    if (redoHistory.length > 0) {
+      const nextProblem = redoHistory[0];
+      setRedoHistory(redoHistory.slice(1)); // Remove the first state from redo stack
+      setHistory([...history, props.problem]); // Save current state to history stack
+      props.onChangeProblem(nextProblem); // Move to the next state
     }
   };
 
@@ -354,6 +368,9 @@ export const Editor = (props: EditorProps) => {
       <Toolbar variant="dense" sx={{ backgroundColor: "#dddddd", pl: "20px" }}>
         <IconButton onClick={undo} disabled={history.length === 0}>
           <UndoIcon />
+        </IconButton>
+        <IconButton onClick={redo} disabled={redoHistory.length === 0}>
+          <RedoIcon />
         </IconButton>
         <FormControlLabel
           control={
