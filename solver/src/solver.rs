@@ -1,8 +1,8 @@
 use serde::Serialize;
 
 use crate::puzzle::{
-    Blocks, GivenNumbers, NonConsecutive, OddEven, Puzzle, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT,
-    ODDEVEN_ODD,
+    Blocks, GivenNumbers, NonConsecutive, OddEven, Puzzle, XV, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT,
+    ODDEVEN_ODD, XV_NO_CONSTRAINT, XV_X, XV_V,
 };
 
 use cspuz_rs::solver::{IntVarArray2D, Solver};
@@ -75,6 +75,10 @@ fn add_constraints(solver: &mut Solver, nums: &IntVarArray2D, puzzle: &Puzzle) {
 
     if let Some(non_consecutive) = &puzzle.non_consecutive {
         add_non_consecutive_constraints(solver, nums, non_consecutive);
+    }
+
+    if let Some(xv) = &puzzle.xv {
+        add_xv_constraints(solver, nums, xv);
     }
 }
 
@@ -226,6 +230,52 @@ fn add_non_consecutive_constraints(
                 let b = &nums.at((y - 1, x));
                 solver.add_expr(a.ne(b - 1));
                 solver.add_expr(a.ne(b + 1));
+            }
+        }
+    }
+}
+
+fn add_xv_constraints(
+    solver: &mut Solver,
+    nums: &IntVarArray2D,
+    xv: &XV,
+) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    assert_eq!(xv.horizontal.len(), h - 1);
+    for y in 0..(h - 1) {
+        assert_eq!(xv.horizontal[y].len(), w);
+
+        for x in 0..w {
+            let kind = xv.horizontal[y][x];
+
+            match kind {
+                XV_NO_CONSTRAINT => {
+                    solver.add_expr((nums.at((y, x)) + nums.at((y + 1, x))).ne(10));
+                    solver.add_expr((nums.at((y, x)) + nums.at((y + 1, x))).ne(5));
+                }
+                XV_X => solver.add_expr((nums.at((y, x)) + nums.at((y + 1, x))).eq(10)),
+                XV_V => solver.add_expr((nums.at((y, x)) + nums.at((y + 1, x))).eq(5)),
+                _ => panic!(),
+            }
+        }
+    }
+
+    assert_eq!(xv.vertical.len(), h);
+    for y in 0..h {
+        assert_eq!(xv.vertical[y].len(), w - 1);
+
+        for x in 0..(w - 1){
+            let kind = xv.vertical[y][x];
+
+            match kind {
+                XV_NO_CONSTRAINT => {
+                    solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).ne(10));
+                }
+                XV_X => solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).eq(10)),
+                XV_V => solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).eq(5)),
+                _ => panic!(),
             }
         }
     }

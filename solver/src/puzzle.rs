@@ -15,6 +15,9 @@ pub struct Puzzle {
 
     #[serde(rename = "nonConsecutive")]
     pub non_consecutive: Option<NonConsecutive>,
+
+    #[serde(rename = "xv")]
+    pub xv: Option<XV>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -40,6 +43,19 @@ pub struct OddEven {
 #[derive(Debug, Clone, Deserialize)]
 pub struct NonConsecutive {}
 
+#[derive(Debug, Clone, Deserialize)]
+pub struct XV {
+    #[serde(rename = "horizontalBorder")]
+    pub horizontal: Vec<Vec<i32>>,
+
+    #[serde(rename = "verticalBorder")]
+    pub vertical: Vec<Vec<i32>>,
+}
+
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;
 pub const ODDEVEN_ODD: i32 = 1;
 pub const ODDEVEN_EVEN: i32 = 2;
+
+pub const XV_NO_CONSTRAINT: i32 = 0;
+pub const XV_X: i32 = 1;
+pub const XV_V: i32 = 2;
