@@ -1,4 +1,3 @@
-import { ReactElement } from "react";
 import { Rule } from "../rule";
 
 type NonConsecutiveState = {};
@@ -9,12 +8,12 @@ export const nonConsecutiveRule: Rule<NonConsecutiveState, NonConsecutiveData> =
   title: "Non-consecutive",
   explanation: "Numbers in adjacent cells cannot differ by 1.",
   initialState: {},
-  initialData: (size: number) => ({}),
+  initialData: (_size: number) => ({}),
   eventTypes: [],
-  reducer: (state, data, event) => {
+  reducer: (_state, _data, _event) => {
     return {};
   },
-  render: (state, data, options) => {
+  render: (_state, _data, _options) => {
     return [];
   },
 };

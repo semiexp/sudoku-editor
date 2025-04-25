@@ -16,7 +16,7 @@ export const oddEvenRule: Rule<OddEvenState, OddEvenData> = {
     return { cellKind };
   },
   eventTypes: ["cellMouseDown"],
-  reducer: (state, data, event) => {
+  reducer: (_state, data, event) => {
     if (event.type === "cellMouseDown") {
       const y = event.y;
       const x = event.x;
@@ -28,7 +28,7 @@ export const oddEvenRule: Rule<OddEvenState, OddEvenData> = {
     }
     return {};
   },
-  render: (state, data, options) => {
+  render: (_state, data, options) => {
     const { cellSize, margin } = options;
     const items = [];
 

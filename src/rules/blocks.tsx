@@ -44,7 +44,7 @@ export const blocksRule: Rule<BlocksState, BlocksData> = {
     };
   },
   eventTypes: ["edgeMouseDown"],
-  reducer: (state, data, event) => {
+  reducer: (_state, data, event) => {
     if (event.type === "edgeMouseDown") {
       const y = event.y;
       const x = event.x;
@@ -69,7 +69,7 @@ export const blocksRule: Rule<BlocksState, BlocksData> = {
     }
     return {};
   },
-  render: (state, data, options) => {
+  render: (_state, data, options) => {
     const backgroundItems = [];
     for (let y = 0; y < data.horizontalBorder.length; ++y) {
       for (let x = 0; x < data.horizontalBorder[y].length; ++x) {

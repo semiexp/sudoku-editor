@@ -4,7 +4,7 @@ import { EditorEvent } from "./rule";
 import { allRules } from "./rules/rules";
 import { solve } from "./solver";
 import { Answer, Problem } from "./puzzle";
-import { Box, Checkbox, FormControlLabel, Switch, Toolbar, Typography, Button, IconButton } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, Switch, Toolbar, Typography, IconButton } from "@mui/material";
 import { Undo } from "@mui/icons-material";
 
 
