@@ -4,6 +4,7 @@ import { EditorEvent } from "./rule";
 import { allRules } from "./rules/rules";
 import { solve } from "./solver";
 import { Answer, Problem } from "./puzzle";
+import { Box, Checkbox, FormControlLabel, Switch, Toolbar } from "@mui/material";
 
 export type EditorProps = {
   problem: Problem;
@@ -293,25 +294,21 @@ export const Editor = (props: EditorProps) => {
     props.onChangeProblem(newProblem);
   };
 
-  return <div style={{display: "flex"}}>
+  return <Box style={{display: "flex"}}>
     <div style={{border: "1px solid black"}}>
       <svg width={svgSize} height={svgSize} onMouseDown={svgMouseDown}>
         {renderResults.map((c) => c.item)}
       </svg>
     </div>
-    <div style={{width: "100%"}}>
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            checked={enableSolver}
-            onChange={(e) => {
-              setEnableSolver(e.target.checked);
-            }}
-          />
-          Auto solver
-        </label>
-      </div>
+    <Box style={{width: "100%"}}>
+      <Toolbar variant="dense" sx={{ backgroundColor: "#dddddd" }}>
+        <FormControlLabel
+          control={
+            <Switch checked={enableSolver} onChange={(e) => setEnableSolver(e.target.checked)} />
+          }
+          label="Auto solver"
+        />
+      </Toolbar>
       <div style={{overflowY: "scroll", height: "100%"}}>
         {allRules.map((rule, index) => {
           const bgColor = ruleState.selectedRuleIndex === index ? "lightblue" : "white";
@@ -331,21 +328,25 @@ export const Editor = (props: EditorProps) => {
               padding: "10px",
               margin: "5px",
               border: "1px solid black",
+              borderRadius: "5px",
               cursor: "pointer",
             }}
           >
-            <input
-              type="checkbox"
-              onChange={(e) => {
-                onChangeEnabledRules(rule.name, e.target.checked);
-              }}
-              checked={problem.enabledRules.indexOf(rule.name) >= 0}
-              disabled={rule.name === "givenNumbers"}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(e) => {
+                    onChangeEnabledRules(rule.name, e.target.checked);
+                  }}
+                  checked={problem.enabledRules.indexOf(rule.name) >= 0}
+                  disabled={rule.name === "givenNumbers"}
+                />
+                }
+              label={rule.description}
             />
-            {rule.description}
           </div>
         })}
       </div>
-    </div>
-  </div>
+    </Box>
+  </Box>
 };
