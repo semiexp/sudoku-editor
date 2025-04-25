@@ -429,19 +429,22 @@ export const Editor = (props: EditorProps) => {
                       }
                     }}
                   >
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          onChange={(e) => {
-                            onChangeEnabledRules(rule.name, e.target.checked);
-                          }}
-                          checked={problem.enabledRules.indexOf(rule.name) >= 0}
-                          disabled={rule.name === "givenNumbers"}
-                        />
-                      }
-                      label={rule.title}
-                      sx={{ padding: "5px 5px 5px 10px" }}
-                    />
+                    <Box sx={{ padding: "5px" }}>
+                      <Checkbox
+                        onChange={(e) => {
+                          onChangeEnabledRules(rule.name, e.target.checked);
+                        }}
+                        checked={problem.enabledRules.indexOf(rule.name) >= 0}
+                        disabled={rule.name === "givenNumbers"}
+                        sx={{ verticalAlign: "middle" }}
+                      />
+                      <Typography
+                        component="span"
+                        sx={{ verticalAlign: "middle" }}
+                      >
+                        {rule.title}
+                      </Typography>
+                    </Box>
                   </Box>
                   {isSelected && (
                     <Box sx={{ padding: "5px" }}>
