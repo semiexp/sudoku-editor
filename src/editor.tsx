@@ -389,7 +389,12 @@ export const Editor = (props: EditorProps) => {
       </Toolbar>
       <Box sx={{ display: "flex" }}>
         <Box sx={{ border: "1px solid black", margin: "5px" }}>
-          <svg width={svgSize} height={svgSize} onMouseDown={svgMouseDown}>
+          <svg
+            width={svgSize}
+            height={svgSize}
+            onMouseDown={svgMouseDown}
+            style={{ fontFamily: "sans-serif" }}
+          >
             {renderResults.map((c) => c.item)}
           </svg>
         </Box>
