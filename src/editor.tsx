@@ -4,7 +4,9 @@ import { EditorEvent } from "./rule";
 import { allRules } from "./rules/rules";
 import { solve } from "./solver";
 import { Answer, Problem } from "./puzzle";
-import { Box, Checkbox, FormControlLabel, Switch, Toolbar, Typography } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, Switch, Toolbar, Typography, Button, IconButton } from "@mui/material";
+import { Undo } from "@mui/icons-material";
+
 
 export type EditorProps = {
   problem: Problem;
@@ -96,6 +98,7 @@ export const Editor = (props: EditorProps) => {
   });
   const [enableSolver, setEnableSolver] = useState(false);
   const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
+  const [history, setHistory] = useState<Problem[]>([]); // History stack for undo functionality
 
   const cellSize = 40;  // TODO: make this dynamic
   const margin = cellSize + 10;
@@ -202,6 +205,7 @@ export const Editor = (props: EditorProps) => {
         if (result.data) {
           const newRuleData = new Map(problem.ruleData);
           newRuleData.set(rule.name, result.data);
+          setHistory((prevHistory) => [...prevHistory, problem]);
           props.onChangeProblem({
             ...problem,
             ruleData: newRuleData,
@@ -291,11 +295,26 @@ export const Editor = (props: EditorProps) => {
       enabledRules: newEnabledRules,
     };
 
+    setHistory([...history, problem]); // Save current state to history before changing
     props.onChangeProblem(newProblem);
   };
 
+  const undo = () => {
+    if (history.length > 0) {
+      const previousProblem = history[history.length - 1];
+      setHistory(history.slice(0, -1)); // Remove the last state from history
+      props.onChangeProblem(previousProblem); // Revert to the previous state
+    }
+  };
+
   return <Box>
-    <Toolbar variant="dense" sx={{ backgroundColor: "#dddddd" }}>
+    <Toolbar variant="dense" sx={{ backgroundColor: "#dddddd", pl: "20px" }}>
+      <IconButton
+        onClick={undo}
+        disabled={history.length === 0}
+      >
+        <Undo />
+      </IconButton>
       <FormControlLabel
         control={
           <Switch checked={enableSolver} onChange={(e) => setEnableSolver(e.target.checked)} />
