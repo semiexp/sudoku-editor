@@ -349,7 +349,7 @@ export const Editor = (props: EditorProps) => {
               { isSelected && (
                 <Box sx={{ padding: "5px" }}>
                   <Typography>
-                    Explanation
+                    {rule.explanation}
                   </Typography>
                 </Box>
               )}

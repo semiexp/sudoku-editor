@@ -7,6 +7,7 @@ type NonConsecutiveData = {};
 export const nonConsecutiveRule: Rule<NonConsecutiveState, NonConsecutiveData> = {
   name: "nonConsecutive",
   title: "Non-consecutive",
+  explanation: "Numbers in adjacent cells cannot differ by 1.",
   initialState: {},
   initialData: (size: number) => ({}),
   eventTypes: [],
