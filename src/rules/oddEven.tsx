@@ -8,7 +8,7 @@ type OddEvenData = {
 
 export const oddEvenRule: Rule<OddEvenState, OddEvenData> = {
   name: "oddEven",
-  description: "Odd/Even",
+  title: "Odd/Even",
   initialState: {},
   initialData: (size: number) => {
     const cellKind = new Array(size).fill(0).map(() => new Array(size).fill(0));

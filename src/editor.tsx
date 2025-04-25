@@ -342,7 +342,7 @@ export const Editor = (props: EditorProps) => {
                       disabled={rule.name === "givenNumbers"}
                     />
                     }
-                  label={rule.description}
+                  label={rule.title}
                   sx={{ padding: "5px 5px 5px 10px" }}
                 />
               </Box>

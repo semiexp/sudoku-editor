@@ -6,7 +6,7 @@ type NonConsecutiveData = {};
 
 export const nonConsecutiveRule: Rule<NonConsecutiveState, NonConsecutiveData> = {
   name: "nonConsecutive",
-  description: "Non-consecutive",
+  title: "Non-consecutive",
   initialState: {},
   initialData: (size: number) => ({}),
   eventTypes: [],

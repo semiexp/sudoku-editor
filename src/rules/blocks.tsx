@@ -11,7 +11,7 @@ type BlocksData = {
 
 export const blocksRule: Rule<BlocksState, BlocksData> = {
   name: "blocks",
-  description: "Blocks",
+  title: "Blocks",
   initialState: {}, // TODO
   initialData: (size: number) => {
     const horizontalBorder = [];

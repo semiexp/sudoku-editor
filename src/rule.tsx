@@ -14,7 +14,7 @@ export type RenderOptions = {
 
 export interface Rule<State, Data> {
   name: string;
-  description: string;
+  title: string;
   initialState: State;
   initialData: (size: number) => Data;
   eventTypes: EditorEventType[];

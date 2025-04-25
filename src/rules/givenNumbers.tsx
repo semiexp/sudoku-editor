@@ -11,7 +11,7 @@ type GivenNumbersData = {
 
 export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
   name: "givenNumbers",
-  description: "Given numbers",
+  title: "Given numbers",
   initialState: { selectedCell: null },
   initialData: (size: number) => {
     const numbers = [];
