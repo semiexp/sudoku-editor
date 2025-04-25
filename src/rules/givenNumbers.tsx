@@ -1,5 +1,9 @@
 import { ReactElement } from "react";
-import { Rule, PRIORITY_CLUE_NUMBERS, PRIORITY_SELECTED_CELL_MARKER } from "../rule";
+import {
+  Rule,
+  PRIORITY_CLUE_NUMBERS,
+  PRIORITY_SELECTED_CELL_MARKER,
+} from "../rule";
 
 type GivenNumbersState = {
   selectedCell: { y: number; x: number } | null;
@@ -30,7 +34,12 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
     if (event.type === "cellMouseDown") {
       const y = event.y;
       const x = event.x;
-      if (0 <= y && y < data.numbers.length && 0 <= x && x < data.numbers[y].length) {
+      if (
+        0 <= y &&
+        y < data.numbers.length &&
+        0 <= x &&
+        x < data.numbers[y].length
+      ) {
         const newState = { ...state, selectedCell: { y, x } };
         return { state: newState };
       }
@@ -100,7 +109,7 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
         />
       );
     }
-    
+
     let foregroundItems = [];
     for (let y = 0; y < data.numbers.length; y++) {
       for (let x = 0; x < data.numbers[y].length; x++) {
@@ -119,10 +128,10 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
               textAnchor="middle"
               dominantBaseline="central"
               fontSize={cellSize * 0.7}
-              style={{userSelect: "none"}}
+              style={{ userSelect: "none" }}
             >
               {number}
-            </text>
+            </text>,
           );
         }
       }
@@ -131,21 +140,13 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
     const items = [
       {
         priority: PRIORITY_CLUE_NUMBERS,
-        item: (
-          <g>
-            {foregroundItems}
-          </g>
-        ),
-      }
+        item: <g>{foregroundItems}</g>,
+      },
     ];
     if (background) {
       items.push({
         priority: PRIORITY_SELECTED_CELL_MARKER,
-        item: (
-          <g>
-            {background}
-          </g>
-        ),
+        item: <g>{background}</g>,
       });
     }
     return items;

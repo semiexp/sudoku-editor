@@ -20,8 +20,14 @@ export function solve(problem) {
   Solver.HEAPU8.set(puzzleJsonEncoded, buf);
 
   let res = Solver._solve_problem(buf, puzzleJsonEncoded.length);
-  const length = Solver.HEAPU8[res] | (Solver.HEAPU8[res + 1] << 8) | (Solver.HEAPU8[res + 2] << 16) | (Solver.HEAPU8[res + 3] << 24);
+  const length =
+    Solver.HEAPU8[res] |
+    (Solver.HEAPU8[res + 1] << 8) |
+    (Solver.HEAPU8[res + 2] << 16) |
+    (Solver.HEAPU8[res + 3] << 24);
 
-  const resStr = new TextDecoder().decode(Solver.HEAPU8.slice(res + 4, res + 4 + length));
+  const resStr = new TextDecoder().decode(
+    Solver.HEAPU8.slice(res + 4, res + 4 + length),
+  );
   return JSON.parse(resStr);
 }

@@ -12,7 +12,8 @@ type BlocksData = {
 export const blocksRule: Rule<BlocksState, BlocksData> = {
   name: "blocks",
   title: "Blocks",
-  explanation: "In each block, the numbers from 1 to the size of the board must appear exactly once. Blocks that do not match the size of the board will be ignored.",
+  explanation:
+    "In each block, the numbers from 1 to the size of the board must appear exactly once. Blocks that do not match the size of the board will be ignored.",
   initialState: {}, // TODO
   initialData: (size: number) => {
     const horizontalBorder = [];
@@ -50,15 +51,31 @@ export const blocksRule: Rule<BlocksState, BlocksData> = {
       const x = event.x;
 
       if (event.direction === "horizontal") {
-        if (!(1 <= y && y <= data.horizontalBorder.length && 0 <= x && x < data.horizontalBorder[y - 1].length)) {
+        if (
+          !(
+            1 <= y &&
+            y <= data.horizontalBorder.length &&
+            0 <= x &&
+            x < data.horizontalBorder[y - 1].length
+          )
+        ) {
           return {};
         }
-        const newHorizontalBorder = data.horizontalBorder.map((row) => [...row]);
+        const newHorizontalBorder = data.horizontalBorder.map((row) => [
+          ...row,
+        ]);
         newHorizontalBorder[y - 1][x] = !data.horizontalBorder[y - 1][x];
         const newData = { ...data, horizontalBorder: newHorizontalBorder };
         return { data: newData };
       } else if (event.direction === "vertical") {
-        if (!(0 <= y && y < data.verticalBorder.length && 1 <= x && x <= data.verticalBorder[y].length)) {
+        if (
+          !(
+            0 <= y &&
+            y < data.verticalBorder.length &&
+            1 <= x &&
+            x <= data.verticalBorder[y].length
+          )
+        ) {
           return {};
         }
         const newVerticalBorder = data.verticalBorder.map((row) => [...row]);
@@ -83,7 +100,7 @@ export const blocksRule: Rule<BlocksState, BlocksData> = {
               y2={options.margin + options.cellSize * (y + 1)}
               stroke="black"
               strokeWidth={3}
-            />
+            />,
           );
         }
       }
@@ -100,16 +117,16 @@ export const blocksRule: Rule<BlocksState, BlocksData> = {
               y2={options.margin + options.cellSize * (y + 1)}
               stroke="black"
               strokeWidth={3}
-            />
+            />,
           );
         }
       }
     }
-    return [{
-      priority: PRIORITY_BORDER,
-      item: (<g>
-        {backgroundItems}
-      </g>)
-    }];
+    return [
+      {
+        priority: PRIORITY_BORDER,
+        item: <g>{backgroundItems}</g>,
+      },
+    ];
   },
 };

@@ -9,7 +9,8 @@ type OddEvenData = {
 export const oddEvenRule: Rule<OddEvenState, OddEvenData> = {
   name: "oddEven",
   title: "Odd/Even",
-  explanation: "Numbers in cells with circles must be odd. Numbers in cells with squares must be even.",
+  explanation:
+    "Numbers in cells with circles must be odd. Numbers in cells with squares must be even.",
   initialState: {},
   initialData: (size: number) => {
     const cellKind = new Array(size).fill(0).map(() => new Array(size).fill(0));
@@ -20,7 +21,12 @@ export const oddEvenRule: Rule<OddEvenState, OddEvenData> = {
     if (event.type === "cellMouseDown") {
       const y = event.y;
       const x = event.x;
-      if (0 <= y && y < data.cellKind.length && 0 <= x && x < data.cellKind[y].length) {
+      if (
+        0 <= y &&
+        y < data.cellKind.length &&
+        0 <= x &&
+        x < data.cellKind[y].length
+      ) {
         const newCellKind = data.cellKind.map((row) => [...row]);
         newCellKind[y][x] = (newCellKind[y][x] + 1) % 3;
         return { data: { ...data, cellKind: newCellKind } };
@@ -43,7 +49,7 @@ export const oddEvenRule: Rule<OddEvenState, OddEvenData> = {
               r={cellSize * 0.4}
               fill="rgb(128, 128, 128)"
               fillOpacity={0.5}
-            />
+            />,
           );
         } else if (data.cellKind[y][x] === 2) {
           items.push(
@@ -55,7 +61,7 @@ export const oddEvenRule: Rule<OddEvenState, OddEvenData> = {
               height={cellSize * 0.8}
               fill="rgb(128, 128, 128)"
               fillOpacity={0.5}
-            />
+            />,
           );
         }
       }
@@ -63,10 +69,8 @@ export const oddEvenRule: Rule<OddEvenState, OddEvenData> = {
     return [
       {
         priority: PRIORITY_ODD_EVEN,
-        item: (
-          <g>{items}</g>
-        ),
-      }
+        item: <g>{items}</g>,
+      },
     ];
   },
 };

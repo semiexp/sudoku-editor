@@ -4,9 +4,16 @@ import { EditorEvent } from "./rule";
 import { allRules } from "./rules/rules";
 import { solve } from "./solver";
 import { Answer, Problem } from "./puzzle";
-import { Box, Checkbox, FormControlLabel, Switch, Toolbar, Typography, IconButton } from "@mui/material";
-import UndoIcon from '@mui/icons-material/Undo';
-
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Switch,
+  Toolbar,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import UndoIcon from "@mui/icons-material/Undo";
 
 export type EditorProps = {
   problem: Problem;
@@ -23,9 +30,14 @@ export const defaultProblem = (size: number): Problem => {
     enabledRules: ["givenNumbers", "blocks"],
     ruleData: ruleData,
   };
-}
+};
 
-const autoSolverItems = (problem: Problem, answer: Answer, cellSize: number, margin: number) => {
+const autoSolverItems = (
+  problem: Problem,
+  answer: Answer,
+  cellSize: number,
+  margin: number,
+) => {
   if (answer === null) {
     return [];
   }
@@ -50,35 +62,43 @@ const autoSolverItems = (problem: Problem, answer: Answer, cellSize: number, mar
       }
 
       if (answer.decidedNumbers[y][x] !== null) {
-        items.push(<text
-          key={`auto-solver-${y}-${x}`}
-          x={margin + x * cellSize + cellSize * 0.5}
-          y={margin + y * cellSize + cellSize * 0.5}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize={cellSize * 0.7}
-          style={{ userSelect: "none" }}
-          fill="green"
-        >
-          {answer.decidedNumbers[y][x]}
-        </text>);
+        items.push(
+          <text
+            key={`auto-solver-${y}-${x}`}
+            x={margin + x * cellSize + cellSize * 0.5}
+            y={margin + y * cellSize + cellSize * 0.5}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize={cellSize * 0.7}
+            style={{ userSelect: "none" }}
+            fill="green"
+          >
+            {answer.decidedNumbers[y][x]}
+          </text>,
+        );
       } else {
         const candidates = answer.candidates[y][x];
-        const w = 3;  // TODO
+        const w = 3; // TODO
         for (let i = 0; i < size; ++i) {
           if (candidates[i]) {
-            items.push(<text
-              key={`auto-solver-candidate-${y}-${x}-${i}`}
-              x={margin + x * cellSize + (i % w + 0.5) / w * cellSize}
-              y={margin + y * cellSize + (Math.floor(i / w) + 0.5) / w * cellSize}
-              textAnchor="middle"
-              dominantBaseline="central"
-              fontSize={cellSize * 0.3}
-              style={{ userSelect: "none" }}
-              fill="green"
-            >
-              {i + 1}
-            </text>);
+            items.push(
+              <text
+                key={`auto-solver-candidate-${y}-${x}-${i}`}
+                x={margin + x * cellSize + (((i % w) + 0.5) / w) * cellSize}
+                y={
+                  margin +
+                  y * cellSize +
+                  ((Math.floor(i / w) + 0.5) / w) * cellSize
+                }
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize={cellSize * 0.3}
+                style={{ userSelect: "none" }}
+                fill="green"
+              >
+                {i + 1}
+              </text>,
+            );
           }
         }
       }
@@ -92,7 +112,10 @@ export const Editor = (props: EditorProps) => {
   const problem = props.problem;
   const size = problem.size;
 
-  const [ruleState, setRuleState] = useState<{selectedRuleIndex: number, ruleState: any}>({
+  const [ruleState, setRuleState] = useState<{
+    selectedRuleIndex: number;
+    ruleState: any;
+  }>({
     selectedRuleIndex: -1,
     ruleState: null,
   });
@@ -100,14 +123,14 @@ export const Editor = (props: EditorProps) => {
   const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
   const [history, setHistory] = useState<Problem[]>([]); // History stack for undo functionality
 
-  const cellSize = 40;  // TODO: make this dynamic
+  const cellSize = 40; // TODO: make this dynamic
   const margin = cellSize + 10;
   const svgSize = margin * 2 + cellSize * props.problem.size;
 
   const defaultBorders = [];
   for (let i = 0; i <= size; ++i) {
     // horizontal lines
-    let width = (i === 0 || i === size) ? 3 : 1;
+    let width = i === 0 || i === size ? 3 : 1;
     defaultBorders.push(
       <line
         key={`h-${i}`}
@@ -117,12 +140,12 @@ export const Editor = (props: EditorProps) => {
         y2={margin + i * cellSize}
         stroke="black"
         strokeWidth={width}
-      />
+      />,
     );
   }
   for (let i = 0; i <= size; ++i) {
     // vertical lines
-    let width = (i === 0 || i === size) ? 3 : 1;
+    let width = i === 0 || i === size ? 3 : 1;
     defaultBorders.push(
       <line
         key={`v-${i}`}
@@ -132,7 +155,7 @@ export const Editor = (props: EditorProps) => {
         y2={margin + size * cellSize + width * 0.5}
         stroke="black"
         strokeWidth={width}
-      />
+      />,
     );
   }
 
@@ -144,7 +167,8 @@ export const Editor = (props: EditorProps) => {
 
   for (let i = 0; i < allRules.length; ++i) {
     const rule = allRules[i];
-    const state = i === ruleState.selectedRuleIndex ? ruleState.ruleState : null;
+    const state =
+      i === ruleState.selectedRuleIndex ? ruleState.ruleState : null;
     const data = problem.ruleData.get(rule.name);
 
     // check if the rule is enabled
@@ -160,15 +184,11 @@ export const Editor = (props: EditorProps) => {
 
   renderResults.push({
     priority: 0,
-    item: (<g>
-      {defaultBorders}
-    </g>),
+    item: <g>{defaultBorders}</g>,
   });
   renderResults.push({
     priority: 100,
-    item: (<g>
-      {autoSolverItems(problem, autoSolverAnswer, cellSize, margin)}
-    </g>)
+    item: <g>{autoSolverItems(problem, autoSolverAnswer, cellSize, margin)}</g>,
   });
 
   renderResults.sort((a, b) => a.priority - b.priority);
@@ -198,7 +218,11 @@ export const Editor = (props: EditorProps) => {
           return;
         }
 
-        const result = rule.reducer(ruleState.ruleState, problem.ruleData.get(rule.name), event);
+        const result = rule.reducer(
+          ruleState.ruleState,
+          problem.ruleData.get(rule.name),
+          event,
+        );
         if (result.state) {
           setRuleState({ ...ruleState, ruleState: result.state });
         }
@@ -211,7 +235,7 @@ export const Editor = (props: EditorProps) => {
             ruleData: newRuleData,
           });
         }
-      }  
+      }
     };
   }, [props, ruleState]);
 
@@ -240,11 +264,26 @@ export const Editor = (props: EditorProps) => {
       const x = Math.floor(px / cellSize);
       const y = Math.floor(py / cellSize);
 
-      const edgeCands: {x: number; y: number; direction: "horizontal" | "vertical"; distance: number }[] = [
+      const edgeCands: {
+        x: number;
+        y: number;
+        direction: "horizontal" | "vertical";
+        distance: number;
+      }[] = [
         { x: x, y: y, direction: "horizontal", distance: py - y * cellSize },
         { x: x, y: y, direction: "vertical", distance: px - x * cellSize },
-        { x: x, y: y + 1, direction: "horizontal", distance: (y + 1) * cellSize - py },
-        { x: x + 1, y: y, direction: "vertical", distance: (x + 1) * cellSize - px },
+        {
+          x: x,
+          y: y + 1,
+          direction: "horizontal",
+          distance: (y + 1) * cellSize - py,
+        },
+        {
+          x: x + 1,
+          y: y,
+          direction: "vertical",
+          distance: (x + 1) * cellSize - px,
+        },
       ];
 
       const minEdge = edgeCands.reduce((prev, curr) => {
@@ -281,7 +320,10 @@ export const Editor = (props: EditorProps) => {
     };
   }, []);
 
-  const onChangeEnabledRules = (targetRule: string, stateAfterChange: boolean) => {
+  const onChangeEnabledRules = (
+    targetRule: string,
+    stateAfterChange: boolean,
+  ) => {
     const current = problem.enabledRules.indexOf(targetRule) >= 0;
     if (current === stateAfterChange) {
       return;
@@ -307,75 +349,89 @@ export const Editor = (props: EditorProps) => {
     }
   };
 
-  return <Box>
-    <Toolbar variant="dense" sx={{ backgroundColor: "#dddddd", pl: "20px" }}>
-      <IconButton
-        onClick={undo}
-        disabled={history.length === 0}
-      >
-        <UndoIcon />
-      </IconButton>
-      <FormControlLabel
-        control={
-          <Switch checked={enableSolver} onChange={(e) => setEnableSolver(e.target.checked)} />
-        }
-        label="Auto solver"
-      />
-    </Toolbar>
-    <Box sx={{display: "flex"}}>
-      <Box sx={{border: "1px solid black", margin: "5px"}}>
-        <svg width={svgSize} height={svgSize} onMouseDown={svgMouseDown}>
-          {renderResults.map((c) => c.item)}
-        </svg>
-      </Box>
-      <Box sx={{width: "100%"}}>
-        <div style={{overflowY: "scroll", height: "100%"}}>
-          {allRules.map((rule, index) => {
-            const isSelected = ruleState.selectedRuleIndex === index;
-            return <div
-              key={`rule-${index}`}
-              style={{
-                margin: "5px",
-                border: "1px solid black",
-              }}
-            >
-              <Box
-                sx={isSelected ? {width: "100%", borderBottom: "1px solid black", backgroundColor: "lightblue", cursor: "pointer"} : {width: "100%", cursor: "pointer"}}
-                onClick={(e) => {
-                  // TODO: maybe ad-hoc?
-                  if (e.target instanceof HTMLInputElement) {
-                    return;
-                  }
-                  if (ruleState.selectedRuleIndex !== index) {
-                    setRuleState({ selectedRuleIndex: index, ruleState: rule.initialState });
-                  }
-                }}
-              >
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={(e) => {
-                        onChangeEnabledRules(rule.name, e.target.checked);
-                      }}
-                      checked={problem.enabledRules.indexOf(rule.name) >= 0}
-                      disabled={rule.name === "givenNumbers"}
-                    />
+  return (
+    <Box>
+      <Toolbar variant="dense" sx={{ backgroundColor: "#dddddd", pl: "20px" }}>
+        <IconButton onClick={undo} disabled={history.length === 0}>
+          <UndoIcon />
+        </IconButton>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={enableSolver}
+              onChange={(e) => setEnableSolver(e.target.checked)}
+            />
+          }
+          label="Auto solver"
+        />
+      </Toolbar>
+      <Box sx={{ display: "flex" }}>
+        <Box sx={{ border: "1px solid black", margin: "5px" }}>
+          <svg width={svgSize} height={svgSize} onMouseDown={svgMouseDown}>
+            {renderResults.map((c) => c.item)}
+          </svg>
+        </Box>
+        <Box sx={{ width: "100%" }}>
+          <div style={{ overflowY: "scroll", height: "100%" }}>
+            {allRules.map((rule, index) => {
+              const isSelected = ruleState.selectedRuleIndex === index;
+              return (
+                <div
+                  key={`rule-${index}`}
+                  style={{
+                    margin: "5px",
+                    border: "1px solid black",
+                  }}
+                >
+                  <Box
+                    sx={
+                      isSelected
+                        ? {
+                            width: "100%",
+                            borderBottom: "1px solid black",
+                            backgroundColor: "lightblue",
+                            cursor: "pointer",
+                          }
+                        : { width: "100%", cursor: "pointer" }
                     }
-                  label={rule.title}
-                  sx={{ padding: "5px 5px 5px 10px" }}
-                />
-              </Box>
-              { isSelected && (
-                <Box sx={{ padding: "5px" }}>
-                  <Typography>
-                    {rule.explanation}
-                  </Typography>
-                </Box>
-              )}
-            </div>
-          })}
-        </div>
+                    onClick={(e) => {
+                      // TODO: maybe ad-hoc?
+                      if (e.target instanceof HTMLInputElement) {
+                        return;
+                      }
+                      if (ruleState.selectedRuleIndex !== index) {
+                        setRuleState({
+                          selectedRuleIndex: index,
+                          ruleState: rule.initialState,
+                        });
+                      }
+                    }}
+                  >
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          onChange={(e) => {
+                            onChangeEnabledRules(rule.name, e.target.checked);
+                          }}
+                          checked={problem.enabledRules.indexOf(rule.name) >= 0}
+                          disabled={rule.name === "givenNumbers"}
+                        />
+                      }
+                      label={rule.title}
+                      sx={{ padding: "5px 5px 5px 10px" }}
+                    />
+                  </Box>
+                  {isSelected && (
+                    <Box sx={{ padding: "5px" }}>
+                      <Typography>{rule.explanation}</Typography>
+                    </Box>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </Box>
       </Box>
     </Box>
-  </Box>
+  );
 };
