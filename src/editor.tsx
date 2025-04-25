@@ -365,8 +365,12 @@ export const Editor = (props: EditorProps) => {
 
   return (
     <Box>
-      <Toolbar variant="dense" sx={{ backgroundColor: "#dddddd", pl: "20px" }}>
-        <IconButton onClick={undo} disabled={history.length === 0}>
+      <Toolbar variant="dense" sx={{ backgroundColor: "#eeeeee", pl: "20px" }}>
+        <IconButton
+          onClick={undo}
+          disabled={history.length === 0}
+          sx={{ ml: -2 }}
+        >
           <UndoIcon />
         </IconButton>
         <IconButton onClick={redo} disabled={redoHistory.length === 0}>
@@ -380,6 +384,7 @@ export const Editor = (props: EditorProps) => {
             />
           }
           label="Auto solver"
+          sx={{ ml: 0.5 }}
         />
       </Toolbar>
       <Box sx={{ display: "flex" }}>
