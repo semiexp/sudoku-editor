@@ -1,0 +1,14 @@
+.ruleBox {
+  margin: 5px;
+  border: 1px solid black;
+}
+
+.ruleTitle {
+  width: 100%;
+  cursor: pointer;
+}
+
+.selectedRuleTitle {
+  border-bottom: 1px solid black;
+  background-color: lightblue;
+}

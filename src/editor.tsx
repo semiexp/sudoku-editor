@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
+import "./editor.css";
 
 export type EditorProps = {
   problem: Problem;
@@ -418,23 +419,10 @@ export const Editor = (props: EditorProps) => {
             {allRules.map((rule, index) => {
               const isSelected = ruleState.selectedRuleIndex === index;
               return (
-                <div
-                  key={`rule-${index}`}
-                  style={{
-                    margin: "5px",
-                    border: "1px solid black",
-                  }}
-                >
+                <div className="ruleBox" key={`rule-${index}`}>
                   <Box
-                    sx={
-                      isSelected
-                        ? {
-                            width: "100%",
-                            borderBottom: "1px solid black",
-                            backgroundColor: "lightblue",
-                            cursor: "pointer",
-                          }
-                        : { width: "100%", cursor: "pointer" }
+                    className={
+                      isSelected ? "ruleTitle selectedRuleTitle" : "ruleTitle"
                     }
                     onClick={(e) => {
                       // TODO: maybe ad-hoc?
