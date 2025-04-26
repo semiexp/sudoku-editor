@@ -122,22 +122,51 @@ type RuleState = {
 const RuleSelector = (props: {
   ruleState: RuleState;
   setRuleState: (newRuleState: RuleState) => void;
-  onChangeEnabledRules: (rule: string, newStatus: boolean) => void;
-  onChangeRuleBooleanFlags: (
+  problem: Problem;
+  updateProblem: (newProblem: Problem) => void;
+}) => {
+  const { ruleState, setRuleState, problem, updateProblem } = props;
+  const { t } = useTranslation();
+
+  const onChangeEnabledRules = (
+    targetRule: string,
+    stateAfterChange: boolean,
+  ) => {
+    const current = problem.enabledRules.indexOf(targetRule) >= 0;
+    if (current === stateAfterChange) {
+      return;
+    }
+
+    const newEnabledRules = stateAfterChange
+      ? [...problem.enabledRules, targetRule]
+      : problem.enabledRules.filter((rule) => rule !== targetRule);
+    const newProblem = {
+      ...problem,
+      enabledRules: newEnabledRules,
+    };
+
+    updateProblem(newProblem);
+  };
+
+  const onChangeRuleBooleanFlags = (
     rule: string,
     flag: string,
-    newStatus: boolean,
-  ) => void;
-  problem: Problem;
-}) => {
-  const {
-    ruleState,
-    setRuleState,
-    onChangeEnabledRules,
-    onChangeRuleBooleanFlags,
-    problem,
-  } = props;
-  const { t } = useTranslation();
+    stateAfterChange: boolean,
+  ) => {
+    const current = problem.ruleData.get(rule)[flag];
+    if (current === stateAfterChange) {
+      return;
+    }
+
+    const newRuleData = new Map(problem.ruleData);
+    const newRuleState = { ...newRuleData.get(rule), [flag]: stateAfterChange };
+    newRuleData.set(rule, newRuleState);
+
+    updateProblem({
+      ...problem,
+      ruleData: newRuleData,
+    });
+  };
 
   return (
     <Box className="ruleContainerOuter">
@@ -422,46 +451,6 @@ export const Editor = (props: EditorProps) => {
     };
   }, []);
 
-  const onChangeEnabledRules = (
-    targetRule: string,
-    stateAfterChange: boolean,
-  ) => {
-    const current = problem.enabledRules.indexOf(targetRule) >= 0;
-    if (current === stateAfterChange) {
-      return;
-    }
-
-    const newEnabledRules = stateAfterChange
-      ? [...problem.enabledRules, targetRule]
-      : problem.enabledRules.filter((rule) => rule !== targetRule);
-    const newProblem = {
-      ...problem,
-      enabledRules: newEnabledRules,
-    };
-
-    problemHistory.update(newProblem);
-  };
-
-  const onChangeRuleBooleanFlags = (
-    rule: string,
-    flag: string,
-    stateAfterChange: boolean,
-  ) => {
-    const current = problem.ruleData.get(rule)[flag];
-    if (current === stateAfterChange) {
-      return;
-    }
-
-    const newRuleData = new Map(problem.ruleData);
-    const newRuleState = { ...newRuleData.get(rule), [flag]: stateAfterChange };
-    newRuleData.set(rule, newRuleState);
-
-    problemHistory.update({
-      ...problem,
-      ruleData: newRuleData,
-    });
-  };
-
   const { t, i18n } = useTranslation();
 
   return (
@@ -513,9 +502,8 @@ export const Editor = (props: EditorProps) => {
         <RuleSelector
           ruleState={ruleState}
           setRuleState={setRuleState}
-          onChangeEnabledRules={onChangeEnabledRules}
-          onChangeRuleBooleanFlags={onChangeRuleBooleanFlags}
           problem={problem}
+          updateProblem={problemHistory.update}
         />
       </Box>
     </Box>
