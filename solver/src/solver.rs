@@ -270,7 +270,7 @@ fn add_xv_constraints(
             let kind = xv.vertical[y][x];
 
             match kind {
-                XV_NO_CONSTRAINT => {
+                XV_NO_CONSTRAINT => if xv.all_shown {
                     solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).ne(10));
                 }
                 XV_X => solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).eq(10)),

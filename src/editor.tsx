@@ -348,6 +348,28 @@ export const Editor = (props: EditorProps) => {
     props.onChangeProblem(newProblem);
   };
 
+  const onChangeRuleBooleanFlags = (
+    rule: string,
+    flag: string,
+    stateAfterChange: boolean,
+  ) => {
+    const current = problem.ruleData.get(rule)[flag];
+    if (current === stateAfterChange) {
+      return;
+    }
+
+    const newRuleData = new Map(problem.ruleData);
+    const newRuleState = { ...newRuleData.get(rule), [flag]: stateAfterChange };
+    newRuleData.set(rule, newRuleState);
+
+    setHistory([...history, problem]); // Save current state to history before changing
+    setRedoHistory([]); // Clear redo history
+    props.onChangeProblem({
+      ...problem,
+      ruleData: newRuleData,
+    });
+  };
+
   const undo = () => {
     if (history.length > 0) {
       const previousProblem = history[history.length - 1];
@@ -469,6 +491,29 @@ export const Editor = (props: EditorProps) => {
                       <Typography>
                         {t(`rule.${rule.name}.explanation`)}
                       </Typography>
+                      {rule.booleanFlags &&
+                        rule.booleanFlags.map((flag) => {
+                          return (
+                            <FormControlLabel
+                              key={flag}
+                              control={
+                                <Checkbox
+                                  checked={
+                                    problem.ruleData.get(rule.name)[flag]
+                                  }
+                                  onChange={(e) =>
+                                    onChangeRuleBooleanFlags(
+                                      rule.name,
+                                      flag,
+                                      e.target.checked,
+                                    )
+                                  }
+                                />
+                              }
+                              label={t(`rule.${rule.name}.${flag}`)}
+                            />
+                          );
+                        })}
                     </Box>
                   )}
                 </div>

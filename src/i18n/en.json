@@ -21,7 +21,8 @@
     },
     "xv": {
       "title": "XV Sudoku",
-      "explanation": "Adjacent cells with numbers summing 10 are marked with X. Adjacent cells with numbers summing 5 are marked with V. If there is no marker, the sum of the numbers is not 5 or 10."
+      "explanation": "Adjacent cells with numbers summing 10 are marked with X. Adjacent cells with numbers summing 5 are marked with V.",
+      "allShown": "All applicable marks are shown: if there is no marker, the sum of the numbers is not 5 or 10."
     }
   }
 }

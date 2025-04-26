@@ -21,6 +21,7 @@ export interface Rule<State, Data> {
   name: string;
   initialState: State;
   initialData: (size: number) => Data;
+  booleanFlags?: string[];
   eventTypes: EditorEventType[];
   reducer: (
     state: State,

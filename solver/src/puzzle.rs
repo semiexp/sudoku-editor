@@ -50,6 +50,9 @@ pub struct XV {
 
     #[serde(rename = "verticalBorder")]
     pub vertical: Vec<Vec<i32>>,
+
+    #[serde(rename = "allShown")]
+    pub all_shown: bool,
 }
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;

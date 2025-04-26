@@ -6,6 +6,7 @@ type XVState = {};
 type XVData = {
   horizontalBorder: number[][];
   verticalBorder: number[][];
+  allShown: boolean;
 };
 
 export const xvRule: Rule<XVState, XVData> = {
@@ -25,8 +26,10 @@ export const xvRule: Rule<XVState, XVData> = {
     return {
       horizontalBorder,
       verticalBorder,
+      allShown: true,
     };
   },
+  booleanFlags: ["allShown"],
   eventTypes: ["edgeMouseDown"],
   reducer: (_state, data, event) => {
     if (event.type === "edgeMouseDown") {
