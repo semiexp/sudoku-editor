@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 export type EditorEvent =
   | { type: "cellMouseDown"; y: number; x: number }
@@ -11,6 +11,18 @@ export type EditorEvent =
   | { type: "keyDown"; key: string };
 
 export type EditorEventType = "cellMouseDown" | "edgeMouseDown" | "keyDown";
+
+export const handleKeyDown = (
+  e: KeyboardEvent,
+  dispatch: ((event: EditorEvent) => void) | null,
+) => {
+  if (dispatch == null) {
+    return;
+  }
+
+  const event: EditorEvent = { type: "keyDown", key: e.key };
+  dispatch(event);
+};
 
 export const handleMouseDown = (
   e: React.MouseEvent<Element, MouseEvent>,
@@ -81,4 +93,13 @@ export const handleMouseDown = (
       dispatch(event);
     }
   }
+};
+
+export const useKeyDown = (handler: (e: KeyboardEvent) => void) => {
+  useEffect(() => {
+    window.addEventListener("keydown", handler);
+    return () => {
+      window.removeEventListener("keydown", handler);
+    };
+  });
 };

@@ -2,7 +2,12 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useHistory } from "./history";
-import { EditorEvent, handleMouseDown } from "./events";
+import {
+  EditorEvent,
+  handleKeyDown,
+  handleMouseDown,
+  useKeyDown,
+} from "./events";
 import { allRules } from "./rules/rules";
 import { solve } from "./solver";
 import { Answer, Problem } from "./puzzle";
@@ -373,19 +378,7 @@ export const Editor = (props: EditorProps) => {
     };
   }, [props, ruleState]);
 
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (dispatchEventRef.current) {
-      const event: EditorEvent = { type: "keyDown", key: e.key };
-      dispatchEventRef.current(event);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, []);
+  useKeyDown((e) => handleKeyDown(e, dispatchEventRef.current));
 
   const { t, i18n } = useTranslation();
 
