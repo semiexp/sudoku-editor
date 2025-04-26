@@ -36,10 +36,13 @@ export const handleMouseDown = (
 
   const rect = e.currentTarget.getBoundingClientRect();
 
+  const px = e.clientX - rect.left - margin;
+  const py = e.clientY - rect.top - margin;
+
   // cell
   {
-    const x = Math.floor((e.clientX - rect.left - margin) / cellSize);
-    const y = Math.floor((e.clientY - rect.top - margin) / cellSize);
+    const x = Math.floor(px / cellSize);
+    const y = Math.floor(py / cellSize);
 
     const event: EditorEvent = { type: "cellMouseDown", x: x, y: y };
     dispatch(event);
@@ -47,9 +50,6 @@ export const handleMouseDown = (
 
   // edge
   {
-    const px = e.clientX - rect.left - margin;
-    const py = e.clientY - rect.top - margin;
-
     const x = Math.floor(px / cellSize);
     const y = Math.floor(py / cellSize);
 
