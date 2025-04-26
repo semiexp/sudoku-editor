@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useHistory } from "./history";
 import { EditorEvent } from "./rule";
 import { allRules } from "./rules/rules";
 import { solve } from "./solver";
@@ -125,8 +126,7 @@ export const Editor = (props: EditorProps) => {
   });
   const [enableSolver, setEnableSolver] = useState(false);
   const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
-  const [history, setHistory] = useState<Problem[]>([]); // History stack for undo functionality
-  const [redoHistory, setRedoHistory] = useState<Problem[]>([]); // Redo stack for redo functionality
+  const problemHistory = useHistory(problem, props.onChangeProblem);
 
   const cellSize = 40; // TODO: make this dynamic
   const margin = cellSize + 10;
@@ -235,9 +235,7 @@ export const Editor = (props: EditorProps) => {
         if (result.data) {
           const newRuleData = new Map(problem.ruleData);
           newRuleData.set(rule.name, result.data);
-          setHistory((prevHistory) => [...prevHistory, problem]);
-          setRedoHistory([]);
-          props.onChangeProblem({
+          problemHistory.update({
             ...problem,
             ruleData: newRuleData,
           });
@@ -344,9 +342,7 @@ export const Editor = (props: EditorProps) => {
       enabledRules: newEnabledRules,
     };
 
-    setHistory([...history, problem]); // Save current state to history before changing
-    setRedoHistory([]); // Clear redo history
-    props.onChangeProblem(newProblem);
+    problemHistory.update(newProblem);
   };
 
   const onChangeRuleBooleanFlags = (
@@ -363,30 +359,10 @@ export const Editor = (props: EditorProps) => {
     const newRuleState = { ...newRuleData.get(rule), [flag]: stateAfterChange };
     newRuleData.set(rule, newRuleState);
 
-    setHistory([...history, problem]); // Save current state to history before changing
-    setRedoHistory([]); // Clear redo history
-    props.onChangeProblem({
+    problemHistory.update({
       ...problem,
       ruleData: newRuleData,
     });
-  };
-
-  const undo = () => {
-    if (history.length > 0) {
-      const previousProblem = history[history.length - 1];
-      setHistory(history.slice(0, -1)); // Remove the last state from history
-      setRedoHistory([props.problem, ...redoHistory]); // Save current state to redo stack
-      props.onChangeProblem(previousProblem); // Revert to the previous state
-    }
-  };
-
-  const redo = () => {
-    if (redoHistory.length > 0) {
-      const nextProblem = redoHistory[0];
-      setRedoHistory(redoHistory.slice(1)); // Remove the first state from redo stack
-      setHistory([...history, props.problem]); // Save current state to history stack
-      props.onChangeProblem(nextProblem); // Move to the next state
-    }
   };
 
   const { t, i18n } = useTranslation();
@@ -395,13 +371,16 @@ export const Editor = (props: EditorProps) => {
     <Box>
       <Toolbar variant="dense" sx={{ backgroundColor: "#eeeeee", pl: "20px" }}>
         <IconButton
-          onClick={undo}
-          disabled={history.length === 0}
+          onClick={problemHistory.undo}
+          disabled={!problemHistory.canUndo}
           sx={{ ml: -2 }}
         >
           <UndoIcon />
         </IconButton>
-        <IconButton onClick={redo} disabled={redoHistory.length === 0}>
+        <IconButton
+          onClick={problemHistory.redo}
+          disabled={!problemHistory.canRedo}
+        >
           <RedoIcon />
         </IconButton>
         <FormControlLabel
