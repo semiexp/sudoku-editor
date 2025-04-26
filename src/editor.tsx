@@ -114,6 +114,102 @@ const autoSolverItems = (
   return items;
 };
 
+type RuleState = {
+  selectedRuleIndex: number;
+  ruleState: any;
+};
+
+const RuleSelector = (props: {
+  ruleState: RuleState;
+  setRuleState: (newRuleState: RuleState) => void;
+  onChangeEnabledRules: (rule: string, newStatus: boolean) => void;
+  onChangeRuleBooleanFlags: (
+    rule: string,
+    flag: string,
+    newStatus: boolean,
+  ) => void;
+  problem: Problem;
+}) => {
+  const {
+    ruleState,
+    setRuleState,
+    onChangeEnabledRules,
+    onChangeRuleBooleanFlags,
+    problem,
+  } = props;
+  const { t } = useTranslation();
+
+  return (
+    <Box className="ruleContainerOuter">
+      <div className="ruleContainerInner">
+        {allRules.map((rule, index) => {
+          const isSelected = ruleState.selectedRuleIndex === index;
+          return (
+            <div className="ruleBox" key={`rule-${index}`}>
+              <Box
+                className={
+                  isSelected ? "ruleTitle selectedRuleTitle" : "ruleTitle"
+                }
+                onClick={() => {
+                  if (ruleState.selectedRuleIndex !== index) {
+                    setRuleState({
+                      selectedRuleIndex: index,
+                      ruleState: rule.initialState,
+                    });
+                  }
+                }}
+              >
+                <Box sx={{ padding: "5px" }}>
+                  <Checkbox
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    onChange={(e) => {
+                      onChangeEnabledRules(rule.name, e.target.checked);
+                    }}
+                    checked={problem.enabledRules.indexOf(rule.name) >= 0}
+                    disabled={rule.name === "givenNumbers"}
+                    sx={{ verticalAlign: "middle" }}
+                  />
+                  <Typography component="span" sx={{ verticalAlign: "middle" }}>
+                    {t(`rule.${rule.name}.title`)}
+                  </Typography>
+                </Box>
+              </Box>
+              {isSelected && (
+                <Box sx={{ padding: "5px" }}>
+                  <Typography>{t(`rule.${rule.name}.explanation`)}</Typography>
+                  {rule.booleanFlags &&
+                    rule.booleanFlags.map((flag) => {
+                      return (
+                        <FormControlLabel
+                          key={flag}
+                          control={
+                            <Checkbox
+                              checked={problem.ruleData.get(rule.name)[flag]}
+                              onChange={(e) =>
+                                onChangeRuleBooleanFlags(
+                                  rule.name,
+                                  flag,
+                                  e.target.checked,
+                                )
+                              }
+                            />
+                          }
+                          label={t(`rule.${rule.name}.${flag}`)}
+                        />
+                      );
+                    })}
+                </Box>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </Box>
+  );
+};
+
 export const Editor = (props: EditorProps) => {
   const problem = props.problem;
   const size = problem.size;
@@ -414,80 +510,13 @@ export const Editor = (props: EditorProps) => {
             {renderResults.map((c) => c.item)}
           </svg>
         </Box>
-        <Box className="ruleContainerOuter">
-          <div className="ruleContainerInner">
-            {allRules.map((rule, index) => {
-              const isSelected = ruleState.selectedRuleIndex === index;
-              return (
-                <div className="ruleBox" key={`rule-${index}`}>
-                  <Box
-                    className={
-                      isSelected ? "ruleTitle selectedRuleTitle" : "ruleTitle"
-                    }
-                    onClick={() => {
-                      if (ruleState.selectedRuleIndex !== index) {
-                        setRuleState({
-                          selectedRuleIndex: index,
-                          ruleState: rule.initialState,
-                        });
-                      }
-                    }}
-                  >
-                    <Box sx={{ padding: "5px" }}>
-                      <Checkbox
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                        onChange={(e) => {
-                          onChangeEnabledRules(rule.name, e.target.checked);
-                        }}
-                        checked={problem.enabledRules.indexOf(rule.name) >= 0}
-                        disabled={rule.name === "givenNumbers"}
-                        sx={{ verticalAlign: "middle" }}
-                      />
-                      <Typography
-                        component="span"
-                        sx={{ verticalAlign: "middle" }}
-                      >
-                        {t(`rule.${rule.name}.title`)}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  {isSelected && (
-                    <Box sx={{ padding: "5px" }}>
-                      <Typography>
-                        {t(`rule.${rule.name}.explanation`)}
-                      </Typography>
-                      {rule.booleanFlags &&
-                        rule.booleanFlags.map((flag) => {
-                          return (
-                            <FormControlLabel
-                              key={flag}
-                              control={
-                                <Checkbox
-                                  checked={
-                                    problem.ruleData.get(rule.name)[flag]
-                                  }
-                                  onChange={(e) =>
-                                    onChangeRuleBooleanFlags(
-                                      rule.name,
-                                      flag,
-                                      e.target.checked,
-                                    )
-                                  }
-                                />
-                              }
-                              label={t(`rule.${rule.name}.${flag}`)}
-                            />
-                          );
-                        })}
-                    </Box>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </Box>
+        <RuleSelector
+          ruleState={ruleState}
+          setRuleState={setRuleState}
+          onChangeEnabledRules={onChangeEnabledRules}
+          onChangeRuleBooleanFlags={onChangeRuleBooleanFlags}
+          problem={problem}
+        />
       </Box>
     </Box>
   );
