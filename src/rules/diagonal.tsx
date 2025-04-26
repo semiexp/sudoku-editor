@@ -1,0 +1,65 @@
+import { Rule, PRIORITY_DIAGNOAL } from "../rule";
+
+type DiagonalState = {};
+type DiagonalData = {
+  mainDiagonal: boolean;
+  antiDiagonal: boolean;
+};
+
+export const diagonalRule: Rule<DiagonalState, DiagonalData> = {
+  name: "diagonal",
+  initialState: {},
+  initialData: (_size: number) => ({
+    mainDiagonal: true,
+    antiDiagonal: true,
+  }),
+  booleanFlags: ["mainDiagonal", "antiDiagonal"],
+  eventTypes: [],
+  reducer: (_state, _data, _event) => {
+    return {};
+  },
+  render: (_state, data, options) => {
+    const items = [];
+
+    const { boardSize, cellSize, margin } = options;
+    if (data.mainDiagonal) {
+      for (let i = 0; i < boardSize; ++i) {
+        items.push(
+          <line
+            key={`mainDiagonal-${i}`}
+            x1={i * cellSize + margin}
+            y1={i * cellSize + margin}
+            x2={(i + 1) * cellSize + margin}
+            y2={(i + 1) * cellSize + margin}
+            stroke="black"
+            strokeWidth={1}
+            strokeDasharray={"5 5"}
+          />,
+        );
+      }
+    }
+    if (data.antiDiagonal) {
+      for (let i = 0; i < boardSize; ++i) {
+        items.push(
+          <line
+            key={`antiDiagonal-${i}`}
+            x1={(boardSize - i) * cellSize + margin}
+            y1={i * cellSize + margin}
+            x2={(boardSize - i - 1) * cellSize + margin}
+            y2={(i + 1) * cellSize + margin}
+            stroke="black"
+            strokeWidth={1}
+            strokeDasharray={"5 5"}
+          />,
+        );
+      }
+    }
+
+    return [
+      {
+        priority: PRIORITY_DIAGNOAL,
+        item: <g>{items}</g>,
+      },
+    ];
+  },
+};

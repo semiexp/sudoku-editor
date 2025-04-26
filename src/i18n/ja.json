@@ -23,6 +23,12 @@
       "title": "XV Sudoku",
       "explanation": "隣り合うマスの和が 10 の箇所は X で、5 の箇所は V で示されています。",
       "allShown": "X も V もない箇所では、和は 5 でも 10 でもありません。"
+    },
+    "diagonal": {
+      "title": "対角線 (Diagonal)",
+      "explanation": "対角線上で、1 から盤面のサイズまでの数字が 1 回ずつ現れます。",
+      "mainDiagonal": "左上から右下に向かう対角線について適用する",
+      "antiDiagonal": "右上から左下に向かう対角線について適用する"
     }
   }
 }

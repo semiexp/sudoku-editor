@@ -23,6 +23,12 @@
       "title": "XV Sudoku",
       "explanation": "Adjacent cells with numbers summing 10 are marked with X. Adjacent cells with numbers summing 5 are marked with V.",
       "allShown": "All applicable marks are shown: if there is no marker, the sum of the numbers is not 5 or 10."
+    },
+    "diagonal": {
+      "title": "Diagonal",
+      "explanation": "In diagonals, the numbers from 1 to the size of the board must appear exactly once.",
+      "mainDiagonal": "Applicable to the main diagonal (from the top left to the bottom right)",
+      "antiDiagonal": "Applicable to the anti diagonal (from the top right to the bottom left)"
     }
   }
 }

@@ -1,8 +1,8 @@
 use serde::Serialize;
 
 use crate::puzzle::{
-    Blocks, GivenNumbers, NonConsecutive, OddEven, Puzzle, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT,
-    ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
+    Blocks, Diagonal, GivenNumbers, NonConsecutive, OddEven, Puzzle, ODDEVEN_EVEN,
+    ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
 use cspuz_rs::solver::{IntVarArray2D, Solver};
@@ -79,6 +79,10 @@ fn add_constraints(solver: &mut Solver, nums: &IntVarArray2D, puzzle: &Puzzle) {
 
     if let Some(xv) = &puzzle.xv {
         add_xv_constraints(solver, nums, xv);
+    }
+
+    if let Some(diagonal) = &puzzle.diagonal {
+        add_diagonal_constraints(solver, nums, diagonal);
     }
 }
 
@@ -276,5 +280,22 @@ fn add_xv_constraints(solver: &mut Solver, nums: &IntVarArray2D, xv: &XV) {
                 _ => panic!(),
             }
         }
+    }
+}
+
+fn add_diagonal_constraints(solver: &mut Solver, nums: &IntVarArray2D, diagonal: &Diagonal) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    if diagonal.main_diagonal {
+        add_complete_set(solver, nums, &(0..h).map(|i| (i, i)).collect::<Vec<_>>());
+    }
+
+    if diagonal.anti_diagonal {
+        add_complete_set(
+            solver,
+            nums,
+            &(0..h).map(|i| (i, h - 1 - i)).collect::<Vec<_>>(),
+        );
     }
 }

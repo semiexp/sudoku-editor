@@ -18,6 +18,9 @@ pub struct Puzzle {
 
     #[serde(rename = "xv")]
     pub xv: Option<XV>,
+
+    #[serde(rename = "diagonal")]
+    pub diagonal: Option<Diagonal>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -53,6 +56,15 @@ pub struct XV {
 
     #[serde(rename = "allShown")]
     pub all_shown: bool,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Diagonal {
+    #[serde(rename = "mainDiagonal")]
+    pub main_diagonal: bool,
+
+    #[serde(rename = "antiDiagonal")]
+    pub anti_diagonal: bool,
 }
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;

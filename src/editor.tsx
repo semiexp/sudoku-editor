@@ -165,6 +165,7 @@ export const Editor = (props: EditorProps) => {
   }
 
   const renderOptions = {
+    boardSize: size,
     cellSize: cellSize,
     margin: margin,
   };
