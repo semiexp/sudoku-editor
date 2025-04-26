@@ -1,8 +1,8 @@
 use serde::Serialize;
 
 use crate::puzzle::{
-    Blocks, GivenNumbers, NonConsecutive, OddEven, Puzzle, XV, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT,
-    ODDEVEN_ODD, XV_NO_CONSTRAINT, XV_X, XV_V,
+    Blocks, GivenNumbers, NonConsecutive, OddEven, Puzzle, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT,
+    ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
 use cspuz_rs::solver::{IntVarArray2D, Solver};
@@ -235,11 +235,7 @@ fn add_non_consecutive_constraints(
     }
 }
 
-fn add_xv_constraints(
-    solver: &mut Solver,
-    nums: &IntVarArray2D,
-    xv: &XV,
-) {
+fn add_xv_constraints(solver: &mut Solver, nums: &IntVarArray2D, xv: &XV) {
     let (h, w) = nums.shape();
     assert_eq!(h, w);
 
@@ -266,12 +262,14 @@ fn add_xv_constraints(
     for y in 0..h {
         assert_eq!(xv.vertical[y].len(), w - 1);
 
-        for x in 0..(w - 1){
+        for x in 0..(w - 1) {
             let kind = xv.vertical[y][x];
 
             match kind {
-                XV_NO_CONSTRAINT => if xv.all_shown {
-                    solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).ne(10));
+                XV_NO_CONSTRAINT => {
+                    if xv.all_shown {
+                        solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).ne(10));
+                    }
                 }
                 XV_X => solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).eq(10)),
                 XV_V => solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).eq(5)),
