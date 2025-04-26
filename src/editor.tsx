@@ -38,6 +38,41 @@ export const defaultProblem = (size: number): Problem => {
   };
 };
 
+const defaultBorders = (size: number, cellSize: number, margin: number) => {
+  const ret = [];
+  for (let i = 0; i <= size; ++i) {
+    // horizontal lines
+    let width = i === 0 || i === size ? 3 : 1;
+    ret.push(
+      <line
+        key={`h-${i}`}
+        x1={margin - width * 0.5}
+        y1={margin + i * cellSize}
+        x2={margin + size * cellSize + width * 0.5}
+        y2={margin + i * cellSize}
+        stroke="black"
+        strokeWidth={width}
+      />,
+    );
+  }
+  for (let i = 0; i <= size; ++i) {
+    // vertical lines
+    let width = i === 0 || i === size ? 3 : 1;
+    ret.push(
+      <line
+        key={`v-${i}`}
+        x1={margin + i * cellSize}
+        y1={margin - width * 0.5}
+        x2={margin + i * cellSize}
+        y2={margin + size * cellSize + width * 0.5}
+        stroke="black"
+        strokeWidth={width}
+      />,
+    );
+  }
+  return ret;
+};
+
 const autoSolverItems = (
   problem: Problem,
   answer: Answer,
@@ -258,38 +293,6 @@ export const Editor = (props: EditorProps) => {
   const margin = cellSize + 10;
   const svgSize = margin * 2 + cellSize * props.problem.size;
 
-  const defaultBorders = [];
-  for (let i = 0; i <= size; ++i) {
-    // horizontal lines
-    let width = i === 0 || i === size ? 3 : 1;
-    defaultBorders.push(
-      <line
-        key={`h-${i}`}
-        x1={margin - width * 0.5}
-        y1={margin + i * cellSize}
-        x2={margin + size * cellSize + width * 0.5}
-        y2={margin + i * cellSize}
-        stroke="black"
-        strokeWidth={width}
-      />,
-    );
-  }
-  for (let i = 0; i <= size; ++i) {
-    // vertical lines
-    let width = i === 0 || i === size ? 3 : 1;
-    defaultBorders.push(
-      <line
-        key={`v-${i}`}
-        x1={margin + i * cellSize}
-        y1={margin - width * 0.5}
-        x2={margin + i * cellSize}
-        y2={margin + size * cellSize + width * 0.5}
-        stroke="black"
-        strokeWidth={width}
-      />,
-    );
-  }
-
   const renderOptions = {
     boardSize: size,
     cellSize: cellSize,
@@ -316,7 +319,7 @@ export const Editor = (props: EditorProps) => {
 
   renderResults.push({
     priority: 0,
-    item: <g>{defaultBorders}</g>,
+    item: <g>{defaultBorders(size, cellSize, margin)}</g>,
   });
   renderResults.push({
     priority: 100,
