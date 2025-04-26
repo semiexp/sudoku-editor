@@ -1,4 +1,5 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { EditorEvent } from "./rule";
 import { allRules } from "./rules/rules";
@@ -12,6 +13,8 @@ import {
   Toolbar,
   Typography,
   IconButton,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
@@ -363,6 +366,8 @@ export const Editor = (props: EditorProps) => {
     }
   };
 
+  const { t, i18n } = useTranslation();
+
   return (
     <Box>
       <Toolbar variant="dense" sx={{ backgroundColor: "#eeeeee", pl: "20px" }}>
@@ -383,9 +388,17 @@ export const Editor = (props: EditorProps) => {
               onChange={(e) => setEnableSolver(e.target.checked)}
             />
           }
-          label="Auto solver"
+          label={t("ui.autoSolver")}
           sx={{ ml: 0.5 }}
         />
+        <Select
+          value={i18n.language}
+          onChange={(e) => i18n.changeLanguage(e.target.value)}
+          sx={{ ml: "auto" }}
+        >
+          <MenuItem value="en">English</MenuItem>
+          <MenuItem value="ja">日本語</MenuItem>
+        </Select>
       </Toolbar>
       <Box sx={{ display: "flex" }}>
         <Box sx={{ border: "1px solid black", margin: "5px" }}>
@@ -447,13 +460,15 @@ export const Editor = (props: EditorProps) => {
                         component="span"
                         sx={{ verticalAlign: "middle" }}
                       >
-                        {rule.title}
+                        {t(`rule.${rule.name}.title`)}
                       </Typography>
                     </Box>
                   </Box>
                   {isSelected && (
                     <Box sx={{ padding: "5px" }}>
-                      <Typography>{rule.explanation}</Typography>
+                      <Typography>
+                        {t(`rule.${rule.name}.explanation`)}
+                      </Typography>
                     </Box>
                   )}
                 </div>

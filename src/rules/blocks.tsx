@@ -11,9 +11,6 @@ type BlocksData = {
 
 export const blocksRule: Rule<BlocksState, BlocksData> = {
   name: "blocks",
-  title: "Blocks",
-  explanation:
-    "In each block, the numbers from 1 to the size of the board must appear exactly once. Blocks that do not match the size of the board will be ignored.",
   initialState: {}, // TODO
   initialData: (size: number) => {
     const horizontalBorder = [];

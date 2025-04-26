@@ -10,9 +10,6 @@ type XVData = {
 
 export const xvRule: Rule<XVState, XVData> = {
   name: "xv",
-  title: "XV Sudoku",
-  explanation:
-    "Adjacent cells with numbers summing 10 are marked with X. Adjacent cells with numbers summing 5 are marked with V. If there is no marker, the sum of the numbers is not 5 or 10.",
   initialState: {},
   initialData: (size: number) => {
     const horizontalBorder = [];

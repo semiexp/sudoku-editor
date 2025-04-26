@@ -1,0 +1,27 @@
+{
+  "ui": {
+    "autoSolver": "自動ソルバー"
+  },
+  "rule": {
+    "givenNumbers": {
+      "title": "ヒント数字",
+      "explanation": "ヒントとしてあらかじめ与えられている数字を設定します。"
+    },
+    "blocks": {
+      "title": "ブロック",
+      "explanation": "各ブロックで、1 から盤面のサイズまでの数字が 1 回ずつ現れます。ブロックのマス数が盤面のサイズと一致しない場合は、そのブロックは無視されます。"
+    },
+    "oddEven": {
+      "title": "偶奇 (Odd/Even)",
+      "explanation": "丸を含むマスには奇数が、四角を含むマスには偶数が入ります。"
+    },
+    "nonConsecutive": {
+      "title": "不連続 (Non-Consecutive)",
+      "explanation": "隣り合うマスに入る数字の差は 1 にはなりません。"
+    },
+    "xv": {
+      "title": "XV Sudoku",
+      "explanation": "隣り合うマスの和が 10 の箇所は X で、5 の箇所は V で示されています。X も V もない箇所では、和は 5 でも 10 でもありません。"
+    }
+  }
+}

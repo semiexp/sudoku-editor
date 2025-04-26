@@ -8,9 +8,6 @@ type OddEvenData = {
 
 export const oddEvenRule: Rule<OddEvenState, OddEvenData> = {
   name: "oddEven",
-  title: "Odd/Even",
-  explanation:
-    "Numbers in cells with circles must be odd. Numbers in cells with squares must be even.",
   initialState: {},
   initialData: (size: number) => {
     const cellKind = new Array(size).fill(0).map(() => new Array(size).fill(0));

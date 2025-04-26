@@ -1,0 +1,27 @@
+{
+  "ui": {
+    "autoSolver": "Auto Solver"
+  },
+  "rule": {
+    "givenNumbers": {
+      "title": "Given Numbers",
+      "explanation": "Already given numbers as clues."
+    },
+    "blocks": {
+      "title": "Blocks",
+      "explanation": "In each block, the numbers from 1 to the size of the board must appear exactly once. Blocks that do not match the size of the board will be ignored."
+    },
+    "oddEven": {
+      "title": "Odd/Even",
+      "explanation": "Numbers in cells with circles must be odd. Numbers in cells with squares must be even."
+    },
+    "nonConsecutive": {
+      "title": "Non-Consecutive",
+      "explanation": "Numbers in adjacent cells cannot differ by 1."
+    },
+    "xv": {
+      "title": "XV Sudoku",
+      "explanation": "Adjacent cells with numbers summing 10 are marked with X. Adjacent cells with numbers summing 5 are marked with V. If there is no marker, the sum of the numbers is not 5 or 10."
+    }
+  }
+}
