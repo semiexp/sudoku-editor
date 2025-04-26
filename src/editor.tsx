@@ -414,8 +414,8 @@ export const Editor = (props: EditorProps) => {
             {renderResults.map((c) => c.item)}
           </svg>
         </Box>
-        <Box sx={{ width: "100%" }}>
-          <div style={{ overflowY: "scroll", height: svgSize + 10 /* TODO */ }}>
+        <Box className="ruleContainerOuter">
+          <div className="ruleContainerInner">
             {allRules.map((rule, index) => {
               const isSelected = ruleState.selectedRuleIndex === index;
               return (

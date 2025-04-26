@@ -12,3 +12,15 @@
   border-bottom: 1px solid black;
   background-color: lightblue;
 }
+
+.ruleContainerOuter {
+  width: 100%;
+  position: relative;
+}
+
+.ruleContainerInner {
+  overflow-y: scroll;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
