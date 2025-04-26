@@ -424,11 +424,7 @@ export const Editor = (props: EditorProps) => {
                     className={
                       isSelected ? "ruleTitle selectedRuleTitle" : "ruleTitle"
                     }
-                    onClick={(e) => {
-                      // TODO: maybe ad-hoc?
-                      if (e.target instanceof HTMLInputElement) {
-                        return;
-                      }
+                    onClick={() => {
                       if (ruleState.selectedRuleIndex !== index) {
                         setRuleState({
                           selectedRuleIndex: index,
@@ -439,6 +435,9 @@ export const Editor = (props: EditorProps) => {
                   >
                     <Box sx={{ padding: "5px" }}>
                       <Checkbox
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
                         onChange={(e) => {
                           onChangeEnabledRules(rule.name, e.target.checked);
                         }}
