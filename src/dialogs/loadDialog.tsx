@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   Button,
@@ -18,9 +19,11 @@ export const LoadDialog = (props: {
   const { initialValues, close } = props;
   const [content, setContent] = useState(initialValues.content);
 
+  const { t } = useTranslation();
+
   return (
     <AutoMuiDialog>
-      <DialogTitle>Load</DialogTitle>
+      <DialogTitle>{t("ui.load")}</DialogTitle>
       <DialogContent>
         <TextField
           value={content}
@@ -33,8 +36,8 @@ export const LoadDialog = (props: {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => close()}>Cancel</Button>
-        <Button onClick={() => close({ content })}>OK</Button>
+        <Button onClick={() => close()}>{t("ui.cancel")}</Button>
+        <Button onClick={() => close({ content })}>{t("ui.ok")}</Button>
       </DialogActions>
     </AutoMuiDialog>
   );

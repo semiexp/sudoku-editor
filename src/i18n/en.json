@@ -4,7 +4,13 @@
     "newBoard": "New Board",
     "boardSize": "Board Size",
     "blockSize": "Block Size",
-    "noBlocks": "No blocks"
+    "noBlocks": "No blocks",
+    "load": "Load",
+    "save": "Save",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "copyToClipboard": "Copy to Clipboard",
+    "saveDialogNote": "Note: data for unselected rules will be lost."
   },
   "rule": {
     "givenNumbers": {

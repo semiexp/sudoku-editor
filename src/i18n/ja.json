@@ -4,7 +4,13 @@
     "newBoard": "新規作成",
     "boardSize": "盤面サイズ",
     "blockSize": "ブロックのサイズ",
-    "noBlocks": "ブロックなし"
+    "noBlocks": "ブロックなし",
+    "load": "読み込み",
+    "save": "保存",
+    "ok": "OK",
+    "cancel": "キャンセル",
+    "copyToClipboard": "クリップボードにコピー",
+    "saveDialogNote": "注意: 選択されていないルールのデータは失われます。"
   },
   "rule": {
     "givenNumbers": {

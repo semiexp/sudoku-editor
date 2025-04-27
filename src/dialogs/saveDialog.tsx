@@ -6,6 +6,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
+
 import { AutoMuiDialog } from "./dialog";
 
 type SaveDialogType = { content: string };
@@ -16,11 +18,13 @@ export const SaveDialog = (props: {
 }) => {
   const { initialValues, close } = props;
 
+  const { t } = useTranslation();
+
   return (
     <AutoMuiDialog>
-      <DialogTitle>Save</DialogTitle>
+      <DialogTitle>{t("ui.save")}</DialogTitle>
       <DialogContent>
-        <Typography>Note: data for unselected rules will be lost.</Typography>
+        <Typography>{t("ui.saveDialogNote")}</Typography>
         <TextField
           value={initialValues.content}
           multiline
@@ -36,9 +40,9 @@ export const SaveDialog = (props: {
         <Button
           onClick={() => navigator.clipboard.writeText(initialValues.content)}
         >
-          Copy to clipboard
+          {t("ui.copyToClipboard")}
         </Button>
-        <Button onClick={() => close()}>OK</Button>
+        <Button onClick={() => close()}>{t("ui.ok")}</Button>
       </DialogActions>
     </AutoMuiDialog>
   );
