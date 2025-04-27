@@ -117,11 +117,11 @@ export const NewBoardDialog = (props: {
             </Select>
           </Box>
         </Box>
-        <DialogActions>
-          <Button onClick={() => close()}>Cancel</Button>
-          <Button onClick={() => close(values)}>OK</Button>
-        </DialogActions>
       </DialogContent>
+      <DialogActions>
+        <Button onClick={() => close()}>{t("ui.cancel")}</Button>
+        <Button onClick={() => close(values)}>{t("ui.ok")}</Button>
+      </DialogActions>
     </AutoMuiDialog>
   );
 };
