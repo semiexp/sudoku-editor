@@ -10,6 +10,7 @@ import {
   handleMouseUp,
   useKeyDown,
 } from "./events";
+import { RenderOptions } from "./rule";
 import { allRules } from "./rules/rules";
 import { solve } from "./solver";
 import { Answer, Problem } from "./puzzle";
@@ -45,33 +46,35 @@ export const defaultProblem = (size: number): Problem => {
   };
 };
 
-const defaultBorders = (size: number, cellSize: number, margin: number) => {
+const defaultBorders = (options: RenderOptions) => {
+  const { boardSize, cellSize, margin } = options;
+
   const ret = [];
-  for (let i = 0; i <= size; ++i) {
+  for (let i = 0; i <= boardSize; ++i) {
     // horizontal lines
-    let width = i === 0 || i === size ? 3 : 1;
+    let width = i === 0 || i === boardSize ? 3 : 1;
     ret.push(
       <line
         key={`h-${i}`}
         x1={margin - width * 0.5}
         y1={margin + i * cellSize}
-        x2={margin + size * cellSize + width * 0.5}
+        x2={margin + boardSize * cellSize + width * 0.5}
         y2={margin + i * cellSize}
         stroke="black"
         strokeWidth={width}
       />,
     );
   }
-  for (let i = 0; i <= size; ++i) {
+  for (let i = 0; i <= boardSize; ++i) {
     // vertical lines
-    let width = i === 0 || i === size ? 3 : 1;
+    let width = i === 0 || i === boardSize ? 3 : 1;
     ret.push(
       <line
         key={`v-${i}`}
         x1={margin + i * cellSize}
         y1={margin - width * 0.5}
         x2={margin + i * cellSize}
-        y2={margin + size * cellSize + width * 0.5}
+        y2={margin + boardSize * cellSize + width * 0.5}
         stroke="black"
         strokeWidth={width}
       />,
@@ -83,8 +86,7 @@ const defaultBorders = (size: number, cellSize: number, margin: number) => {
 const autoSolverItems = (
   problem: Problem,
   answer: Answer,
-  cellSize: number,
-  margin: number,
+  options: RenderOptions,
 ) => {
   if (answer === null) {
     return [];
@@ -102,6 +104,7 @@ const autoSolverItems = (
     hasClue.push(row);
   }
 
+  const { cellSize, margin } = options;
   const items = [];
   for (let y = 0; y < size; ++y) {
     for (let x = 0; x < size; ++x) {
@@ -281,6 +284,45 @@ const RuleSelector = (props: {
   );
 };
 
+const render = (
+  problem: Problem,
+  autoSolverAnswer: Answer,
+  selectedRuleIndex: number,
+  ruleState: any,
+  options: RenderOptions,
+): ReactElement[] => {
+  const renderResults: { priority: number; item: ReactElement }[] = [];
+
+  for (let i = 0; i < allRules.length; ++i) {
+    const rule = allRules[i];
+    const state = i === selectedRuleIndex ? ruleState : null;
+    const data = problem.ruleData.get(rule.name);
+
+    // check if the rule is enabled
+    if (problem.enabledRules.indexOf(rule.name) < 0) {
+      continue;
+    }
+
+    const renderResult = rule.render(state, data, options);
+    for (const item of renderResult) {
+      renderResults.push(item);
+    }
+  }
+
+  renderResults.push({
+    priority: 0,
+    item: <g>{defaultBorders(options)}</g>,
+  });
+  renderResults.push({
+    priority: 100,
+    item: <g>{autoSolverItems(problem, autoSolverAnswer, options)}</g>,
+  });
+
+  renderResults.sort((a, b) => a.priority - b.priority);
+
+  return renderResults.map((c) => c.item);
+};
+
 export const Editor = (props: EditorProps) => {
   const problem = props.problem;
   const size = problem.size;
@@ -305,35 +347,13 @@ export const Editor = (props: EditorProps) => {
     cellSize: cellSize,
     margin: margin,
   };
-  const renderResults: { priority: number; item: ReactElement }[] = [];
-
-  for (let i = 0; i < allRules.length; ++i) {
-    const rule = allRules[i];
-    const state =
-      i === ruleState.selectedRuleIndex ? ruleState.ruleState : null;
-    const data = problem.ruleData.get(rule.name);
-
-    // check if the rule is enabled
-    if (problem.enabledRules.indexOf(rule.name) < 0) {
-      continue;
-    }
-
-    const renderResult = rule.render(state, data, renderOptions);
-    for (const item of renderResult) {
-      renderResults.push(item);
-    }
-  }
-
-  renderResults.push({
-    priority: 0,
-    item: <g>{defaultBorders(size, cellSize, margin)}</g>,
-  });
-  renderResults.push({
-    priority: 100,
-    item: <g>{autoSolverItems(problem, autoSolverAnswer, cellSize, margin)}</g>,
-  });
-
-  renderResults.sort((a, b) => a.priority - b.priority);
+  const renderResults = render(
+    problem,
+    autoSolverAnswer,
+    ruleState.selectedRuleIndex,
+    ruleState.ruleState,
+    renderOptions,
+  );
 
   const dispatchEventRef = useRef<(event: EditorEvent) => void | null>(null);
 
@@ -435,7 +455,7 @@ export const Editor = (props: EditorProps) => {
             onContextMenu={(e) => e.preventDefault()}
             style={{ fontFamily: "sans-serif" }}
           >
-            {renderResults.map((c) => c.item)}
+            {renderResults}
           </svg>
         </Box>
         <RuleSelector
