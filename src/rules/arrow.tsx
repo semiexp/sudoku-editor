@@ -1,4 +1,5 @@
 import { Rule, PRIORITY_ARROW } from "../rule";
+import { reducerForLines } from "./linesUtil";
 
 type Arrow = { y: number; x: number }[];
 
@@ -19,64 +20,7 @@ export const arrowRule: Rule<ArrowState, ArrowData> = {
   }),
   eventTypes: ["cellMouseDown", "cellMouseMove", "mouseUp"],
   reducer: (state, data, event, info) => {
-    const size = info.boardSize;
-    if (event.type === "cellMouseDown") {
-      if (event.rightClick) {
-        const newArrows = data.arrows.filter(
-          (arrow) =>
-            !arrow.some((cell) => cell.y === event.y && cell.x === event.x),
-        );
-        return { data: { arrows: newArrows } };
-      }
-      if (
-        state.currentArrow === null &&
-        0 <= event.y &&
-        event.y < size &&
-        0 <= event.x &&
-        event.x < size
-      ) {
-        const newArrow = [{ y: event.y, x: event.x }];
-        return { state: { currentArrow: newArrow } };
-      }
-    } else if (event.type === "cellMouseMove") {
-      if (
-        state.currentArrow != null &&
-        0 <= event.y &&
-        event.y < size &&
-        0 <= event.x &&
-        event.x < size
-      ) {
-        const arrow = state.currentArrow;
-
-        const last = arrow[arrow.length - 1];
-        if (
-          (last.y != event.y || last.x != event.x) &&
-          Math.abs(last.y - event.y) <= 1 &&
-          Math.abs(last.x - event.x) <= 1
-        ) {
-          if (
-            arrow.length >= 2 &&
-            arrow[arrow.length - 2].y === event.y &&
-            arrow[arrow.length - 2].x === event.x
-          ) {
-            return { state: { currentArrow: arrow.slice(0, -1) } };
-          } else {
-            const newArrow = [...arrow, { y: event.y, x: event.x }];
-            return { state: { currentArrow: newArrow } };
-          }
-        }
-      }
-    } else if (event.type === "mouseUp") {
-      if (state.currentArrow != null && state.currentArrow.length >= 2) {
-        return {
-          state: { currentArrow: null },
-          data: {
-            arrows: [...data.arrows, state.currentArrow],
-          },
-        };
-      }
-    }
-    return {};
+    return reducerForLines(state, data, "currentArrow", "arrows", event, info);
   },
   render: (state, data, options) => {
     const arrows =
