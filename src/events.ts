@@ -23,7 +23,7 @@ export const handleKeyDown = (
   e: KeyboardEvent,
   dispatch: ((event: EditorEvent) => void) | null,
 ) => {
-  if (dispatch == null) {
+  if (dispatch === null) {
     return;
   }
 
@@ -37,7 +37,7 @@ export const handleMouseDown = (
   margin: number,
   dispatch: ((event: EditorEvent) => void) | null,
 ) => {
-  if (dispatch == null) {
+  if (dispatch === null) {
     return;
   }
 
@@ -109,7 +109,7 @@ export const handleMouseMove = (
   margin: number,
   dispatch: ((event: EditorEvent) => void) | null,
 ) => {
-  if (dispatch == null) {
+  if (dispatch === null) {
     return;
   }
 
@@ -139,7 +139,7 @@ export const handleMouseMove = (
 export const handleMouseUp = (
   dispatch: ((event: EditorEvent) => void) | null,
 ) => {
-  if (dispatch == null) {
+  if (dispatch === null) {
     return;
   }
 
