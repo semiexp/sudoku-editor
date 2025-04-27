@@ -284,6 +284,52 @@ const RuleSelector = (props: {
   );
 };
 
+const useEventDispatcher = (
+  problem: Problem,
+  updateProblem: (newProblem: Problem) => void,
+  ruleState: RuleState,
+  setRuleState: (newRuleState: RuleState) => void,
+) => {
+  const dispatchEventRef = useRef<(event: EditorEvent) => void | null>(null);
+
+  useEffect(() => {
+    dispatchEventRef.current = (event: EditorEvent) => {
+      if (ruleState.selectedRuleIndex >= 0) {
+        const rule = allRules[ruleState.selectedRuleIndex];
+
+        // currently selected rule is not enabled
+        if (problem.enabledRules.indexOf(rule.name) < 0) {
+          return;
+        }
+
+        // the rule does not handle this event
+        if (rule.eventTypes.indexOf(event.type) < 0) {
+          return;
+        }
+
+        const result = rule.reducer(
+          ruleState.ruleState,
+          problem.ruleData.get(rule.name),
+          event,
+        );
+        if (result.state) {
+          setRuleState({ ...ruleState, ruleState: result.state });
+        }
+        if (result.data) {
+          const newRuleData = new Map(problem.ruleData);
+          newRuleData.set(rule.name, result.data);
+          updateProblem({
+            ...problem,
+            ruleData: newRuleData,
+          });
+        }
+      }
+    };
+  }, [problem, ruleState]);
+
+  return dispatchEventRef;
+};
+
 const render = (
   problem: Problem,
   autoSolverAnswer: Answer,
@@ -327,10 +373,7 @@ export const Editor = (props: EditorProps) => {
   const problem = props.problem;
   const size = problem.size;
 
-  const [ruleState, setRuleState] = useState<{
-    selectedRuleIndex: number;
-    ruleState: any;
-  }>({
+  const [ruleState, setRuleState] = useState<RuleState>({
     selectedRuleIndex: -1,
     ruleState: null,
   });
@@ -355,8 +398,6 @@ export const Editor = (props: EditorProps) => {
     renderOptions,
   );
 
-  const dispatchEventRef = useRef<(event: EditorEvent) => void | null>(null);
-
   useEffect(() => {
     if (enableSolver) {
       setAutoSolverAnswer(solve(problem));
@@ -365,41 +406,12 @@ export const Editor = (props: EditorProps) => {
     }
   }, [problem, enableSolver]);
 
-  useEffect(() => {
-    dispatchEventRef.current = (event: EditorEvent) => {
-      if (ruleState.selectedRuleIndex >= 0) {
-        const rule = allRules[ruleState.selectedRuleIndex];
-
-        // currently selected rule is not enabled
-        if (problem.enabledRules.indexOf(rule.name) < 0) {
-          return;
-        }
-
-        // the rule does not handle this event
-        if (rule.eventTypes.indexOf(event.type) < 0) {
-          return;
-        }
-
-        const result = rule.reducer(
-          ruleState.ruleState,
-          problem.ruleData.get(rule.name),
-          event,
-        );
-        if (result.state) {
-          setRuleState({ ...ruleState, ruleState: result.state });
-        }
-        if (result.data) {
-          const newRuleData = new Map(problem.ruleData);
-          newRuleData.set(rule.name, result.data);
-          problemHistory.update({
-            ...problem,
-            ruleData: newRuleData,
-          });
-        }
-      }
-    };
-  }, [props, ruleState]);
-
+  const dispatchEventRef = useEventDispatcher(
+    problem,
+    problemHistory.update,
+    ruleState,
+    setRuleState,
+  );
   useKeyDown((e) => handleKeyDown(e, dispatchEventRef.current));
 
   const { t, i18n } = useTranslation();
