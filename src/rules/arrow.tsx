@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { Rule, PRIORITY_ARROW } from "../rule";
 import { reducerForLines } from "./linesUtil";
 
@@ -23,17 +24,11 @@ export const arrowRule: Rule<ArrowState, ArrowData> = {
     return reducerForLines(state, data, "currentArrow", "arrows", event, info);
   },
   render: (state, data, options) => {
-    const arrows =
-      state && state.currentArrow
-        ? [...data.arrows, state.currentArrow]
-        : data.arrows;
     const { cellSize, margin } = options;
 
-    const items = [];
+    const items: ReactElement[] = [];
 
-    for (let i = 0; i < arrows.length; ++i) {
-      const arrow = arrows[i];
-
+    const addArrow = (arrow: Arrow, i: number, color: string) => {
       const start = arrow[0];
       const startX = margin + (start.x + 0.5) * cellSize;
       const startY = margin + (start.y + 0.5) * cellSize;
@@ -43,7 +38,7 @@ export const arrowRule: Rule<ArrowState, ArrowData> = {
           cx={startX}
           cy={startY}
           r={cellSize * 0.4}
-          stroke="rgb(192, 192, 192)"
+          stroke={color}
           fill="none"
           strokeWidth={3}
         />,
@@ -70,7 +65,7 @@ export const arrowRule: Rule<ArrowState, ArrowData> = {
             y1={startY}
             x2={endX}
             y2={endY}
-            stroke="rgb(192, 192, 192)"
+            stroke={color}
             strokeWidth={3}
             strokeLinecap="round"
           />,
@@ -97,7 +92,7 @@ export const arrowRule: Rule<ArrowState, ArrowData> = {
             y1={endY}
             x2={endX - dx * cellSize * scale + dy * cellSize * scale}
             y2={endY - dy * cellSize * scale - dx * cellSize * scale}
-            stroke="rgb(192, 192, 192)"
+            stroke={color}
             strokeWidth={3}
             strokeLinecap="round"
           />,
@@ -109,12 +104,19 @@ export const arrowRule: Rule<ArrowState, ArrowData> = {
             y1={endY}
             x2={endX - dx * cellSize * scale - dy * cellSize * scale}
             y2={endY - dy * cellSize * scale + dx * cellSize * scale}
-            stroke="rgb(192, 192, 192)"
+            stroke={color}
             strokeWidth={3}
             strokeLinecap="round"
           />,
         );
       }
+    };
+
+    for (let i = 0; i < data.arrows.length; ++i) {
+      addArrow(data.arrows[i], i, "rgb(192, 192, 192)");
+    }
+    if (state && state.currentArrow) {
+      addArrow(state.currentArrow, data.arrows.length, "rgb(255, 176, 176)");
     }
 
     return [
