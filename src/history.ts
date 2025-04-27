@@ -26,10 +26,17 @@ export const useHistory = <T>(current: T, onChange: (data: T) => void) => {
     onChange(newData);
   };
 
+  const reset = (newData: T) => {
+    setUndoStack([]);
+    setRedoStack([]);
+    onChange(newData);
+  };
+
   return {
     undo,
     redo,
     update,
+    reset,
     canUndo: undoStack.length > 0,
     canRedo: redoStack.length > 0,
   };

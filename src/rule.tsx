@@ -14,7 +14,7 @@ export type ReducerInfo = {
 export interface Rule<State, Data> {
   name: string;
   initialState: State;
-  initialData: (size: number) => Data;
+  initialData: (size: number, blockWidth: number) => Data;
   booleanFlags?: string[];
   eventTypes: EditorEventType[];
   reducer: (

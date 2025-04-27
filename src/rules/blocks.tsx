@@ -12,7 +12,7 @@ type BlocksData = {
 export const blocksRule: Rule<BlocksState, BlocksData> = {
   name: "blocks",
   initialState: {}, // TODO
-  initialData: (size: number) => {
+  initialData: (size: number, blockWidth: number) => {
     const horizontalBorder = [];
     const verticalBorder = [];
 
@@ -23,15 +23,16 @@ export const blocksRule: Rule<BlocksState, BlocksData> = {
       verticalBorder.push(new Array(size - 1).fill(false));
     }
 
-    if (size === 9) {
-      for (let y of [2, 5]) {
+    if (blockWidth > 0) {
+      const blockHeight = Math.floor(size / blockWidth);
+      for (let y = 0; y < size; ++y) {
         for (let x = 0; x < size; ++x) {
-          horizontalBorder[y][x] = true;
-        }
-      }
-      for (let x of [2, 5]) {
-        for (let y = 0; y < size; ++y) {
-          verticalBorder[y][x] = true;
+          if (y < size - 1 && (y + 1) % blockHeight === 0) {
+            horizontalBorder[y][x] = true;
+          }
+          if (x < size - 1 && (x + 1) % blockWidth === 0) {
+            verticalBorder[y][x] = true;
+          }
         }
       }
     }

@@ -4,7 +4,7 @@ import { Editor, defaultProblem } from "./editor";
 import "./i18n/configs";
 
 function App() {
-  const [problem, setProblem] = useState(defaultProblem(9));
+  const [problem, setProblem] = useState(defaultProblem(9, 3));
 
   return (
     <>

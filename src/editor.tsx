@@ -27,6 +27,9 @@ import {
 } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
+import AddBox from "@mui/icons-material/AddBox";
+import { NewBoardDialog } from "./dialogs/newBoardDialog";
+import { openDialog } from "./dialogs/dialog";
 import "./editor.css";
 
 export type EditorProps = {
@@ -34,10 +37,10 @@ export type EditorProps = {
   onChangeProblem: (problem: Problem) => void;
 };
 
-export const defaultProblem = (size: number): Problem => {
+export const defaultProblem = (size: number, blockWidth: number): Problem => {
   const ruleData = new Map<string, any>();
   for (const rule of allRules) {
-    ruleData.set(rule.name, rule.initialData(size));
+    ruleData.set(rule.name, rule.initialData(size, blockWidth));
   }
   return {
     size: size,
@@ -129,7 +132,7 @@ const autoSolverItems = (
         );
       } else {
         const candidates = answer.candidates[y][x];
-        const w = 3; // TODO
+        const w = Math.ceil(Math.sqrt(size));
         for (let i = 0; i < size; ++i) {
           if (candidates[i]) {
             items.push(
@@ -143,7 +146,7 @@ const autoSolverItems = (
                 }
                 textAnchor="middle"
                 dominantBaseline="central"
-                fontSize={cellSize * 0.3}
+                fontSize={(cellSize / w) * 0.9}
                 style={{ userSelect: "none" }}
                 fill="green"
               >
@@ -425,9 +428,27 @@ export const Editor = (props: EditorProps) => {
     <Box>
       <Toolbar variant="dense" sx={{ backgroundColor: "#eeeeee", pl: "20px" }}>
         <IconButton
+          onClick={async () => {
+            const newProblemSpec = await openDialog(NewBoardDialog, {
+              size: 9,
+              blockWidth: 3,
+            });
+            if (newProblemSpec === undefined) {
+              return;
+            }
+            const newProblem = defaultProblem(
+              newProblemSpec.size,
+              newProblemSpec.blockWidth,
+            );
+            problemHistory.reset(newProblem);
+          }}
+          sx={{ ml: -2 }}
+        >
+          <AddBox />
+        </IconButton>
+        <IconButton
           onClick={problemHistory.undo}
           disabled={!problemHistory.canUndo}
-          sx={{ ml: -2 }}
         >
           <UndoIcon />
         </IconButton>
