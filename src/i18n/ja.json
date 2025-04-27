@@ -9,6 +9,7 @@
     "save": "保存",
     "ok": "OK",
     "cancel": "キャンセル",
+    "close": "閉じる",
     "copyToClipboard": "クリップボードにコピー",
     "saveDialogNote": "注意: 選択されていないルールのデータは失われます。"
   },

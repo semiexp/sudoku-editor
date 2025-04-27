@@ -42,7 +42,7 @@ export const SaveDialog = (props: {
         >
           {t("ui.copyToClipboard")}
         </Button>
-        <Button onClick={() => close()}>{t("ui.ok")}</Button>
+        <Button onClick={() => close()}>{t("ui.close")}</Button>
       </DialogActions>
     </AutoMuiDialog>
   );
