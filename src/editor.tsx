@@ -6,6 +6,8 @@ import {
   EditorEvent,
   handleKeyDown,
   handleMouseDown,
+  handleMouseMove,
+  handleMouseUp,
   useKeyDown,
 } from "./events";
 import { allRules } from "./rules/rules";
@@ -425,6 +427,12 @@ export const Editor = (props: EditorProps) => {
             onMouseDown={(e) =>
               handleMouseDown(e, cellSize, margin, dispatchEventRef.current)
             }
+            onMouseMove={(e) =>
+              handleMouseMove(e, cellSize, margin, dispatchEventRef.current)
+            }
+            onMouseUp={() => handleMouseUp(dispatchEventRef.current)}
+            onMouseLeave={() => handleMouseUp(dispatchEventRef.current)}
+            onContextMenu={(e) => e.preventDefault()}
             style={{ fontFamily: "sans-serif" }}
           >
             {renderResults.map((c) => c.item)}

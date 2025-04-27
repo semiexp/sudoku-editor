@@ -34,6 +34,7 @@ export interface Rule<State, Data> {
 export const PRIORITY_SELECTED_CELL_MARKER = -100;
 export const PRIORITY_BORDER = 0;
 export const PRIORITY_DIAGNOAL = 10;
+export const PRIORITY_ARROW = 40;
 export const PRIORITY_ODD_EVEN = 50;
 export const PRIORITY_XV = 50;
 export const PRIORITY_CLUE_NUMBERS = 100;

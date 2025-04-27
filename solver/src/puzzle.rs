@@ -21,6 +21,9 @@ pub struct Puzzle {
 
     #[serde(rename = "diagonal")]
     pub diagonal: Option<Diagonal>,
+
+    #[serde(rename = "arrow")]
+    pub arrow: Option<Arrow>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -65,6 +68,17 @@ pub struct Diagonal {
 
     #[serde(rename = "antiDiagonal")]
     pub anti_diagonal: bool,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Pos {
+    pub x: usize,
+    pub y: usize,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Arrow {
+    pub arrows: Vec<Vec<Pos>>,
 }
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;

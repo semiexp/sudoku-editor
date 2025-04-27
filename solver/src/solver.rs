@@ -1,11 +1,11 @@
 use serde::Serialize;
 
 use crate::puzzle::{
-    Blocks, Diagonal, GivenNumbers, NonConsecutive, OddEven, Puzzle, ODDEVEN_EVEN,
+    Arrow, Blocks, Diagonal, GivenNumbers, NonConsecutive, OddEven, Puzzle, ODDEVEN_EVEN,
     ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
-use cspuz_rs::solver::{IntVarArray2D, Solver};
+use cspuz_rs::solver::{int_constant, IntVarArray2D, Solver};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct IrrefutableFacts {
@@ -83,6 +83,10 @@ fn add_constraints(solver: &mut Solver, nums: &IntVarArray2D, puzzle: &Puzzle) {
 
     if let Some(diagonal) = &puzzle.diagonal {
         add_diagonal_constraints(solver, nums, diagonal);
+    }
+
+    if let Some(arrow_constraints) = &puzzle.arrow {
+        add_arrow_constraints(solver, nums, arrow_constraints);
     }
 }
 
@@ -297,5 +301,21 @@ fn add_diagonal_constraints(solver: &mut Solver, nums: &IntVarArray2D, diagonal:
             nums,
             &(0..h).map(|i| (i, h - 1 - i)).collect::<Vec<_>>(),
         );
+    }
+}
+
+fn add_arrow_constraints(solver: &mut Solver, nums: &IntVarArray2D, arrow_constraints: &Arrow) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    for arrow in &arrow_constraints.arrows {
+        assert!(arrow.len() >= 1);
+
+        let mut non_head_sum = int_constant(0);
+        for i in 1..arrow.len() {
+            non_head_sum = non_head_sum + nums.at((arrow[i].y, arrow[i].x));
+        }
+
+        solver.add_expr(nums.at((arrow[0].y, arrow[0].x)).eq(non_head_sum));
     }
 }

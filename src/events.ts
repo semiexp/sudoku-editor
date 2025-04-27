@@ -1,16 +1,23 @@
 import React, { useEffect } from "react";
 
 export type EditorEvent =
-  | { type: "cellMouseDown"; y: number; x: number }
+  | { type: "cellMouseDown"; y: number; x: number; rightClick: boolean }
+  | { type: "cellMouseMove"; y: number; x: number }
   | {
       type: "edgeMouseDown";
       y: number;
       x: number;
       direction: "horizontal" | "vertical";
     }
+  | { type: "mouseUp" }
   | { type: "keyDown"; key: string };
 
-export type EditorEventType = "cellMouseDown" | "edgeMouseDown" | "keyDown";
+export type EditorEventType =
+  | "cellMouseDown"
+  | "cellMouseMove"
+  | "edgeMouseDown"
+  | "mouseUp"
+  | "keyDown";
 
 export const handleKeyDown = (
   e: KeyboardEvent,
@@ -43,8 +50,9 @@ export const handleMouseDown = (
   {
     const x = Math.floor(px / cellSize);
     const y = Math.floor(py / cellSize);
+    const rightClick = e.button === 2;
 
-    const event: EditorEvent = { type: "cellMouseDown", x: x, y: y };
+    const event: EditorEvent = { type: "cellMouseDown", x, y, rightClick };
     dispatch(event);
   }
 
@@ -93,6 +101,50 @@ export const handleMouseDown = (
       dispatch(event);
     }
   }
+};
+
+export const handleMouseMove = (
+  e: React.MouseEvent<Element, MouseEvent>,
+  cellSize: number,
+  margin: number,
+  dispatch: ((event: EditorEvent) => void) | null,
+) => {
+  if (dispatch == null) {
+    return;
+  }
+
+  const rect = e.currentTarget.getBoundingClientRect();
+
+  const px = e.clientX - rect.left - margin;
+  const py = e.clientY - rect.top - margin;
+
+  // cell
+  {
+    const x = Math.floor(px / cellSize);
+    const y = Math.floor(py / cellSize);
+
+    const gap = Math.min(
+      px - x * cellSize,
+      (x + 1) * cellSize - px,
+      py - y * cellSize,
+      (y + 1) * cellSize - py,
+    );
+    if (gap > cellSize * 0.15) {
+      const event: EditorEvent = { type: "cellMouseMove", x: x, y: y };
+      dispatch(event);
+    }
+  }
+};
+
+export const handleMouseUp = (
+  dispatch: ((event: EditorEvent) => void) | null,
+) => {
+  if (dispatch == null) {
+    return;
+  }
+
+  const event: EditorEvent = { type: "mouseUp" };
+  dispatch(event);
 };
 
 export const useKeyDown = (handler: (e: KeyboardEvent) => void) => {

@@ -29,6 +29,10 @@
       "explanation": "In diagonals, the numbers from 1 to the size of the board must appear exactly once.",
       "mainDiagonal": "Applicable to the main diagonal (from the top left to the bottom right)",
       "antiDiagonal": "Applicable to the anti diagonal (from the top right to the bottom left)"
+    },
+    "arrow": {
+      "title": "Arrow",
+      "explanation": "Numbers in cells with circles must be equal to the sum of the numbers in the cells that the adjoining arrows pass through. Left click and drag to create an arrow. Right click to remove an arrow."
     }
   }
 }
