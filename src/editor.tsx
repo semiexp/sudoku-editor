@@ -307,10 +307,15 @@ const useEventDispatcher = (
           return;
         }
 
+        const info = {
+          boardSize: problem.size,
+        };
+
         const result = rule.reducer(
           ruleState.ruleState,
           problem.ruleData.get(rule.name),
           event,
+          info,
         );
         if (result.state) {
           setRuleState({ ...ruleState, ruleState: result.state });

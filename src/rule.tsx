@@ -7,6 +7,10 @@ export type RenderOptions = {
   margin: number;
 };
 
+export type ReducerInfo = {
+  boardSize: number;
+};
+
 export interface Rule<State, Data> {
   name: string;
   initialState: State;
@@ -17,6 +21,7 @@ export interface Rule<State, Data> {
     state: State,
     data: Data,
     event: EditorEvent,
+    info: ReducerInfo,
   ) => {
     state?: State;
     data?: Data;

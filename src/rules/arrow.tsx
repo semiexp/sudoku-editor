@@ -8,7 +8,6 @@ type ArrowState = {
 
 type ArrowData = {
   arrows: Arrow[];
-  size: number; // TODO
 };
 
 export const arrowRule: Rule<ArrowState, ArrowData> = {
@@ -19,15 +18,15 @@ export const arrowRule: Rule<ArrowState, ArrowData> = {
     size,
   }),
   eventTypes: ["cellMouseDown", "cellMouseMove", "mouseUp"],
-  reducer: (state, data, event) => {
-    const size = data.size;
+  reducer: (state, data, event, info) => {
+    const size = info.boardSize;
     if (event.type === "cellMouseDown") {
       if (event.rightClick) {
         const newArrows = data.arrows.filter(
           (arrow) =>
             !arrow.some((cell) => cell.y === event.y && cell.x === event.x),
         );
-        return { data: { arrows: newArrows, size: data.size } };
+        return { data: { arrows: newArrows } };
       }
       if (
         state.currentArrow === null &&
@@ -73,7 +72,6 @@ export const arrowRule: Rule<ArrowState, ArrowData> = {
           state: { currentArrow: null },
           data: {
             arrows: [...data.arrows, state.currentArrow],
-            size: data.size,
           },
         };
       }
