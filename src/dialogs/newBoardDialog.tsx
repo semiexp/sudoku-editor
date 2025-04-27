@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Box,
   DialogTitle,
@@ -59,10 +60,11 @@ export const NewBoardDialog = (props: {
     ...initialValues,
     blockWidth: findDefaultBlockWidth(initialValues.size),
   });
+  const { t } = useTranslation();
 
   return (
     <AutoMuiDialog>
-      <DialogTitle>New board</DialogTitle>
+      <DialogTitle>{t("ui.newBoard")}</DialogTitle>
       <DialogContent>
         <Box
           sx={{
@@ -73,7 +75,7 @@ export const NewBoardDialog = (props: {
           }}
         >
           <Box sx={{ display: "contents" }}>
-            <InputLabel>Board Size</InputLabel>
+            <InputLabel>{t("ui.boardSize")}</InputLabel>
             <Select
               value={values.size}
               onChange={(e) =>
@@ -94,7 +96,7 @@ export const NewBoardDialog = (props: {
             </Select>
           </Box>
           <Box sx={{ display: "contents" }}>
-            <InputLabel>Block Size</InputLabel>
+            <InputLabel>{t("ui.blockSize")}</InputLabel>
             <Select
               value={values.blockWidth}
               onChange={(e) =>
@@ -104,7 +106,7 @@ export const NewBoardDialog = (props: {
                 })
               }
             >
-              <MenuItem value={0}>No Blocks</MenuItem>
+              <MenuItem value={0}>{t("ui.noBlocks")}</MenuItem>
               {precomputedBlockOptions[values.size]?.map(
                 ({ width, height }) => (
                   <MenuItem key={`${width}x${height}`} value={width}>

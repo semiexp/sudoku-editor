@@ -1,6 +1,10 @@
 {
   "ui": {
-    "autoSolver": "Auto Solver"
+    "autoSolver": "Auto Solver",
+    "newBoard": "New Board",
+    "boardSize": "Board Size",
+    "blockSize": "Block Size",
+    "noBlocks": "No blocks"
   },
   "rule": {
     "givenNumbers": {
