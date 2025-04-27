@@ -14,6 +14,7 @@ import { RenderOptions } from "./rule";
 import { allRules } from "./rules/rules";
 import { solve } from "./solver";
 import { Answer, Problem } from "./puzzle";
+import { loadProblemFromString, saveProblemAsString } from "./serialize";
 import {
   Box,
   Checkbox,
@@ -28,7 +29,11 @@ import {
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
 import AddBox from "@mui/icons-material/AddBox";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
+import SaveIcon from "@mui/icons-material/Save";
 import { NewBoardDialog } from "./dialogs/newBoardDialog";
+import { LoadDialog } from "./dialogs/loadDialog";
+import { SaveDialog } from "./dialogs/saveDialog";
 import { openDialog } from "./dialogs/dialog";
 import "./editor.css";
 
@@ -445,6 +450,26 @@ export const Editor = (props: EditorProps) => {
           sx={{ ml: -2 }}
         >
           <AddBox />
+        </IconButton>
+        <IconButton
+          onClick={async () => {
+            const loaded = await openDialog(LoadDialog, { content: "" });
+            if (loaded === undefined) {
+              return;
+            }
+            const newProblem = loadProblemFromString(loaded.content);
+            problemHistory.reset(newProblem);
+          }}
+        >
+          <FileOpenIcon />
+        </IconButton>
+        <IconButton
+          onClick={async () => {
+            const problemAsString = saveProblemAsString(problem);
+            await openDialog(SaveDialog, { content: problemAsString });
+          }}
+        >
+          <SaveIcon />
         </IconButton>
         <IconButton
           onClick={problemHistory.undo}
