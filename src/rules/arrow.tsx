@@ -68,7 +68,7 @@ export const arrowRule: Rule<ArrowState, ArrowData> = {
         }
       }
     } else if (event.type === "mouseUp") {
-      if (state.currentArrow != null) {
+      if (state.currentArrow != null && state.currentArrow.length >= 2) {
         return {
           state: { currentArrow: null },
           data: {
