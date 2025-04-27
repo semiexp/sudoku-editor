@@ -29,6 +29,7 @@ export const LoadDialog = (props: {
           maxRows={10}
           sx={{ width: "100%", minWidth: 400 }}
           onChange={(e) => setContent(e.target.value)}
+          autoFocus
         />
       </DialogContent>
       <DialogActions>
