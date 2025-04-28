@@ -276,6 +276,7 @@ const RuleSelector = (props: {
                                   e.target.checked,
                                 )
                               }
+                              sx={{ pl: 2 }}
                             />
                           }
                           label={t(`rule.${rule.name}.${flag}`)}
