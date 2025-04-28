@@ -27,6 +27,9 @@ pub struct Puzzle {
 
     #[serde(rename = "thermo")]
     pub thermo: Option<Thermo>,
+
+    #[serde(rename = "killer")]
+    pub killer: Option<Killer>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -87,6 +90,19 @@ pub struct Arrow {
 #[derive(Debug, Clone, Deserialize)]
 pub struct Thermo {
     pub thermos: Vec<Vec<Pos>>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct KillerRegion {
+    pub cells: Vec<Pos>,
+
+    #[serde(rename = "extraValue")]
+    pub sum: Option<i32>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Killer {
+    pub regions: Vec<KillerRegion>,
 }
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;

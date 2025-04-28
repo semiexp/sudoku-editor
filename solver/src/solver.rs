@@ -1,8 +1,8 @@
 use serde::Serialize;
 
 use crate::puzzle::{
-    Arrow, Blocks, Diagonal, GivenNumbers, NonConsecutive, OddEven, Puzzle, Thermo, ODDEVEN_EVEN,
-    ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
+    Arrow, Blocks, Diagonal, GivenNumbers, Killer, NonConsecutive, OddEven, Puzzle, Thermo,
+    ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
 use cspuz_rs::solver::{int_constant, IntVarArray2D, Solver};
@@ -91,6 +91,10 @@ fn add_constraints(solver: &mut Solver, nums: &IntVarArray2D, puzzle: &Puzzle) {
 
     if let Some(thermo_constraints) = &puzzle.thermo {
         add_thermo_constraints(solver, nums, thermo_constraints);
+    }
+
+    if let Some(killer_constraints) = &puzzle.killer {
+        add_killer_constraints(solver, nums, killer_constraints);
     }
 }
 
@@ -334,6 +338,22 @@ fn add_thermo_constraints(solver: &mut Solver, nums: &IntVarArray2D, thermo_cons
                 nums.at((thermo[i].y, thermo[i].x))
                     .gt(nums.at((thermo[i - 1].y, thermo[i - 1].x))),
             );
+        }
+    }
+}
+
+fn add_killer_constraints(solver: &mut Solver, nums: &IntVarArray2D, killer_constraints: &Killer) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    for region in &killer_constraints.regions {
+        let mut sum = int_constant(0);
+        for cell in &region.cells {
+            sum = sum + nums.at((cell.y, cell.x));
+        }
+
+        if let Some(sum_value) = region.sum {
+            solver.add_expr(sum.eq(sum_value));
         }
     }
 }

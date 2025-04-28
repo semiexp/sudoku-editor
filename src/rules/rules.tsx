@@ -8,6 +8,7 @@ import { xvRule } from "./xv";
 import { diagonalRule } from "./diagonal";
 import { arrowRule } from "./arrow";
 import { thermoRule } from "./thermo";
+import { killerRule } from "./killer";
 
 export const allRules: Rule<any, any>[] = [
   givenNumbersRule,
@@ -18,4 +19,5 @@ export const allRules: Rule<any, any>[] = [
   xvRule,
   arrowRule,
   thermoRule,
+  killerRule,
 ];
