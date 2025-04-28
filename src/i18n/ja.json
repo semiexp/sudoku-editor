@@ -55,7 +55,7 @@
       "distinct": "領域内では、同じ数字は 1 回までしか現れません。"
     },
     "consecutive": {
-      "title": "連番 (Consecutive)",
+      "title": "一つ違い (Consecutive)",
       "explanation": "グレーのバーで区切られたマス同士の数字の差は 1 になります。",
       "allShown": "グレーのバーがない箇所では、数字の差は 1 ではありません。"
     }
