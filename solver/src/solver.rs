@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 use crate::puzzle::{
-    Arrow, Blocks, Diagonal, GivenNumbers, NonConsecutive, OddEven, Puzzle, ODDEVEN_EVEN,
+    Arrow, Blocks, Diagonal, GivenNumbers, NonConsecutive, OddEven, Puzzle, Thermo, ODDEVEN_EVEN,
     ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
@@ -87,6 +87,10 @@ fn add_constraints(solver: &mut Solver, nums: &IntVarArray2D, puzzle: &Puzzle) {
 
     if let Some(arrow_constraints) = &puzzle.arrow {
         add_arrow_constraints(solver, nums, arrow_constraints);
+    }
+
+    if let Some(thermo_constraints) = &puzzle.thermo {
+        add_thermo_constraints(solver, nums, thermo_constraints);
     }
 }
 
@@ -317,5 +321,19 @@ fn add_arrow_constraints(solver: &mut Solver, nums: &IntVarArray2D, arrow_constr
         }
 
         solver.add_expr(nums.at((arrow[0].y, arrow[0].x)).eq(non_head_sum));
+    }
+}
+
+fn add_thermo_constraints(solver: &mut Solver, nums: &IntVarArray2D, thermo_constraints: &Thermo) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    for thermo in &thermo_constraints.thermos {
+        for i in 1..thermo.len() {
+            solver.add_expr(
+                nums.at((thermo[i].y, thermo[i].x))
+                    .gt(nums.at((thermo[i - 1].y, thermo[i - 1].x))),
+            );
+        }
     }
 }

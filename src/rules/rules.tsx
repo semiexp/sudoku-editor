@@ -7,6 +7,7 @@ import { nonConsecutiveRule } from "./nonConsecutive";
 import { xvRule } from "./xv";
 import { diagonalRule } from "./diagonal";
 import { arrowRule } from "./arrow";
+import { thermoRule } from "./thermo";
 
 export const allRules: Rule<any, any>[] = [
   givenNumbersRule,
@@ -16,4 +17,5 @@ export const allRules: Rule<any, any>[] = [
   nonConsecutiveRule,
   xvRule,
   arrowRule,
+  thermoRule,
 ];

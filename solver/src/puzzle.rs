@@ -24,6 +24,9 @@ pub struct Puzzle {
 
     #[serde(rename = "arrow")]
     pub arrow: Option<Arrow>,
+
+    #[serde(rename = "thermo")]
+    pub thermo: Option<Thermo>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -79,6 +82,11 @@ pub struct Pos {
 #[derive(Debug, Clone, Deserialize)]
 pub struct Arrow {
     pub arrows: Vec<Vec<Pos>>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Thermo {
+    pub thermos: Vec<Vec<Pos>>,
 }
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;
