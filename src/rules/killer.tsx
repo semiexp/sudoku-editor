@@ -11,6 +11,7 @@ type KillerState = {
 
 type KillerData = {
   regions: Region[];
+  distinct: boolean;
 };
 
 const neighbors = [
@@ -23,10 +24,11 @@ const neighbors = [
 export const killerRule: Rule<KillerState, KillerData> = {
   name: "killer",
   initialState: { currentRegion: null, selectedRegionId: null },
-  initialData: (size: number) => ({
+  initialData: () => ({
     regions: [],
-    size,
+    distinct: true,
   }),
+  booleanFlags: ["distinct"],
   eventTypes: ["cellMouseDown", "cellMouseMove", "mouseUp", "keyDown"],
   reducer: (state, data, event, info) => {
     if (event.type === "keyDown") {
@@ -145,7 +147,7 @@ export const killerRule: Rule<KillerState, KillerData> = {
 
     return [
       {
-        priority: 0,
+        priority: PRIORITY_KILLER,
         item: <g>{items}</g>,
       },
     ];

@@ -355,5 +355,13 @@ fn add_killer_constraints(solver: &mut Solver, nums: &IntVarArray2D, killer_cons
         if let Some(sum_value) = region.sum {
             solver.add_expr(sum.eq(sum_value));
         }
+
+        if killer_constraints.distinct {
+            let mut cells = vec![];
+            for cell in &region.cells {
+                cells.push(nums.at((cell.y, cell.x)));
+            }
+            solver.all_different(cells);
+        }
     }
 }

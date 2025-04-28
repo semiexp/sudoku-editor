@@ -103,6 +103,7 @@ pub struct KillerRegion {
 #[derive(Debug, Clone, Deserialize)]
 pub struct Killer {
     pub regions: Vec<KillerRegion>,
+    pub distinct: bool,
 }
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;
