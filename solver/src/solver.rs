@@ -1,8 +1,8 @@
 use serde::Serialize;
 
 use crate::puzzle::{
-    Arrow, Blocks, Diagonal, GivenNumbers, Killer, NonConsecutive, OddEven, Puzzle, Thermo,
-    ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
+    Arrow, Blocks, Consecutive, Diagonal, GivenNumbers, Killer, NonConsecutive, OddEven, Puzzle,
+    Thermo, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
 use cspuz_rs::solver::{int_constant, IntVarArray2D, Solver};
@@ -95,6 +95,10 @@ fn add_constraints(solver: &mut Solver, nums: &IntVarArray2D, puzzle: &Puzzle) {
 
     if let Some(killer_constraints) = &puzzle.killer {
         add_killer_constraints(solver, nums, killer_constraints);
+    }
+
+    if let Some(consecutive) = &puzzle.consecutive {
+        add_consecutive_constraints(solver, nums, consecutive);
     }
 }
 
@@ -362,6 +366,41 @@ fn add_killer_constraints(solver: &mut Solver, nums: &IntVarArray2D, killer_cons
                 cells.push(nums.at((cell.y, cell.x)));
             }
             solver.all_different(cells);
+        }
+    }
+}
+
+fn add_consecutive_constraints(
+    solver: &mut Solver,
+    nums: &IntVarArray2D,
+    consecutive: &Consecutive,
+) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    for y in 0..h {
+        for x in 0..w {
+            if y < h - 1 {
+                let a = nums.at((y, x));
+                let b = &nums.at((y + 1, x));
+                if consecutive.horizontal[y][x] {
+                    solver.add_expr(a.eq(b - 1) | a.eq(b + 1));
+                } else if consecutive.all_shown {
+                    solver.add_expr(a.ne(b - 1));
+                    solver.add_expr(a.ne(b + 1));
+                }
+            }
+
+            if x < w - 1 {
+                let a = nums.at((y, x));
+                let b = &nums.at((y, x + 1));
+                if consecutive.vertical[y][x] {
+                    solver.add_expr(a.eq(b - 1) | a.eq(b + 1));
+                } else if consecutive.all_shown {
+                    solver.add_expr(a.ne(b - 1));
+                    solver.add_expr(a.ne(b + 1));
+                }
+            }
         }
     }
 }

@@ -30,6 +30,9 @@ pub struct Puzzle {
 
     #[serde(rename = "killer")]
     pub killer: Option<Killer>,
+
+    #[serde(rename = "consecutive")]
+    pub consecutive: Option<Consecutive>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -104,6 +107,18 @@ pub struct KillerRegion {
 pub struct Killer {
     pub regions: Vec<KillerRegion>,
     pub distinct: bool,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Consecutive {
+    #[serde(rename = "horizontalBorder")]
+    pub horizontal: Vec<Vec<bool>>,
+
+    #[serde(rename = "verticalBorder")]
+    pub vertical: Vec<Vec<bool>>,
+
+    #[serde(rename = "allShown")]
+    pub all_shown: bool,
 }
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;

@@ -43,5 +43,6 @@ export const PRIORITY_BORDER = 0;
 export const PRIORITY_DIAGNOAL = 10;
 export const PRIORITY_ODD_EVEN = 50;
 export const PRIORITY_XV = 50;
+export const PRIORITY_CONSECUTIVE = 60;
 export const PRIORITY_KILLER = 60;
 export const PRIORITY_CLUE_NUMBERS = 100;
