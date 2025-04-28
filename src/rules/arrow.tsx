@@ -15,9 +15,8 @@ type ArrowData = {
 export const arrowRule: Rule<ArrowState, ArrowData> = {
   name: "arrow",
   initialState: { currentArrow: null },
-  initialData: (size: number) => ({
+  initialData: () => ({
     arrows: [],
-    size,
   }),
   eventTypes: ["cellMouseDown", "cellMouseMove", "mouseUp"],
   reducer: (state, data, event, info) => {

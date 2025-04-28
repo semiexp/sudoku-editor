@@ -15,9 +15,8 @@ type ThermoData = {
 export const thermoRule: Rule<ThermoState, ThermoData> = {
   name: "thermo",
   initialState: { currentThermo: null },
-  initialData: (size: number) => ({
+  initialData: () => ({
     thermos: [],
-    size,
   }),
   eventTypes: ["cellMouseDown", "cellMouseMove", "mouseUp"],
   reducer: (state, data, event, info) => {
