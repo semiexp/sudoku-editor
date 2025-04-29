@@ -426,20 +426,18 @@ fn add_skyscrapers_constraints(
     let (h, w) = nums.shape();
     assert_eq!(h, w);
 
-    for y in 0..h {
-        for x in 0..w {
-            if let Some(n) = skyscrapers.up[x] {
-                solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_x((.., x))).eq(n));
-            }
-            if let Some(n) = skyscrapers.down[x] {
-                solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_x((.., x)).reverse()).eq(n));
-            }
-            if let Some(n) = skyscrapers.left[y] {
-                solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_y((y, ..))).eq(n));
-            }
-            if let Some(n) = skyscrapers.right[y] {
-                solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_y((y, ..)).reverse()).eq(n));
-            }
+    for i in 0..h {
+        if let Some(n) = skyscrapers.up[i] {
+            solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_x((.., i))).eq(n));
+        }
+        if let Some(n) = skyscrapers.down[i] {
+            solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_x((.., i)).reverse()).eq(n));
+        }
+        if let Some(n) = skyscrapers.left[i] {
+            solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_y((i, ..))).eq(n));
+        }
+        if let Some(n) = skyscrapers.right[i] {
+            solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_y((i, ..)).reverse()).eq(n));
         }
     }
 }
