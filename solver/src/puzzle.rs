@@ -36,6 +36,9 @@ pub struct Puzzle {
 
     #[serde(rename = "skyscrapers")]
     pub skyscrapers: Option<Skyscrapers>,
+
+    #[serde(rename = "xSums")]
+    pub x_sums: Option<XSums>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -126,6 +129,14 @@ pub struct Consecutive {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Skyscrapers {
+    pub up: Vec<Option<i32>>,
+    pub down: Vec<Option<i32>>,
+    pub left: Vec<Option<i32>>,
+    pub right: Vec<Option<i32>>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct XSums {
     pub up: Vec<Option<i32>>,
     pub down: Vec<Option<i32>>,
     pub left: Vec<Option<i32>>,

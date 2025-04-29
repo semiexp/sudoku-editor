@@ -11,6 +11,7 @@ import { thermoRule } from "./thermo";
 import { killerRule } from "./killer";
 import { consecutiveRule } from "./consecutive";
 import { skyscrapersRule } from "./skyscrapers";
+import { xSumsRule } from "./xSums";
 
 export const allRules: Rule<any, any>[] = [
   givenNumbersRule,
@@ -24,4 +25,5 @@ export const allRules: Rule<any, any>[] = [
   thermoRule,
   killerRule,
   skyscrapersRule,
+  xSumsRule,
 ];

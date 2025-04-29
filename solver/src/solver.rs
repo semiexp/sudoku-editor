@@ -2,8 +2,8 @@ use serde::Serialize;
 
 use crate::puzzle::{
     Arrow, Blocks, Consecutive, Diagonal, GivenNumbers, Killer, NonConsecutive, OddEven, Puzzle,
-    Skyscrapers, Thermo, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT,
-    XV_V, XV_X,
+    Skyscrapers, Thermo, XSums, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV,
+    XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
 use cspuz_rs::solver::{int_constant, IntExpr, IntVarArray1D, IntVarArray2D, Solver};
@@ -104,6 +104,10 @@ fn add_constraints(solver: &mut Solver, nums: &IntVarArray2D, puzzle: &Puzzle) {
 
     if let Some(skyscrapers) = &puzzle.skyscrapers {
         add_skyscrapers_constraints(solver, nums, skyscrapers);
+    }
+
+    if let Some(x_sums) = &puzzle.x_sums {
+        add_xsums_constraints(solver, nums, x_sums);
     }
 }
 
@@ -438,6 +442,32 @@ fn add_skyscrapers_constraints(
         }
         if let Some(n) = skyscrapers.right[i] {
             solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_y((i, ..)).reverse()).eq(n));
+        }
+    }
+}
+
+fn xsums_single_constraint(solver: &mut Solver, seq: &IntVarArray1D, v: i32, size: usize) {
+    for i in 1..=size {
+        solver.add_expr(seq.at(0).eq(i as i32).imp(seq.slice(..i).sum().eq(v)));
+    }
+}
+
+fn add_xsums_constraints(solver: &mut Solver, nums: &IntVarArray2D, xsums: &XSums) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    for i in 0..h {
+        if let Some(n) = xsums.up[i] {
+            xsums_single_constraint(solver, &nums.slice_fixed_x((.., i)), n, h);
+        }
+        if let Some(n) = xsums.down[i] {
+            xsums_single_constraint(solver, &nums.slice_fixed_x((.., i)).reverse(), n, h);
+        }
+        if let Some(n) = xsums.left[i] {
+            xsums_single_constraint(solver, &nums.slice_fixed_y((i, ..)), n, w);
+        }
+        if let Some(n) = xsums.right[i] {
+            xsums_single_constraint(solver, &nums.slice_fixed_y((i, ..)).reverse(), n, w);
         }
     }
 }

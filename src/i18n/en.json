@@ -62,6 +62,10 @@
     "skyscrapers": {
       "title": "Skyscrapers",
       "explanation": "The numbers in the outside must be the number of the 'skyscrapers' that can be seen from that side. A skyscraper corresponds to a number, and it can be seen if and only if there is no taller skyscraper (larger number) in front of it."
+    },
+    "xSums": {
+      "title": "X-Sums",
+      "explanation": "The numbers in the outside must be equal to the sum of the first X cells in that direction, where X is the first number in that direction."
     }
   }
 }
