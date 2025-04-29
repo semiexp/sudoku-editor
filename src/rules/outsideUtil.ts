@@ -50,6 +50,73 @@ export const reducerForOutsideCell = <
       };
     }
     return {};
+  } else if (event.type === "keyDown" && state.selectedOutsideCell !== null) {
+    const side = state.selectedOutsideCell.side;
+    if (side === "up" || side === "down") {
+      if (event.key === "ArrowLeft") {
+        return {
+          state: {
+            ...state,
+            selectedOutsideCell: {
+              side,
+              pos: (state.selectedOutsideCell.pos - 1 + size) % size,
+            },
+          },
+        };
+      } else if (event.key === "ArrowRight") {
+        return {
+          state: {
+            ...state,
+            selectedOutsideCell: {
+              side,
+              pos: (state.selectedOutsideCell.pos + 1) % size,
+            },
+          },
+        };
+      } else if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+        return {
+          state: {
+            ...state,
+            selectedOutsideCell: {
+              side: side === "up" ? "down" : "up",
+              pos: state.selectedOutsideCell.pos,
+            },
+          },
+        };
+      }
+    } else if (side === "left" || side === "right") {
+      if (event.key === "ArrowUp") {
+        return {
+          state: {
+            ...state,
+            selectedOutsideCell: {
+              side,
+              pos: (state.selectedOutsideCell.pos - 1 + size) % size,
+            },
+          },
+        };
+      } else if (event.key === "ArrowDown") {
+        return {
+          state: {
+            ...state,
+            selectedOutsideCell: {
+              side,
+              pos: (state.selectedOutsideCell.pos + 1) % size,
+            },
+          },
+        };
+      } else if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        return {
+          state: {
+            ...state,
+            selectedOutsideCell: {
+              side: side === "left" ? "right" : "left",
+              pos: state.selectedOutsideCell.pos,
+            },
+          },
+        };
+      }
+    }
   }
 
   return {};
