@@ -33,6 +33,9 @@ pub struct Puzzle {
 
     #[serde(rename = "consecutive")]
     pub consecutive: Option<Consecutive>,
+
+    #[serde(rename = "skyscrapers")]
+    pub skyscrapers: Option<Skyscrapers>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -119,6 +122,14 @@ pub struct Consecutive {
 
     #[serde(rename = "allShown")]
     pub all_shown: bool,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Skyscrapers {
+    pub up: Vec<Option<i32>>,
+    pub down: Vec<Option<i32>>,
+    pub left: Vec<Option<i32>>,
+    pub right: Vec<Option<i32>>,
 }
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;

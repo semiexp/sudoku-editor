@@ -58,6 +58,10 @@
       "title": "Consecutive",
       "explanation": "Numbers in cells separated by a gray bar must differ by 1.",
       "allShown": "For adjacent cells which are not separated by a gray bar, the difference is not 1."
+    },
+    "skyscrapers": {
+      "title": "Skyscrapers",
+      "explanation": "The numbers in the outside must be the number of the 'skyscrapers' that can be seen from that side. A skyscraper corresponds to a number, and it can be seen if and only if there is no taller skyscraper (larger number) in front of it."
     }
   }
 }

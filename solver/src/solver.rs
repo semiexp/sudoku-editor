@@ -2,10 +2,11 @@ use serde::Serialize;
 
 use crate::puzzle::{
     Arrow, Blocks, Consecutive, Diagonal, GivenNumbers, Killer, NonConsecutive, OddEven, Puzzle,
-    Thermo, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
+    Skyscrapers, Thermo, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT,
+    XV_V, XV_X,
 };
 
-use cspuz_rs::solver::{int_constant, IntVarArray2D, Solver};
+use cspuz_rs::solver::{int_constant, IntExpr, IntVarArray1D, IntVarArray2D, Solver};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct IrrefutableFacts {
@@ -99,6 +100,10 @@ fn add_constraints(solver: &mut Solver, nums: &IntVarArray2D, puzzle: &Puzzle) {
 
     if let Some(consecutive) = &puzzle.consecutive {
         add_consecutive_constraints(solver, nums, consecutive);
+    }
+
+    if let Some(skyscrapers) = &puzzle.skyscrapers {
+        add_skyscrapers_constraints(solver, nums, skyscrapers);
     }
 }
 
@@ -400,6 +405,40 @@ fn add_consecutive_constraints(
                     solver.add_expr(a.ne(b - 1));
                     solver.add_expr(a.ne(b + 1));
                 }
+            }
+        }
+    }
+}
+
+fn skyscrapers_num_seen(seq: &IntVarArray1D) -> IntExpr {
+    let mut ret = int_constant(0);
+    for i in 0..seq.len() {
+        ret = ret + seq.at(i).gt(seq.slice(..i)).all().ite(1, 0);
+    }
+    ret
+}
+
+fn add_skyscrapers_constraints(
+    solver: &mut Solver,
+    nums: &IntVarArray2D,
+    skyscrapers: &Skyscrapers,
+) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    for y in 0..h {
+        for x in 0..w {
+            if let Some(n) = skyscrapers.up[x] {
+                solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_x((.., x))).eq(n));
+            }
+            if let Some(n) = skyscrapers.down[x] {
+                solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_x((.., x)).reverse()).eq(n));
+            }
+            if let Some(n) = skyscrapers.left[y] {
+                solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_y((y, ..))).eq(n));
+            }
+            if let Some(n) = skyscrapers.right[y] {
+                solver.add_expr(skyscrapers_num_seen(&nums.slice_fixed_y((y, ..)).reverse()).eq(n));
             }
         }
     }

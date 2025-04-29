@@ -46,3 +46,4 @@ export const PRIORITY_XV = 50;
 export const PRIORITY_CONSECUTIVE = 60;
 export const PRIORITY_KILLER = 60;
 export const PRIORITY_CLUE_NUMBERS = 100;
+export const PRIORITY_SKYSCRAPERS_NUMBERS = 100;
