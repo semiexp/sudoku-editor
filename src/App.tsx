@@ -9,6 +9,7 @@ function App() {
   return (
     <>
       <Editor problem={problem} onChangeProblem={setProblem} />
+      <a href="licenses.txt">Licenses</a>
     </>
   );
 }
