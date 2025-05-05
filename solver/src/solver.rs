@@ -8,7 +8,7 @@ use crate::puzzle::{
 
 use cspuz_rs::solver::{int_constant, IntExpr, IntVarArray1D, IntVarArray2D, Solver};
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 pub struct IrrefutableFacts {
     #[serde(rename = "decidedNumbers")]
     pub decided_nums: Vec<Vec<Option<i32>>>,

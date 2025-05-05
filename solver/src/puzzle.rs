@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Default)]
 pub struct Puzzle {
     pub size: usize,
 
@@ -41,7 +41,7 @@ pub struct Puzzle {
     pub x_sums: Option<XSums>,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Default)]
 pub struct GivenNumbers {
     pub numbers: Vec<Vec<Option<i32>>>,
 }

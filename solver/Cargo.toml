@@ -5,7 +5,7 @@ edition = "2021"
 
 [lib]
 name = "sudoku_variants_solver"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "lib"]
 
 [dependencies]
 cspuz_rs = { path = "../../cspuz_core/cspuz_rs", default-features = false }
