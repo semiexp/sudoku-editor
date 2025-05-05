@@ -6,7 +6,7 @@ use crate::puzzle::{
     XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
-use cspuz_rs::solver::{int_constant, IntExpr, IntVarArray1D, IntVarArray2D, Solver};
+use cspuz_rs::solver::{int_constant, Config, IntExpr, IntVarArray1D, IntVarArray2D, Solver};
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 pub struct IrrefutableFacts {
@@ -17,10 +17,15 @@ pub struct IrrefutableFacts {
     pub candidates: Vec<Vec<Vec<bool>>>,
 }
 
-pub fn irrefutable_facts(puzzle: &Puzzle) -> Option<IrrefutableFacts> {
+pub fn irrefutable_facts(puzzle: &Puzzle, optimize_polarity: bool) -> Option<IrrefutableFacts> {
     let n = puzzle.size;
 
-    let mut solver = Solver::new();
+    let config = Config {
+        optimize_polarity,
+        ..Config::default()
+    };
+
+    let mut solver = Solver::with_config(config);
     let nums = &solver.int_var_2d((n, n), 1, n as i32);
     solver.add_answer_key_int(nums);
 

@@ -1,24 +1,13 @@
 use sudoku_variants_solver::puzzle::{self, Blocks, GivenNumbers, NonConsecutive, Puzzle};
 use sudoku_variants_solver::solver;
 
-use cspuz_rs::solver::Config;
-
 fn run_bench(desc: &str, puzzle: Puzzle) {
-    let config = Config::initial_default();
-    Config::set_default(config);
-
     let start = std::time::Instant::now();
-    let answer_default = solver::irrefutable_facts(&puzzle);
+    let answer_default = solver::irrefutable_facts(&puzzle, false);
     let elapsed_default = start.elapsed();
 
-    let config = Config {
-        optimize_polarity: true,
-        ..config
-    };
-    Config::set_default(config);
-
     let start = std::time::Instant::now();
-    let answer_opt = solver::irrefutable_facts(&puzzle);
+    let answer_opt = solver::irrefutable_facts(&puzzle, true);
     let elapsed_opt = start.elapsed();
 
     assert_eq!(answer_default, answer_opt);
