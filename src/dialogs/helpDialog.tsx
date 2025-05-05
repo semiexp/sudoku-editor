@@ -4,7 +4,6 @@ import {
   Button,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Typography,
 } from "@mui/material";
 import { AutoMuiDialog } from "./dialog";
