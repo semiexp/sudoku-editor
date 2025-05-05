@@ -104,6 +104,10 @@ const autoSolverItems = (
 
   const size = problem.size;
 
+  if (answer.decidedNumbers.length !== size) {
+    return [];
+  }
+
   const hasClue = [];
   const givenNumbersRule: any = problem.ruleData.get("givenNumbers");
   for (let y = 0; y < size; ++y) {
@@ -449,6 +453,7 @@ export const Editor = (props: EditorProps) => {
               newProblemSpec.blockWidth,
             );
             problemHistory.reset(newProblem);
+            setAutoSolverAnswer(null);
           }}
           sx={{ ml: -2 }}
         >
