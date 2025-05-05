@@ -13,6 +13,19 @@
     "copyToClipboard": "Copy to Clipboard",
     "saveDialogNote": "Note: data for unselected rules will be lost."
   },
+  "help": {
+    "usage": {
+      "title": "Usage",
+      "content1": "You can edit the elements of the board by enabling the rules (checking the checkbox) and selecting the rules. Please check the explanation of each rule for editing methods.",
+      "content2": "If you disable a rule (uncheck the checkbox), that rule will be ignored and will not be drawn on the board. If you enable the rule again, the state before disabling it will be restored. However, data related to disabled rules will not be reflected when saving.",
+      "content3": "The solver uses your machine's CPU to perform calculations for answers. Therefore, please note that your machine may slow down during solving. On the other hand, this solver does not send any information about the problems solved to the server. Also, some rules may take time to solve."
+    },
+    "disclaimer": {
+      "title": "Disclaimer",
+      "content": "The author shall not be liable for any problem caused by using this tool."
+    },
+    "licenses": "Licenses"
+  },
   "rule": {
     "givenNumbers": {
       "title": "Given Numbers",

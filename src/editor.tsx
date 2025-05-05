@@ -31,10 +31,12 @@ import RedoIcon from "@mui/icons-material/Redo";
 import AddBox from "@mui/icons-material/AddBox";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import SaveIcon from "@mui/icons-material/Save";
+import HelpIcon from "@mui/icons-material/Help";
 import { NewBoardDialog } from "./dialogs/newBoardDialog";
 import { LoadDialog } from "./dialogs/loadDialog";
 import { SaveDialog } from "./dialogs/saveDialog";
 import { openDialog } from "./dialogs/dialog";
+import { helpDialog } from "./dialogs/helpDialog";
 import "./editor.css";
 
 export type EditorProps = {
@@ -502,6 +504,13 @@ export const Editor = (props: EditorProps) => {
           <MenuItem value="en">English</MenuItem>
           <MenuItem value="ja">日本語</MenuItem>
         </Select>
+        <IconButton
+          onClick={async () => {
+            await openDialog(helpDialog, { initialValues: {} });
+          }}
+        >
+          <HelpIcon />
+        </IconButton>
       </Toolbar>
       <Box sx={{ display: "flex" }}>
         <Box sx={{ border: "1px solid black", margin: "5px" }}>
