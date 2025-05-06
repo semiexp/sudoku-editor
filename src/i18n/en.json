@@ -68,7 +68,7 @@
     },
     "killer": {
       "title": "Killer (Sum)",
-      "explanation": "In region, the numbers must sum to the given total. Left click and drag to create a region. Right click to remove a region. Use number keys to input the total value.",
+      "explanation": "In region, the numbers must sum to the given total. Left click and drag to create a region. Right click to remove a region. You can add or remove cells from the selected region by clicking on the cells while holding down the Shift key. Use number keys to input the total value.",
       "distinct": "In each region, the same number can only appear at most once."
     },
     "consecutive": {

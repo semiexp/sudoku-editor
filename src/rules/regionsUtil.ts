@@ -21,6 +21,49 @@ export const reducerForRegions = <
 ): { state?: S; data?: D } => {
   const size = info.boardSize;
   if (event.type === "cellMouseDown") {
+    if (event.shift) {
+      if (state.selectedRegionId === null) {
+        return {};
+      }
+
+      if (!(
+        0 <= event.y &&
+        event.y < size &&
+        0 <= event.x &&
+        event.x < size
+      )) {
+        return {};
+      }
+
+      if (
+        data.regions[state.selectedRegionId].cells.some(
+          (cell) => cell.y === event.y && cell.x === event.x,
+        )
+      ) {
+        // remove the cell from the region
+        const newRegions = [...data.regions];
+        const region = newRegions[state.selectedRegionId];
+        newRegions[state.selectedRegionId] = {
+          ...region,
+          cells: region.cells.filter(
+            (cell) => !(cell.y === event.y && cell.x === event.x),
+          ),
+        };
+        return { data: { ...data, regions: newRegions } };
+      } else if (
+        data.regions[state.selectedRegionId].cells.length < size
+      ) {
+        // add the cell to the region
+        const newRegions = [...data.regions];
+        const region = newRegions[state.selectedRegionId];
+        newRegions[state.selectedRegionId] = {
+          ...region,
+          cells: [...region.cells, { y: event.y, x: event.x }],
+        };
+        return { data: { ...data, regions: newRegions } };
+      }
+    }
+
     if (event.rightClick) {
       // Remove the region containing the clicked cell
       const newRegions = data.regions.filter(
