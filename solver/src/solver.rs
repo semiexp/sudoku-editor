@@ -18,7 +18,7 @@ impl Default for SolverConfig {
     fn default() -> Self {
         SolverConfig {
             optimize_polarity: true,
-            explicit_set_encoding: false,
+            explicit_set_encoding: true,
         }
     }
 }
