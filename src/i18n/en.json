@@ -35,6 +35,10 @@
       "title": "Blocks",
       "explanation": "In each block, the numbers from 1 to the size of the board must appear exactly once. Blocks that do not match the size of the board will be ignored."
     },
+    "extraRegions": {
+      "title": "Extra Regions",
+      "explanation": "In each region, the same number can only appear at most once. This also applies to regions smaller than the size of the board. Left click and drag to create a region. Right click to remove a region. You can add or remove cells from the selected region by clicking on the cells while holding down the Shift key."
+    },
     "oddEven": {
       "title": "Odd/Even",
       "explanation": "Numbers in cells with circles must be odd. Numbers in cells with squares must be even."

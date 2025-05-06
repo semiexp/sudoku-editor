@@ -17,6 +17,7 @@ export const reducerForRegions = <
   event: EditorEvent,
   info: ReducerInfo,
   forceConnected: boolean,
+  regionSizeLimit?: number,
 ): { state?: S; data?: D } => {
   const size = info.boardSize;
   if (event.type === "cellMouseDown") {
@@ -92,6 +93,10 @@ export const reducerForRegions = <
         if (!isAdjacent) {
           return {};
         }
+      }
+
+      if (regionSizeLimit && region.cells.length >= regionSizeLimit) {
+        return {};
       }
 
       const newRegion = {

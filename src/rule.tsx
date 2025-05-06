@@ -36,6 +36,7 @@ export interface Rule<State, Data> {
   }[];
 }
 
+export const PRIORITY_EXTRA_REGION = -200;
 export const PRIORITY_SELECTED_CELL_MARKER = -100;
 export const PRIORITY_THERMO = -10;
 export const PRIORITY_ARROW = -10;
@@ -45,6 +46,7 @@ export const PRIORITY_ODD_EVEN = 50;
 export const PRIORITY_XV = 50;
 export const PRIORITY_CONSECUTIVE = 60;
 export const PRIORITY_KILLER = 60;
+export const PRIORITY_EXTRA_REGION_BORDER = 60;
 export const PRIORITY_CLUE_NUMBERS = 100;
 export const PRIORITY_SKYSCRAPERS_NUMBERS = 100;
 export const PRIORITY_XSUMS_NUMBERS = 100;

@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
 
 export type EditorEvent =
-  | { type: "cellMouseDown"; y: number; x: number; rightClick: boolean }
+  | {
+      type: "cellMouseDown";
+      y: number;
+      x: number;
+      rightClick: boolean;
+      shift: boolean;
+    }
   | { type: "cellMouseMove"; y: number; x: number }
   | {
       type: "edgeMouseDown";
@@ -52,7 +58,13 @@ export const handleMouseDown = (
     const y = Math.floor(py / cellSize);
     const rightClick = e.button === 2;
 
-    const event: EditorEvent = { type: "cellMouseDown", x, y, rightClick };
+    const event: EditorEvent = {
+      type: "cellMouseDown",
+      x,
+      y,
+      rightClick,
+      shift: e.shiftKey,
+    };
     dispatch(event);
   }
 

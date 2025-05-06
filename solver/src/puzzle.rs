@@ -39,6 +39,9 @@ pub struct Puzzle {
 
     #[serde(rename = "xSums")]
     pub x_sums: Option<XSums>,
+
+    #[serde(rename = "extraRegions")]
+    pub extra_regions: Option<ExtraRegions>,
 }
 
 #[derive(Debug, Clone, Deserialize, Default)]
@@ -141,6 +144,16 @@ pub struct XSums {
     pub down: Vec<Option<i32>>,
     pub left: Vec<Option<i32>>,
     pub right: Vec<Option<i32>>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct ExtraRegion {
+    pub cells: Vec<Pos>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct ExtraRegions {
+    pub regions: Vec<ExtraRegion>,
 }
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;

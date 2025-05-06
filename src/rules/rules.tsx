@@ -12,10 +12,12 @@ import { killerRule } from "./killer";
 import { consecutiveRule } from "./consecutive";
 import { skyscrapersRule } from "./skyscrapers";
 import { xSumsRule } from "./xSums";
+import { extraRegionsRule } from "./extraRegions";
 
 export const allRules: Rule<any, any>[] = [
   givenNumbersRule,
   blocksRule,
+  extraRegionsRule,
   diagonalRule,
   oddEvenRule,
   consecutiveRule,

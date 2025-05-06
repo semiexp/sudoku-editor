@@ -1,9 +1,9 @@
 use serde::Serialize;
 
 use crate::puzzle::{
-    Arrow, Blocks, Consecutive, Diagonal, GivenNumbers, Killer, NonConsecutive, OddEven, Puzzle,
-    Skyscrapers, Thermo, XSums, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV,
-    XV_NO_CONSTRAINT, XV_V, XV_X,
+    Arrow, Blocks, Consecutive, Diagonal, ExtraRegions, GivenNumbers, Killer, NonConsecutive,
+    OddEven, Puzzle, Skyscrapers, Thermo, XSums, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD,
+    XV, XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
 use cspuz_rs::solver::{int_constant, Config, IntExpr, IntVarArray1D, IntVarArray2D, Solver};
@@ -133,6 +133,10 @@ fn add_constraints(
 
     if let Some(x_sums) = &puzzle.x_sums {
         add_xsums_constraints(solver, nums, x_sums, config);
+    }
+
+    if let Some(extra_regions) = &puzzle.extra_regions {
+        add_extra_regions_constraints(solver, nums, extra_regions, config);
     }
 }
 
@@ -554,6 +558,29 @@ fn add_xsums_constraints(
         }
         if let Some(n) = xsums.right[i] {
             xsums_single_constraint(solver, &nums.slice_fixed_y((i, ..)).reverse(), n, w);
+        }
+    }
+}
+
+fn add_extra_regions_constraints(
+    solver: &mut Solver,
+    nums: &IntVarArray2D,
+    extra_region: &ExtraRegions,
+    config: SolverConfig,
+) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    for region in &extra_region.regions {
+        let cells = region
+            .cells
+            .iter()
+            .map(|cell| (cell.y, cell.x))
+            .collect::<Vec<_>>();
+        if region.cells.len() == h {
+            add_complete_set(solver, nums, &cells, config.explicit_set_encoding);
+        } else {
+            solver.all_different(nums.select(&cells));
         }
     }
 }
