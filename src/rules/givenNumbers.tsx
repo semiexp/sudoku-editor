@@ -78,9 +78,18 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
       }
       // if key is a number
       const number = parseInt(key);
-      if (!isNaN(number) && number >= 1 && number <= 9) {
+      if (!isNaN(number) && number >= 0 && number <= 9) {
         const newNumbers = data.numbers.map((row) => row.slice());
-        newNumbers[y][x] = number;
+
+        let n = (newNumbers[y][x] ?? 0) * 10 + number;
+        if (n > newNumbers.length) {
+          n = number;
+        }
+        if (n === 0) {
+          newNumbers[y][x] = null;
+        } else {
+          newNumbers[y][x] = n;
+        }
         const newData = { numbers: newNumbers };
         return { data: newData };
       }
