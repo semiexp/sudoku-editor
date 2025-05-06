@@ -263,6 +263,26 @@ fn main() {
             },
         );
 
+        {
+            let mut given_numbers = vec![vec![None; 16]; 16];
+            given_numbers[5][6] = Some(4);
+            given_numbers[7][10] = Some(8);
+            given_numbers[13][5] = Some(11);
+            given_numbers[14][11] = Some(1);
+
+            run_bench(
+                "few_clues_16x16",
+                Puzzle {
+                    size: 16,
+                    blocks: Some(default_blocks(4)),
+                    given_numbers: puzzle::GivenNumbers {
+                        numbers: given_numbers,
+                    },
+                    ..Default::default()
+                },
+            );
+        }
+
         run_bench(
             "few_clues_noncon1",
             Puzzle {
