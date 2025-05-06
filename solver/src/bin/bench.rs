@@ -1,23 +1,57 @@
 use sudoku_variants_solver::puzzle::{self, Blocks, GivenNumbers, NonConsecutive, Puzzle};
-use sudoku_variants_solver::solver;
+use sudoku_variants_solver::solver::{irrefutable_facts, SolverConfig};
+
+const CONFIGS: [(&'static str, SolverConfig); 3] = [
+    (
+        "default",
+        SolverConfig {
+            optimize_polarity: false,
+            explicit_set_encoding: false,
+        },
+    ),
+    (
+        "opt",
+        SolverConfig {
+            optimize_polarity: true,
+            explicit_set_encoding: false,
+        },
+    ),
+    (
+        "expl_set",
+        SolverConfig {
+            optimize_polarity: true,
+            explicit_set_encoding: true,
+        },
+    ),
+];
+
+fn show_header() {
+    print!("| {:20}", "Instance");
+    for (name, _) in CONFIGS.iter() {
+        print!(" | {:8}", name);
+    }
+    println!(" |");
+}
 
 fn run_bench(desc: &str, puzzle: Puzzle) {
-    let start = std::time::Instant::now();
-    let answer_default = solver::irrefutable_facts(&puzzle, false);
-    let elapsed_default = start.elapsed();
+    let mut expected_answer = None;
 
-    let start = std::time::Instant::now();
-    let answer_opt = solver::irrefutable_facts(&puzzle, true);
-    let elapsed_opt = start.elapsed();
+    print!("| {:20}", desc);
+    for (_, config) in CONFIGS.iter() {
+        let start = std::time::Instant::now();
+        let answer = irrefutable_facts(&puzzle, *config);
 
-    assert_eq!(answer_default, answer_opt);
+        if let Some(expected) = &expected_answer {
+            assert_eq!(&answer, expected);
+        } else {
+            expected_answer = Some(answer);
+        }
 
-    println!(
-        "{:20} | {:8.2} | {:8.2}",
-        desc,
-        elapsed_default.as_secs_f64() * 1000.0,
-        elapsed_opt.as_secs_f64() * 1000.0
-    );
+        let elapsed = start.elapsed();
+
+        print!(" | {:8.2}", elapsed.as_secs_f64() * 1000.0);
+    }
+    println!(" |");
 }
 
 fn default_blocks(block_size: usize) -> Blocks {
@@ -55,6 +89,8 @@ fn given_numbers(data: &[[i32; 9]]) -> GivenNumbers {
 }
 
 fn main() {
+    show_header();
+
     run_bench(
         "no_clue",
         Puzzle {
