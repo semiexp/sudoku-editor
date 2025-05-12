@@ -13,7 +13,7 @@ import {
 import { RenderOptions } from "./rule";
 import { allRules } from "./rules/rules";
 import { solve } from "./solver";
-import { Answer, Problem } from "./puzzle";
+import { Answer, Problem, defaultProblem } from "./puzzle";
 import { loadProblemFromString, saveProblemAsString } from "./serialize";
 import {
   Box,
@@ -42,18 +42,6 @@ import "./editor.css";
 export type EditorProps = {
   problem: Problem;
   onChangeProblem: (problem: Problem) => void;
-};
-
-export const defaultProblem = (size: number, blockWidth: number): Problem => {
-  const ruleData = new Map<string, any>();  // eslint-disable-line @typescript-eslint/no-explicit-any
-  for (const rule of allRules) {
-    ruleData.set(rule.name, rule.initialData(size, blockWidth));
-  }
-  return {
-    size: size,
-    enabledRules: ["givenNumbers", "blocks"],
-    ruleData: ruleData,
-  };
 };
 
 const defaultBorders = (options: RenderOptions) => {
@@ -109,7 +97,7 @@ const autoSolverItems = (
   }
 
   const hasClue = [];
-  const givenNumbersRule: any = problem.ruleData.get("givenNumbers");  // eslint-disable-line @typescript-eslint/no-explicit-any
+  const givenNumbersRule: any = problem.ruleData.get("givenNumbers"); // eslint-disable-line @typescript-eslint/no-explicit-any
   for (let y = 0; y < size; ++y) {
     const row = [];
     for (let x = 0; x < size; ++x) {
@@ -175,7 +163,7 @@ const autoSolverItems = (
 
 type RuleState = {
   selectedRuleIndex: number;
-  ruleState: any;  // eslint-disable-line @typescript-eslint/no-explicit-any
+  ruleState: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 const RuleSelector = (props: {
@@ -354,7 +342,7 @@ const render = (
   problem: Problem,
   autoSolverAnswer: Answer,
   selectedRuleIndex: number,
-  ruleState: any,  // eslint-disable-line @typescript-eslint/no-explicit-any
+  ruleState: any, // eslint-disable-line @typescript-eslint/no-explicit-any
   options: RenderOptions,
 ): ReactElement[] => {
   const renderResults: { priority: number; item: ReactElement }[] = [];
