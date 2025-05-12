@@ -72,6 +72,15 @@ export const forbiddenCandidatesRule: Rule<
           const newState = { ...state, selectedCell: { y, x: x + 1 } };
           return { state: newState };
         }
+      } else if (key === "Backspace" || key === "Delete") {
+        const newIsForbidden = data.isForbidden.map((row) =>
+          row.map((cell) => cell.slice()),
+        );
+        newIsForbidden[y][x] = new Array(data.isForbidden[y][x].length).fill(
+          false,
+        );
+        const newData = { isForbidden: newIsForbidden };
+        return { data: newData };
       } else {
         const n = parseInt(key, 36);
         if (1 <= n && n <= data.isForbidden.length) {
