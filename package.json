@@ -9,7 +9,8 @@
     "build-solver": "cd solver && cargo build --release --lib --target wasm32-unknown-emscripten && cd .. && mkdir -p src/solver && cp solver/target/wasm32-unknown-emscripten/release/deps/sudoku_variants_solver.js src/solver/sudoku_variants_solver.js",
     "lint": "eslint .",
     "preview": "vite preview",
-    "format": "npx prettier --write src/ && cd solver && cargo fmt"
+    "format": "npx prettier --write src/ && cd solver && cargo fmt",
+    "format-check": "npx prettier --check src/ && cd solver && cargo fmt --check"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
