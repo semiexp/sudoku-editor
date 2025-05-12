@@ -3,7 +3,7 @@ import { allRules } from "./rules/rules";
 import { Problem } from "./puzzle";
 
 export const saveProblemAsString = (problem: Problem): string => {
-  const ruleData: any = {};
+  const ruleData: any = {};  // eslint-disable-line @typescript-eslint/no-explicit-any
   for (const [key, value] of problem.ruleData.entries()) {
     if (problem.enabledRules.includes(key)) {
       ruleData[key] = value;

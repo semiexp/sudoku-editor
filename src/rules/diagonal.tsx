@@ -1,6 +1,6 @@
 import { Rule, PRIORITY_DIAGNOAL } from "../rule";
 
-type DiagonalState = {};
+type DiagonalState = object;
 type DiagonalData = {
   mainDiagonal: boolean;
   antiDiagonal: boolean;
@@ -9,13 +9,13 @@ type DiagonalData = {
 export const diagonalRule: Rule<DiagonalState, DiagonalData> = {
   name: "diagonal",
   initialState: {},
-  initialData: (_size: number) => ({
+  initialData: () => ({
     mainDiagonal: true,
     antiDiagonal: true,
   }),
   booleanFlags: ["mainDiagonal", "antiDiagonal"],
   eventTypes: [],
-  reducer: (_state, _data, _event) => {
+  reducer: () => {
     return {};
   },
   render: (_state, data, options) => {

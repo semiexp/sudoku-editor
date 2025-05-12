@@ -1,6 +1,6 @@
 import { Rule, PRIORITY_ODD_EVEN } from "../rule";
 
-type OddEvenState = {};
+type OddEvenState = object;
 
 type OddEvenData = {
   cellKind: number[][];

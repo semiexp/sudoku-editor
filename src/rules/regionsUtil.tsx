@@ -95,7 +95,7 @@ export const reducerForRegions = <
       }
     } else {
       let newSelectedRegionId;
-      let idx = regionIndices.indexOf(state.selectedRegionId ?? -1);
+      const idx = regionIndices.indexOf(state.selectedRegionId ?? -1);
       if (idx === -1) {
         newSelectedRegionId = regionIndices[0];
       } else {

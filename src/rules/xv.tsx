@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { Rule, PRIORITY_XV } from "../rule";
 
-type XVState = {};
+type XVState = object;
 
 type XVData = {
   horizontalBorder: number[][];

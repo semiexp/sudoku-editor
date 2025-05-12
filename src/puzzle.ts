@@ -1,7 +1,7 @@
 export type Problem = {
   size: number;
   enabledRules: string[];
-  ruleData: Map<string, any>;
+  ruleData: Map<string, any>;  // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 export type Answer = {

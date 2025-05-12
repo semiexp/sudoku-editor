@@ -8,9 +8,9 @@ import {
 } from "@mui/material";
 import { AutoMuiDialog } from "./dialog";
 
-export const helpDialog = (props: {
-  initialValues: {};
-  close: (value?: {}) => void;
+export const HelpDialog = (props: {
+  initialValues: unknown;
+  close: (value?: unknown) => void;
 }) => {
   const close = props.close;
 

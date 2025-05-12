@@ -1,8 +1,6 @@
 import { Rule, PRIORITY_BORDER } from "../rule";
 
-type BlocksState = {
-  // TODO
-};
+type BlocksState = object;
 
 type BlocksData = {
   horizontalBorder: boolean[][];

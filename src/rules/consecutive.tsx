@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { Rule, PRIORITY_CONSECUTIVE } from "../rule";
 
-type ConsecutiveState = {};
+type ConsecutiveState = object;
 
 type ConsecutiveData = {
   horizontalBorder: boolean[][];

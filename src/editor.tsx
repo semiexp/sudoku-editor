@@ -35,8 +35,8 @@ import HelpIcon from "@mui/icons-material/Help";
 import { NewBoardDialog } from "./dialogs/newBoardDialog";
 import { LoadDialog } from "./dialogs/loadDialog";
 import { SaveDialog } from "./dialogs/saveDialog";
+import { HelpDialog } from "./dialogs/helpDialog";
 import { openDialog } from "./dialogs/dialog";
-import { helpDialog } from "./dialogs/helpDialog";
 import "./editor.css";
 
 export type EditorProps = {
@@ -45,7 +45,7 @@ export type EditorProps = {
 };
 
 export const defaultProblem = (size: number, blockWidth: number): Problem => {
-  const ruleData = new Map<string, any>();
+  const ruleData = new Map<string, any>();  // eslint-disable-line @typescript-eslint/no-explicit-any
   for (const rule of allRules) {
     ruleData.set(rule.name, rule.initialData(size, blockWidth));
   }
@@ -62,7 +62,7 @@ const defaultBorders = (options: RenderOptions) => {
   const ret = [];
   for (let i = 0; i <= boardSize; ++i) {
     // horizontal lines
-    let width = i === 0 || i === boardSize ? 3 : 1;
+    const width = i === 0 || i === boardSize ? 3 : 1;
     ret.push(
       <line
         key={`h-${i}`}
@@ -77,7 +77,7 @@ const defaultBorders = (options: RenderOptions) => {
   }
   for (let i = 0; i <= boardSize; ++i) {
     // vertical lines
-    let width = i === 0 || i === boardSize ? 3 : 1;
+    const width = i === 0 || i === boardSize ? 3 : 1;
     ret.push(
       <line
         key={`v-${i}`}
@@ -109,7 +109,7 @@ const autoSolverItems = (
   }
 
   const hasClue = [];
-  const givenNumbersRule: any = problem.ruleData.get("givenNumbers");
+  const givenNumbersRule: any = problem.ruleData.get("givenNumbers");  // eslint-disable-line @typescript-eslint/no-explicit-any
   for (let y = 0; y < size; ++y) {
     const row = [];
     for (let x = 0; x < size; ++x) {
@@ -175,7 +175,7 @@ const autoSolverItems = (
 
 type RuleState = {
   selectedRuleIndex: number;
-  ruleState: any;
+  ruleState: any;  // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 const RuleSelector = (props: {
@@ -354,7 +354,7 @@ const render = (
   problem: Problem,
   autoSolverAnswer: Answer,
   selectedRuleIndex: number,
-  ruleState: any,
+  ruleState: any,  // eslint-disable-line @typescript-eslint/no-explicit-any
   options: RenderOptions,
 ): ReactElement[] => {
   const renderResults: { priority: number; item: ReactElement }[] = [];
@@ -511,7 +511,7 @@ export const Editor = (props: EditorProps) => {
         </Select>
         <IconButton
           onClick={async () => {
-            await openDialog(helpDialog, { initialValues: {} });
+            await openDialog(HelpDialog, { initialValues: {} });
           }}
         >
           <HelpIcon />

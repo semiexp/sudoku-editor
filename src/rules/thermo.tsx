@@ -53,8 +53,8 @@ export const thermoRule: Rule<ThermoState, ThermoData> = {
       );
 
       for (let j = 1; j < arrow.length; ++j) {
-        let startY = margin + (arrow[j - 1].y + 0.5) * cellSize;
-        let startX = margin + (arrow[j - 1].x + 0.5) * cellSize;
+        const startY = margin + (arrow[j - 1].y + 0.5) * cellSize;
+        const startX = margin + (arrow[j - 1].x + 0.5) * cellSize;
         const endY = margin + (arrow[j].y + 0.5) * cellSize;
         const endX = margin + (arrow[j].x + 0.5) * cellSize;
 

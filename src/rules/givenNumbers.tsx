@@ -117,7 +117,7 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
       );
     }
 
-    let foregroundItems = [];
+    const foregroundItems = [];
     for (let y = 0; y < data.numbers.length; y++) {
       for (let x = 0; x < data.numbers[y].length; x++) {
         const number = data.numbers[y][x];
