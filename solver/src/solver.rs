@@ -1,9 +1,9 @@
 use serde::Serialize;
 
 use crate::puzzle::{
-    Arrow, Blocks, Consecutive, Diagonal, ExtraRegions, GivenNumbers, Killer, NonConsecutive,
-    OddEven, Palindrome, Puzzle, Skyscrapers, Thermo, XSums, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT,
-    ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
+    Arrow, Blocks, Consecutive, Diagonal, ExtraRegions, ForbiddenCandidates, GivenNumbers, Killer,
+    NonConsecutive, OddEven, Palindrome, Puzzle, Skyscrapers, Thermo, XSums, ODDEVEN_EVEN,
+    ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
 use cspuz_rs::solver::{int_constant, Config, IntExpr, IntVarArray1D, IntVarArray2D, Solver};
@@ -141,6 +141,10 @@ fn add_constraints(
 
     if let Some(palindrome_constraints) = &puzzle.palindrome {
         add_palindrome_constraints(solver, nums, palindrome_constraints, config);
+    }
+
+    if let Some(forbidden_candidates) = &puzzle.forbidden_candidates {
+        add_forbidden_candidates_constraints(solver, nums, forbidden_candidates);
     }
 }
 
@@ -602,6 +606,23 @@ fn add_palindrome_constraints(
                 nums.at((line[i].y, line[i].x))
                     .eq(nums.at((line[n - 1 - i].y, line[n - 1 - i].x))),
             );
+        }
+    }
+}
+
+fn add_forbidden_candidates_constraints(
+    solver: &mut Solver,
+    nums: &IntVarArray2D,
+    forbidden_candidates: &ForbiddenCandidates,
+) {
+    let n = nums.shape().0;
+    for y in 0..n {
+        for x in 0..n {
+            for num in 0..n {
+                if forbidden_candidates.is_forbidden[y][x][num] {
+                    solver.add_expr(nums.at((y, x)).ne((num + 1) as i32));
+                }
+            }
         }
     }
 }

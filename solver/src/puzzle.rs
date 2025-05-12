@@ -45,6 +45,9 @@ pub struct Puzzle {
 
     #[serde(rename = "palindrome")]
     pub palindrome: Option<Palindrome>,
+
+    #[serde(rename = "forbiddenCandidates")]
+    pub forbidden_candidates: Option<ForbiddenCandidates>,
 }
 
 #[derive(Debug, Clone, Deserialize, Default)]
@@ -162,6 +165,12 @@ pub struct ExtraRegions {
 #[derive(Debug, Clone, Deserialize)]
 pub struct Palindrome {
     pub palindromes: Vec<Vec<Pos>>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct ForbiddenCandidates {
+    #[serde(rename = "isForbidden")]
+    pub is_forbidden: Vec<Vec<Vec<bool>>>,
 }
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;

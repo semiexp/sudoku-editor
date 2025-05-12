@@ -87,6 +87,10 @@
     "palindrome": {
       "title": "Palindrome",
       "explanation": "The numbers in the cells on each line must be the same when read from both ends."
+    },
+    "forbiddenCandidates": {
+      "title": "Forbidden Candidates",
+      "explanation": "Forbidden candidates indicate numbers that cannot be placed in a specific cell. Left click to select a cell. Use number keys to toggle whether that number is a forbidden candidate. Numbers 10 and above can be entered using the A, B, C, ... keys."
     }
   }
 }

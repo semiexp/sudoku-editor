@@ -14,11 +14,13 @@ import { skyscrapersRule } from "./skyscrapers";
 import { xSumsRule } from "./xSums";
 import { extraRegionsRule } from "./extraRegions";
 import { palindromeRule } from "./palindrome";
+import { forbiddenCandidatesRule } from "./forbiddenCandidates";
 
 export const allRules: Rule<any, any>[] = [
   givenNumbersRule,
   blocksRule,
   extraRegionsRule,
+  forbiddenCandidatesRule,
   diagonalRule,
   oddEvenRule,
   consecutiveRule,
