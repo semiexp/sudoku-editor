@@ -48,6 +48,9 @@ pub struct Puzzle {
 
     #[serde(rename = "forbiddenCandidates")]
     pub forbidden_candidates: Option<ForbiddenCandidates>,
+
+    #[serde(rename = "antiKnight")]
+    pub anti_knight: Option<AntiKnight>,
 }
 
 #[derive(Debug, Clone, Deserialize, Default)]
@@ -172,6 +175,9 @@ pub struct ForbiddenCandidates {
     #[serde(rename = "isForbidden")]
     pub is_forbidden: Vec<Vec<Vec<bool>>>,
 }
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct AntiKnight {}
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;
 pub const ODDEVEN_ODD: i32 = 1;

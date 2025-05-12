@@ -91,6 +91,10 @@
     "forbiddenCandidates": {
       "title": "禁止候補",
       "explanation": "禁止候補は、特定のマスに入ることができない数字を示します。左クリックでマスを選択します。数字キーで、その数字が禁止候補かどうかを切り替えます。10 以上は A, B, C, ... キーで入力します。BackSpace / Delete で選択セルの禁止候補を削除します。"
+    },
+    "antiKnight": {
+      "title": "アンチナイト (Anti Knight)",
+      "explanation": "ナイトの動きで移動できるマスには、同じ数字は入りません。"
     }
   }
 }

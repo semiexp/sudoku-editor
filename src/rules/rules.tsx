@@ -15,6 +15,7 @@ import { xSumsRule } from "./xSums";
 import { extraRegionsRule } from "./extraRegions";
 import { palindromeRule } from "./palindrome";
 import { forbiddenCandidatesRule } from "./forbiddenCandidates";
+import { antiKnightRule } from "./antiKnight";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const allRules: Rule<any, any>[] = [
@@ -33,4 +34,5 @@ export const allRules: Rule<any, any>[] = [
   skyscrapersRule,
   xSumsRule,
   palindromeRule,
+  antiKnightRule,
 ];
