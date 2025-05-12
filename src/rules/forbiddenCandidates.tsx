@@ -1,4 +1,3 @@
-import { ReactElement } from "react";
 import {
   Rule,
   PRIORITY_FORBIDDEN_CANDIDATES,
