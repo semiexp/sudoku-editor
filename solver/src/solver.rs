@@ -367,6 +367,7 @@ fn add_xv_constraints(solver: &mut Solver, nums: &IntVarArray2D, xv: &XV, _confi
                 XV_NO_CONSTRAINT => {
                     if xv.all_shown {
                         solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).ne(10));
+                        solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).ne(5));
                     }
                 }
                 XV_X => solver.add_expr((nums.at((y, x)) + nums.at((y, x + 1))).eq(10)),
