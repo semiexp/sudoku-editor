@@ -32,6 +32,8 @@ import AddBox from "@mui/icons-material/AddBox";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import SaveIcon from "@mui/icons-material/Save";
 import HelpIcon from "@mui/icons-material/Help";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import { NewBoardDialog } from "./dialogs/newBoardDialog";
 import { LoadDialog } from "./dialogs/loadDialog";
 import { SaveDialog } from "./dialogs/saveDialog";
@@ -387,9 +389,10 @@ export const Editor = (props: EditorProps) => {
   });
   const [enableSolver, setEnableSolver] = useState(false);
   const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
+  const [cellSize, setCellSize] = useState(40); // Make cellSize dynamic
+
   const problemHistory = useHistory(problem, props.onChangeProblem);
 
-  const cellSize = 40; // TODO: make this dynamic
   const margin = cellSize + 10;
   const svgSize = margin * 2 + cellSize * props.problem.size;
 
@@ -478,6 +481,16 @@ export const Editor = (props: EditorProps) => {
           disabled={!problemHistory.canRedo}
         >
           <RedoIcon />
+        </IconButton>
+        <IconButton
+          onClick={() => setCellSize((prev) => Math.min(prev + 10, 100))} // Zoom In
+        >
+          <ZoomInIcon />
+        </IconButton>
+        <IconButton
+          onClick={() => setCellSize((prev) => Math.max(prev - 10, 20))} // Zoom Out
+        >
+          <ZoomOutIcon />
         </IconButton>
         <FormControlLabel
           control={
