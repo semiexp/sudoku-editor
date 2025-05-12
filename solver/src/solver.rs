@@ -2,8 +2,8 @@ use serde::Serialize;
 
 use crate::puzzle::{
     Arrow, Blocks, Consecutive, Diagonal, ExtraRegions, GivenNumbers, Killer, NonConsecutive,
-    OddEven, Puzzle, Skyscrapers, Thermo, XSums, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD,
-    XV, XV_NO_CONSTRAINT, XV_V, XV_X,
+    OddEven, Palindrome, Puzzle, Skyscrapers, Thermo, XSums, ODDEVEN_EVEN, ODDEVEN_NO_CONSTRAINT,
+    ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
 use cspuz_rs::solver::{int_constant, Config, IntExpr, IntVarArray1D, IntVarArray2D, Solver};
@@ -137,6 +137,10 @@ fn add_constraints(
 
     if let Some(extra_regions) = &puzzle.extra_regions {
         add_extra_regions_constraints(solver, nums, extra_regions, config);
+    }
+
+    if let Some(palindrome_constraints) = &puzzle.palindrome {
+        add_palindrome_constraints(solver, nums, palindrome_constraints, config);
     }
 }
 
@@ -581,6 +585,23 @@ fn add_extra_regions_constraints(
             add_complete_set(solver, nums, &cells, config.explicit_set_encoding);
         } else {
             solver.all_different(nums.select(&cells));
+        }
+    }
+}
+
+fn add_palindrome_constraints(
+    solver: &mut Solver,
+    nums: &IntVarArray2D,
+    palindrome: &Palindrome,
+    _config: SolverConfig,
+) {
+    for line in &palindrome.palindromes {
+        let n = line.len();
+        for i in 0..(n / 2) {
+            solver.add_expr(
+                nums.at((line[i].y, line[i].x))
+                    .eq(nums.at((line[n - 1 - i].y, line[n - 1 - i].x))),
+            );
         }
     }
 }

@@ -83,6 +83,10 @@
     "xSums": {
       "title": "X-Sums",
       "explanation": "The numbers in the outside must be equal to the sum of the first X cells in that direction, where X is the first number in that direction."
+    },
+    "palindrome": {
+      "title": "Palindrome",
+      "explanation": "The numbers in the cells on each line must be the same when read from both ends."
     }
   }
 }

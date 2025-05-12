@@ -42,6 +42,9 @@ pub struct Puzzle {
 
     #[serde(rename = "extraRegions")]
     pub extra_regions: Option<ExtraRegions>,
+
+    #[serde(rename = "palindrome")]
+    pub palindrome: Option<Palindrome>,
 }
 
 #[derive(Debug, Clone, Deserialize, Default)]
@@ -154,6 +157,11 @@ pub struct ExtraRegion {
 #[derive(Debug, Clone, Deserialize)]
 pub struct ExtraRegions {
     pub regions: Vec<ExtraRegion>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Palindrome {
+    pub palindromes: Vec<Vec<Pos>>,
 }
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;

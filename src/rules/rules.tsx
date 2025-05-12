@@ -13,6 +13,7 @@ import { consecutiveRule } from "./consecutive";
 import { skyscrapersRule } from "./skyscrapers";
 import { xSumsRule } from "./xSums";
 import { extraRegionsRule } from "./extraRegions";
+import { palindromeRule } from "./palindrome";
 
 export const allRules: Rule<any, any>[] = [
   givenNumbersRule,
@@ -28,4 +29,5 @@ export const allRules: Rule<any, any>[] = [
   killerRule,
   skyscrapersRule,
   xSumsRule,
+  palindromeRule,
 ];

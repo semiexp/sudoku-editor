@@ -83,6 +83,10 @@
     "xSums": {
       "title": "X-Sums Sudoku",
       "explanation": "外周の数字は、その方向の一番手前の数字を X としたとき、手前 X マスの数字の和を表します。"
+    },
+    "palindrome": {
+      "title": "回文 (Palindrome)",
+      "explanation": "線でつながれたマスには、どちらの向きから読んでも同じように数字が入ります。"
     }
   }
 }
