@@ -146,6 +146,10 @@ fn add_constraints(
     if let Some(forbidden_candidates) = &puzzle.forbidden_candidates {
         add_forbidden_candidates_constraints(solver, nums, forbidden_candidates);
     }
+
+    if puzzle.anti_knight.is_some() {
+        add_anti_knight_constraints(solver, nums, config);
+    }
 }
 
 fn add_complete_set(
@@ -621,6 +625,34 @@ fn add_forbidden_candidates_constraints(
             for num in 0..n {
                 if forbidden_candidates.is_forbidden[y][x][num] {
                     solver.add_expr(nums.at((y, x)).ne((num + 1) as i32));
+                }
+            }
+        }
+    }
+}
+
+fn add_anti_knight_constraints(solver: &mut Solver, nums: &IntVarArray2D, _config: SolverConfig) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+
+    let knight_moves = [
+        (-2, -1),
+        (-1, -2),
+        (1, -2),
+        (2, -1),
+        (2, 1),
+        (1, 2),
+        (-1, 2),
+        (-2, 1),
+    ];
+
+    for y in 0..h {
+        for x in 0..w {
+            for &(dy, dx) in &knight_moves {
+                let ny = y as isize + dy;
+                let nx = x as isize + dx;
+                if ny >= 0 && ny < h as isize && nx >= 0 && nx < w as isize {
+                    solver.add_expr(nums.at((y, x)).ne(nums.at((ny as usize, nx as usize))));
                 }
             }
         }

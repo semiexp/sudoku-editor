@@ -91,6 +91,10 @@
     "forbiddenCandidates": {
       "title": "Forbidden Candidates",
       "explanation": "Forbidden candidates indicate numbers that cannot be placed in a specific cell. Left click to select a cell. Use number keys to toggle whether that number is a forbidden candidate. Numbers 10 and above can be entered using the A, B, C, ... keys. BackSpace / Delete will remove the forbidden candidates from the selected cell."
+    },
+    "antiKnight": {
+      "title": "Anti-Knight",
+      "explanation": "Numbers in cells that are a knight's move away from each other cannot be the same."
     }
   }
 }
