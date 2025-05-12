@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-import { Editor, defaultProblem } from "./editor";
+import { Editor } from "./editor";
+import { defaultProblem } from "./puzzle";
 import "./i18n/configs";
 
 function App() {
