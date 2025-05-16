@@ -95,6 +95,10 @@
     "antiKnight": {
       "title": "Anti-Knight",
       "explanation": "Numbers in cells that are a knight's move away from each other cannot be the same."
+    },
+    "noTouch": {
+      "title": "No Touch",
+      "explanation": "Numbers in cells that are adjacent (sharing a corner) cannot be the same."
     }
   }
 }

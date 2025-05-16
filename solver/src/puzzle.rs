@@ -51,6 +51,9 @@ pub struct Puzzle {
 
     #[serde(rename = "antiKnight")]
     pub anti_knight: Option<AntiKnight>,
+
+    #[serde(rename = "noTouch")]
+    pub no_touch: Option<NoTouch>,
 }
 
 #[derive(Debug, Clone, Deserialize, Default)]
@@ -178,6 +181,9 @@ pub struct ForbiddenCandidates {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct AntiKnight {}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct NoTouch {}
 
 pub const ODDEVEN_NO_CONSTRAINT: i32 = 0;
 pub const ODDEVEN_ODD: i32 = 1;

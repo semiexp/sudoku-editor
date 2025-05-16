@@ -95,6 +95,10 @@
     "antiKnight": {
       "title": "アンチナイト (Anti Knight)",
       "explanation": "ナイトの動きで移動できるマスには、同じ数字は入りません。"
+    },
+    "noTouch": {
+      "title": "ノータッチ (No Touch)",
+      "explanation": "隣り合う（頂点を共有する）マスには、同じ数字は入りません。"
     }
   }
 }

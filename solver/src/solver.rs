@@ -150,6 +150,10 @@ fn add_constraints(
     if puzzle.anti_knight.is_some() {
         add_anti_knight_constraints(solver, nums, config);
     }
+
+    if puzzle.no_touch.is_some() {
+        add_no_touch_constraints(solver, nums, config);
+    }
 }
 
 fn add_complete_set(
@@ -653,6 +657,35 @@ fn add_anti_knight_constraints(solver: &mut Solver, nums: &IntVarArray2D, _confi
                 let ny = y as isize + dy;
                 let nx = x as isize + dx;
                 if ny >= 0 && ny < h as isize && nx >= 0 && nx < w as isize {
+                    solver.add_expr(nums.at((y, x)).ne(nums.at((ny as usize, nx as usize))));
+                }
+            }
+        }
+    }
+}
+
+fn add_no_touch_constraints(solver: &mut Solver, nums: &IntVarArray2D, _config: SolverConfig) {
+    let (h, w) = nums.shape();
+    assert_eq!(h, w);
+    let deltas = [
+        (-1, -1),
+        (-1, 0),
+        (-1, 1),
+        (0, -1),
+        (0, 1),
+        (1, -1),
+        (1, 0),
+        (1, 1),
+    ];
+    for y in 0..h {
+        for x in 0..w {
+            for &(dy, dx) in &deltas {
+                let ny = y as isize + dy;
+                let nx = x as isize + dx;
+                if ny >= 0 && ny < h as isize && nx >= 0 && nx < w as isize {
+                    if ny as usize == y && nx as usize == x {
+                        continue;
+                    }
                     solver.add_expr(nums.at((y, x)).ne(nums.at((ny as usize, nx as usize))));
                 }
             }
