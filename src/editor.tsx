@@ -360,18 +360,25 @@ const render = (
     }
 
     const renderResult = rule.render(state, data, options);
-    for (const item of renderResult) {
-      renderResults.push(item);
+    for (let j = 0; j < renderResult.length; ++j) {
+      renderResults.push({
+        priority: renderResult[j].priority,
+        item: <g key={`rule-${i}-${j}`}>{renderResult[j].item}</g>,
+      });
     }
   }
 
   renderResults.push({
     priority: 0,
-    item: <g>{defaultBorders(options)}</g>,
+    item: <g key="defaultBorders">{defaultBorders(options)}</g>,
   });
   renderResults.push({
     priority: 100,
-    item: <g>{autoSolverItems(problem, autoSolverAnswer, options)}</g>,
+    item: (
+      <g key="autoSolverItems">
+        {autoSolverItems(problem, autoSolverAnswer, options)}
+      </g>
+    ),
   });
 
   renderResults.sort((a, b) => a.priority - b.priority);
