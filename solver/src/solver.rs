@@ -461,21 +461,26 @@ fn add_killer_constraints(
     assert_eq!(h, w);
 
     for region in &killer_constraints.regions {
-        let mut sum = int_constant(0);
-        for cell in &region.cells {
-            sum = sum + nums.at((cell.y, cell.x));
-        }
-
-        if let Some(sum_value) = region.sum {
-            solver.add_expr(sum.eq(sum_value));
-        }
-
         if killer_constraints.distinct {
             let mut cells = vec![];
             for cell in &region.cells {
                 cells.push(nums.at((cell.y, cell.x)));
             }
-            solver.all_different(cells);
+
+            if let Some(sum_value) = region.sum {
+                sum_all_different(solver, cells, sum_value, 1, h as i32, None);
+            } else {
+                solver.all_different(cells);
+            }
+        } else {
+            let mut sum = int_constant(0);
+            for cell in &region.cells {
+                sum = sum + nums.at((cell.y, cell.x));
+            }
+
+            if let Some(sum_value) = region.sum {
+                solver.add_expr(sum.eq(sum_value));
+            }
         }
     }
 }
