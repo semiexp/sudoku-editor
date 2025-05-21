@@ -1,5 +1,5 @@
 use sudoku_variants_solver::puzzle::{
-    self, Arrow, Blocks, GivenNumbers, NonConsecutive, Pos, Puzzle, Skyscrapers, Thermo,
+    self, Arrow, Blocks, GivenNumbers, NonConsecutive, Pos, Puzzle, Skyscrapers, Thermo, XSums,
 };
 use sudoku_variants_solver::solver::{irrefutable_facts, SolverConfig};
 
@@ -245,6 +245,32 @@ fn main() {
                 down: vec![None, None, None, None, None, None, None, None, None],
                 left: vec![None, None, None, Some(5), None, None, None, None, None],
                 right: vec![None, None, None, None, None, Some(3), None, None, None],
+            }),
+            ..Default::default()
+        },
+    );
+
+    run_bench(
+        "few_clues_x_sums",
+        Puzzle {
+            size: 9,
+            blocks: Some(default_blocks(3)),
+            given_numbers: given_numbers(&[
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 7, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 6, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            ]),
+            x_sums: Some(XSums {
+                up: vec![None, None, None, None, None, None, None, None, None],
+                down: vec![None, None, None, None, None, None, Some(38), None, None],
+                left: vec![None, None, None, Some(5), None, None, None, None, None],
+                right: vec![None, None, None, None, None, None, None, None, None],
             }),
             ..Default::default()
         },

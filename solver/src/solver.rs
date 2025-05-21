@@ -6,6 +6,7 @@ use crate::puzzle::{
     ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
+use cspuz_rs::complex_constraints::sum_all_different;
 use cspuz_rs::solver::{int_constant, Config, IntExpr, IntVarArray1D, IntVarArray2D, Solver};
 
 #[derive(Debug, Clone, Copy)]
@@ -460,21 +461,26 @@ fn add_killer_constraints(
     assert_eq!(h, w);
 
     for region in &killer_constraints.regions {
-        let mut sum = int_constant(0);
-        for cell in &region.cells {
-            sum = sum + nums.at((cell.y, cell.x));
-        }
-
-        if let Some(sum_value) = region.sum {
-            solver.add_expr(sum.eq(sum_value));
-        }
-
         if killer_constraints.distinct {
             let mut cells = vec![];
             for cell in &region.cells {
                 cells.push(nums.at((cell.y, cell.x)));
             }
-            solver.all_different(cells);
+
+            if let Some(sum_value) = region.sum {
+                sum_all_different(solver, cells, sum_value, 1, h as i32, None);
+            } else {
+                solver.all_different(cells);
+            }
+        } else {
+            let mut sum = int_constant(0);
+            for cell in &region.cells {
+                sum = sum + nums.at((cell.y, cell.x));
+            }
+
+            if let Some(sum_value) = region.sum {
+                solver.add_expr(sum.eq(sum_value));
+            }
         }
     }
 }
@@ -550,7 +556,14 @@ fn add_skyscrapers_constraints(
 
 fn xsums_single_constraint(solver: &mut Solver, seq: &IntVarArray1D, v: i32, size: usize) {
     for i in 1..=size {
-        solver.add_expr(seq.at(0).eq(i as i32).imp(seq.slice(..i).sum().eq(v)));
+        sum_all_different(
+            solver,
+            seq.slice(..i),
+            v,
+            1,
+            size as i32,
+            Some(seq.at(0).eq(i as i32)),
+        );
     }
 }
 
