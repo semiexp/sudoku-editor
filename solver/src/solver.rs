@@ -6,6 +6,7 @@ use crate::puzzle::{
     ODDEVEN_NO_CONSTRAINT, ODDEVEN_ODD, XV, XV_NO_CONSTRAINT, XV_V, XV_X,
 };
 
+use cspuz_rs::complex_constraints::sum_all_different;
 use cspuz_rs::solver::{int_constant, Config, IntExpr, IntVarArray1D, IntVarArray2D, Solver};
 
 #[derive(Debug, Clone, Copy)]
@@ -550,7 +551,14 @@ fn add_skyscrapers_constraints(
 
 fn xsums_single_constraint(solver: &mut Solver, seq: &IntVarArray1D, v: i32, size: usize) {
     for i in 1..=size {
-        solver.add_expr(seq.at(0).eq(i as i32).imp(seq.slice(..i).sum().eq(v)));
+        sum_all_different(
+            solver,
+            seq.slice(..i),
+            v,
+            1,
+            size as i32,
+            Some(seq.at(0).eq(i as i32)),
+        );
     }
 }
 
