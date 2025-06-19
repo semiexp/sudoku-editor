@@ -34,11 +34,13 @@ import SaveIcon from "@mui/icons-material/Save";
 import HelpIcon from "@mui/icons-material/Help";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import KeyboardIcon from "@mui/icons-material/Keyboard";
 import { NewBoardDialog } from "./dialogs/newBoardDialog";
 import { LoadDialog } from "./dialogs/loadDialog";
 import { SaveDialog } from "./dialogs/saveDialog";
 import { HelpDialog } from "./dialogs/helpDialog";
 import { openDialog } from "./dialogs/dialog";
+import { NumberKeypad } from "./components/NumberKeypad";
 import "./editor.css";
 
 export type EditorProps = {
@@ -397,6 +399,7 @@ export const Editor = (props: EditorProps) => {
   const [enableSolver, setEnableSolver] = useState(false);
   const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
   const [cellSize, setCellSize] = useState(40); // Make cellSize dynamic
+  const [keypadVisible, setKeypadVisible] = useState(false);
 
   const problemHistory = useHistory(problem, props.onChangeProblem);
 
@@ -433,6 +436,13 @@ export const Editor = (props: EditorProps) => {
   useKeyDown((e) => handleKeyDown(e, dispatchEventRef.current));
 
   const { t, i18n } = useTranslation();
+
+  const handleKeypadPress = (key: string) => {
+    if (dispatchEventRef.current) {
+      const event = { type: "keyDown" as const, key };
+      dispatchEventRef.current(event);
+    }
+  };
 
   return (
     <Box>
@@ -499,6 +509,18 @@ export const Editor = (props: EditorProps) => {
         >
           <ZoomOutIcon />
         </IconButton>
+        <IconButton
+          onClick={() => setKeypadVisible(!keypadVisible)}
+          sx={{
+            backgroundColor: keypadVisible ? "primary.main" : "transparent",
+            color: keypadVisible ? "white" : "inherit",
+            "&:hover": {
+              backgroundColor: keypadVisible ? "primary.dark" : "action.hover",
+            },
+          }}
+        >
+          <KeyboardIcon />
+        </IconButton>
         <FormControlLabel
           control={
             <Switch
@@ -551,6 +573,11 @@ export const Editor = (props: EditorProps) => {
           updateProblem={problemHistory.update}
         />
       </Box>
+      <NumberKeypad
+        onKeyPress={handleKeypadPress}
+        isVisible={keypadVisible}
+        onClose={() => setKeypadVisible(false)}
+      />
     </Box>
   );
 };
