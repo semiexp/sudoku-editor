@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Box, IconButton, Paper } from "@mui/material";
-import KeyboardIcon from "@mui/icons-material/Keyboard";
 import CloseIcon from "@mui/icons-material/Close";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
@@ -47,16 +46,16 @@ export const NumberKeypad = ({
     }
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = useCallback((e: MouseEvent) => {
     if (isDragging) {
       setPosition({
         x: e.clientX - dragOffset.x,
         y: e.clientY - dragOffset.y,
       });
     }
-  };
+  }, [isDragging, dragOffset.x, dragOffset.y]);
 
-  const handleTouchMove = (e: TouchEvent) => {
+  const handleTouchMove = useCallback((e: TouchEvent) => {
     if (isDragging && e.touches.length > 0) {
       e.preventDefault();
       const touch = e.touches[0];
@@ -65,7 +64,7 @@ export const NumberKeypad = ({
         y: touch.clientY - dragOffset.y,
       });
     }
-  };
+  }, [isDragging, dragOffset.x, dragOffset.y]);
 
   const handleDragEnd = () => {
     setIsDragging(false);
@@ -87,7 +86,7 @@ export const NumberKeypad = ({
         document.removeEventListener("touchend", handleDragEnd);
       };
     }
-  }, [isDragging, dragOffset]);
+  }, [isDragging, handleMouseMove, handleTouchMove]);
 
   const handleNumberClick = (number: number) => {
     onKeyPress(number.toString());
