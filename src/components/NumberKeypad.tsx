@@ -33,6 +33,20 @@ export const NumberKeypad = ({
     }
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+
+    if (keypadRef.current && e.touches.length > 0) {
+      const rect = keypadRef.current.getBoundingClientRect();
+      const touch = e.touches[0];
+      setDragOffset({
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top,
+      });
+    }
+  };
+
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging) {
       setPosition({
@@ -42,18 +56,35 @@ export const NumberKeypad = ({
     }
   };
 
-  const handleMouseUp = () => {
+  const handleTouchMove = (e: TouchEvent) => {
+    if (isDragging && e.touches.length > 0) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      setPosition({
+        x: touch.clientX - dragOffset.x,
+        y: touch.clientY - dragOffset.y,
+      });
+    }
+  };
+
+  const handleDragEnd = () => {
     setIsDragging(false);
   };
 
   useEffect(() => {
     if (isDragging) {
       document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("mouseup", handleDragEnd);
+      document.addEventListener("touchmove", handleTouchMove, {
+        passive: false,
+      });
+      document.addEventListener("touchend", handleDragEnd);
 
       return () => {
         document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
+        document.removeEventListener("mouseup", handleDragEnd);
+        document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("touchend", handleDragEnd);
       };
     }
   }, [isDragging, dragOffset]);
@@ -95,6 +126,7 @@ export const NumberKeypad = ({
               },
             }}
             onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
           >
             <DragIndicatorIcon sx={{ color: "grey.500", fontSize: 16 }} />
             <IconButton size="small" onClick={onClose} sx={{ p: 0.5 }}>
