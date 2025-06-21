@@ -8,6 +8,9 @@ import {
   handleMouseDown,
   handleMouseMove,
   handleMouseUp,
+  handleTouchStart,
+  handleTouchMove,
+  handleTouchEnd,
   useKeyDown,
 } from "./events";
 import { RenderOptions } from "./rule";
@@ -560,8 +563,15 @@ export const Editor = (props: EditorProps) => {
             }
             onMouseUp={() => handleMouseUp(dispatchEventRef.current)}
             onMouseLeave={() => handleMouseUp(dispatchEventRef.current)}
+            onTouchStart={(e) =>
+              handleTouchStart(e, cellSize, margin, dispatchEventRef.current)
+            }
+            onTouchMove={(e) =>
+              handleTouchMove(e, cellSize, margin, dispatchEventRef.current)
+            }
+            onTouchEnd={() => handleTouchEnd(dispatchEventRef.current)}
             onContextMenu={(e) => e.preventDefault()}
-            style={{ fontFamily: "sans-serif" }}
+            style={{ fontFamily: "sans-serif", touchAction: "none" }}
           >
             {renderResults}
           </svg>
