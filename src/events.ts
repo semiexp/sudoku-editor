@@ -129,7 +129,12 @@ export const handleMouseDown = (
   margin: number,
   dispatch: ((event: EditorEvent) => void) | null,
 ) => {
-  const { px, py } = getCoordinatesFromEvent(e.clientX, e.clientY, e.currentTarget, margin);
+  const { px, py } = getCoordinatesFromEvent(
+    e.clientX,
+    e.clientY,
+    e.currentTarget,
+    margin,
+  );
   const rightClick = e.button === 2;
   handlePointerDown(px, py, cellSize, rightClick, e.shiftKey, dispatch);
 };
@@ -168,7 +173,12 @@ export const handleMouseMove = (
   margin: number,
   dispatch: ((event: EditorEvent) => void) | null,
 ) => {
-  const { px, py } = getCoordinatesFromEvent(e.clientX, e.clientY, e.currentTarget, margin);
+  const { px, py } = getCoordinatesFromEvent(
+    e.clientX,
+    e.clientY,
+    e.currentTarget,
+    margin,
+  );
   handlePointerMove(px, py, cellSize, dispatch);
 };
 
@@ -191,7 +201,12 @@ export const handleTouchStart = (
 ) => {
   if (e.touches.length > 0) {
     const touch = e.touches[0];
-    const { px, py } = getCoordinatesFromEvent(touch.clientX, touch.clientY, e.currentTarget, margin);
+    const { px, py } = getCoordinatesFromEvent(
+      touch.clientX,
+      touch.clientY,
+      e.currentTarget,
+      margin,
+    );
     handlePointerDown(px, py, cellSize, false, false, dispatch);
   }
 };
@@ -204,7 +219,12 @@ export const handleTouchMove = (
 ) => {
   if (e.touches.length > 0) {
     const touch = e.touches[0];
-    const { px, py } = getCoordinatesFromEvent(touch.clientX, touch.clientY, e.currentTarget, margin);
+    const { px, py } = getCoordinatesFromEvent(
+      touch.clientX,
+      touch.clientY,
+      e.currentTarget,
+      margin,
+    );
     handlePointerMove(px, py, cellSize, dispatch);
   }
 };
