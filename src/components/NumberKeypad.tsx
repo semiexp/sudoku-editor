@@ -46,25 +46,31 @@ export const NumberKeypad = ({
     }
   };
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (isDragging) {
-      setPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y,
-      });
-    }
-  }, [isDragging, dragOffset.x, dragOffset.y]);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (isDragging) {
+        setPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y,
+        });
+      }
+    },
+    [isDragging, dragOffset.x, dragOffset.y],
+  );
 
-  const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (isDragging && e.touches.length > 0) {
-      e.preventDefault();
-      const touch = e.touches[0];
-      setPosition({
-        x: touch.clientX - dragOffset.x,
-        y: touch.clientY - dragOffset.y,
-      });
-    }
-  }, [isDragging, dragOffset.x, dragOffset.y]);
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (isDragging && e.touches.length > 0) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        setPosition({
+          x: touch.clientX - dragOffset.x,
+          y: touch.clientY - dragOffset.y,
+        });
+      }
+    },
+    [isDragging, dragOffset.x, dragOffset.y],
+  );
 
   const handleDragEnd = () => {
     setIsDragging(false);
