@@ -24,6 +24,8 @@
       "title": "Disclaimer",
       "content": "The author shall not be liable for any problem caused by using this tool."
     },
+    "versions": "Version information",
+    "buildDate": "Build date",
     "licenses": "Licenses"
   },
   "rule": {

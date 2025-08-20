@@ -16,6 +16,16 @@ export const HelpDialog = (props: {
 
   const { t } = useTranslation();
 
+  const sudokuEditorVersion = document
+    .querySelector('meta[name="revision-sudoku-editor"]')
+    ?.getAttribute("content");
+  const cspuzCoreVersion = document
+    .querySelector('meta[name="revision-cspuz-core"]')
+    ?.getAttribute("content");
+  const buildDate = document
+    .querySelector('meta[name="build-date"]')
+    ?.getAttribute("content");
+
   return (
     <AutoMuiDialog>
       <DialogContent>
@@ -25,6 +35,29 @@ export const HelpDialog = (props: {
         <Typography>{t("help.usage.content3")}</Typography>
         <Typography variant="h5">{t("help.disclaimer.title")}</Typography>
         <Typography>{t("help.disclaimer.content")}</Typography>
+
+        <Typography variant="h5">{t("help.versions")}</Typography>
+        <Typography>
+          {sudokuEditorVersion && (
+            <>
+              <a href="https://github.com/semiexp/sudoku-editor">
+                sudoku-editor
+              </a>
+              : {sudokuEditorVersion} <br />
+            </>
+          )}
+          {cspuzCoreVersion && (
+            <>
+              <a href="https://github.com/semiexp/cspuz_core">cspuz-core</a>:{" "}
+              {cspuzCoreVersion} <br />
+            </>
+          )}
+          {buildDate && (
+            <>
+              {t("help.buildDate")}: {buildDate} <br />
+            </>
+          )}
+        </Typography>
 
         <Typography>
           <a href="licenses.txt">{t("help.licenses")}</a>
