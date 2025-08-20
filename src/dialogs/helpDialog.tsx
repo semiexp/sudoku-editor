@@ -48,7 +48,7 @@ export const HelpDialog = (props: {
           )}
           {cspuzCoreVersion && (
             <>
-              <a href="https://github.com/semiexp/cspuz_core">cspuz-core</a>:
+              <a href="https://github.com/semiexp/cspuz_core">cspuz-core</a>:{" "}
               {cspuzCoreVersion} <br />
             </>
           )}
