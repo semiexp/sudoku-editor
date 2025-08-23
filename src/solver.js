@@ -1,12 +1,8 @@
 import Module from "./solver/sudoku_variants_solver.js";
 
-let Solver = null;
+let Solver = await Module();
 
 export function solve(problem) {
-  if (Solver === null) {
-    Solver = Module();
-  }
-
   const puzzle = { size: problem.size };
   for (const rule of problem.enabledRules) {
     puzzle[rule] = problem.ruleData.get(rule);
