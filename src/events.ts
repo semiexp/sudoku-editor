@@ -37,33 +37,41 @@ export const handleKeyDown = (
   dispatch(event);
 };
 
-export const handleMouseDown = (
-  e: React.MouseEvent<Element, MouseEvent>,
-  cellSize: number,
+const getCoordinatesFromEvent = (
+  clientX: number,
+  clientY: number,
+  currentTarget: Element,
   margin: number,
+) => {
+  const rect = currentTarget.getBoundingClientRect();
+  const px = clientX - rect.left - margin;
+  const py = clientY - rect.top - margin;
+  return { px, py };
+};
+
+const handlePointerDown = (
+  px: number,
+  py: number,
+  cellSize: number,
+  rightClick: boolean,
+  shift: boolean,
   dispatch: ((event: EditorEvent) => void) | null,
 ) => {
   if (dispatch === null) {
     return;
   }
 
-  const rect = e.currentTarget.getBoundingClientRect();
-
-  const px = e.clientX - rect.left - margin;
-  const py = e.clientY - rect.top - margin;
-
   // cell
   {
     const x = Math.floor(px / cellSize);
     const y = Math.floor(py / cellSize);
-    const rightClick = e.button === 2;
 
     const event: EditorEvent = {
       type: "cellMouseDown",
       x,
       y,
       rightClick,
-      shift: e.shiftKey,
+      shift,
     };
     dispatch(event);
   }
@@ -115,20 +123,31 @@ export const handleMouseDown = (
   }
 };
 
-export const handleMouseMove = (
+export const handleMouseDown = (
   e: React.MouseEvent<Element, MouseEvent>,
   cellSize: number,
   margin: number,
   dispatch: ((event: EditorEvent) => void) | null,
 ) => {
+  const { px, py } = getCoordinatesFromEvent(
+    e.clientX,
+    e.clientY,
+    e.currentTarget,
+    margin,
+  );
+  const rightClick = e.button === 2;
+  handlePointerDown(px, py, cellSize, rightClick, e.shiftKey, dispatch);
+};
+
+const handlePointerMove = (
+  px: number,
+  py: number,
+  cellSize: number,
+  dispatch: ((event: EditorEvent) => void) | null,
+) => {
   if (dispatch === null) {
     return;
   }
-
-  const rect = e.currentTarget.getBoundingClientRect();
-
-  const px = e.clientX - rect.left - margin;
-  const py = e.clientY - rect.top - margin;
 
   // cell
   {
@@ -148,7 +167,69 @@ export const handleMouseMove = (
   }
 };
 
+export const handleMouseMove = (
+  e: React.MouseEvent<Element, MouseEvent>,
+  cellSize: number,
+  margin: number,
+  dispatch: ((event: EditorEvent) => void) | null,
+) => {
+  const { px, py } = getCoordinatesFromEvent(
+    e.clientX,
+    e.clientY,
+    e.currentTarget,
+    margin,
+  );
+  handlePointerMove(px, py, cellSize, dispatch);
+};
+
 export const handleMouseUp = (
+  dispatch: ((event: EditorEvent) => void) | null,
+) => {
+  if (dispatch === null) {
+    return;
+  }
+
+  const event: EditorEvent = { type: "mouseUp" };
+  dispatch(event);
+};
+
+export const handleTouchStart = (
+  e: React.TouchEvent<Element>,
+  cellSize: number,
+  margin: number,
+  dispatch: ((event: EditorEvent) => void) | null,
+) => {
+  if (e.touches.length > 0) {
+    const touch = e.touches[0];
+    const { px, py } = getCoordinatesFromEvent(
+      touch.clientX,
+      touch.clientY,
+      e.currentTarget,
+      margin,
+    );
+    handlePointerDown(px, py, cellSize, false, false, dispatch);
+  }
+};
+
+export const handleTouchMove = (
+  e: React.TouchEvent<Element>,
+  cellSize: number,
+  margin: number,
+  dispatch: ((event: EditorEvent) => void) | null,
+) => {
+  if (e.touches.length > 0) {
+    const touch = e.touches[0];
+    const { px, py } = getCoordinatesFromEvent(
+      touch.clientX,
+      touch.clientY,
+      e.currentTarget,
+      margin,
+    );
+    handlePointerMove(px, py, cellSize, dispatch);
+  }
+};
+
+export const handleTouchEnd = (
   dispatch: ((event: EditorEvent) => void) | null,
 ) => {
   if (dispatch === null) {
