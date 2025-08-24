@@ -148,7 +148,7 @@ export const skyscrapersRule: Rule<SkyscrapersState, SkyscrapersData> = {
   exportToPenpa: (data) => {
     const items: Item[] = [];
 
-    let n = data.up.length;
+    const n = data.up.length;
     for (let i = 0; i < n; ++i) {
       if (data.up[i] !== null) {
         items.push({

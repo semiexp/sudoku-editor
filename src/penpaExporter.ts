@@ -112,10 +112,10 @@ const marginLine = (margin: number): string => {
 
 const cellsLine = (boardSize: number, margin: number): string => {
   let lastId = 0;
-  let res = [];
+  const res = [];
   for (let y = 0; y < boardSize; ++y) {
     for (let x = 0; x < boardSize; ++x) {
-      let curId = positionId(boardSize, margin, { y, x });
+      const curId = positionId(boardSize, margin, { y, x });
       res.push(curId - lastId);
       lastId = curId;
     }
@@ -206,15 +206,15 @@ const itemsLine = (
   margin: number,
   items: Item[],
 ): string => {
-  let texts: Record<string, any> = {};
-  let smallTexts: Record<string, any> = {};
-  let symbols: Record<string, any> = {};
-  let cells: Record<string, any> = {};
-  let edges: Record<string, any> = {};
-  let lines: Record<string, any> = {};
-  let frames: Record<string, any> = {};
-  let arrows: number[][] = [];
-  let thermos: number[][] = [];
+  const texts: Record<string, unknown> = {};
+  const smallTexts: Record<string, unknown> = {};
+  const symbols: Record<string, unknown> = {};
+  const cells: Record<string, unknown> = {};
+  const edges: Record<string, unknown> = {};
+  const lines: Record<string, unknown> = {};
+  const frames: Record<string, unknown> = {};
+  const arrows: number[][] = [];
+  const thermos: number[][] = [];
 
   for (const item of items) {
     if (item.kind === "text") {
