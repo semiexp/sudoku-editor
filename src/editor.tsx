@@ -29,6 +29,7 @@ import RedoIcon from "@mui/icons-material/Redo";
 import AddBox from "@mui/icons-material/AddBox";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import SaveIcon from "@mui/icons-material/Save";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import HelpIcon from "@mui/icons-material/Help";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
@@ -36,6 +37,7 @@ import KeyboardIcon from "@mui/icons-material/Keyboard";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { TooltipButton } from "./components/tooltipButton";
 import { NewBoardDialog } from "./dialogs/newBoardDialog";
+import { ExportDialog } from "./dialogs/exportDialog";
 import { LoadDialog } from "./dialogs/loadDialog";
 import { SaveDialog } from "./dialogs/saveDialog";
 import { HelpDialog } from "./dialogs/helpDialog";
@@ -489,6 +491,14 @@ export const Editor = (props: EditorProps) => {
           }}
         >
           <SaveIcon />
+        </TooltipButton>
+        <TooltipButton
+          title={t("ui.export")}
+          onClick={async () => {
+            await openDialog(ExportDialog, { problem: props.problem });
+          }}
+        >
+          <SaveAltIcon />
         </TooltipButton>
         <TooltipButton
           title={t("ui.undo")}
