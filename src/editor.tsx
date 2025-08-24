@@ -19,7 +19,6 @@ import {
   Box,
   Checkbox,
   FormControlLabel,
-  Switch,
   Toolbar,
   Typography,
   MenuItem,
@@ -34,6 +33,7 @@ import HelpIcon from "@mui/icons-material/Help";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import KeyboardIcon from "@mui/icons-material/Keyboard";
+import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { TooltipButton } from "./components/tooltipButton";
 import { NewBoardDialog } from "./dialogs/newBoardDialog";
 import { LoadDialog } from "./dialogs/loadDialog";
@@ -529,16 +529,19 @@ export const Editor = (props: EditorProps) => {
         >
           <KeyboardIcon />
         </TooltipButton>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={enableSolver}
-              onChange={(e) => setEnableSolver(e.target.checked)}
-            />
-          }
-          label={t("ui.autoSolver")}
-          sx={{ ml: 0.5 }}
-        />
+        <TooltipButton
+          title={t("ui.autoSolver")}
+          onClick={() => setEnableSolver(!enableSolver)}
+          sx={{
+            backgroundColor: enableSolver ? "primary.main" : "transparent",
+            color: enableSolver ? "white" : "inherit",
+            "&:hover": {
+              backgroundColor: enableSolver ? "primary.dark" : "action.hover",
+            },
+          }}
+        >
+          <AutoFixHighIcon />
+        </TooltipButton>
         <Select
           value={i18n.language}
           onChange={(e) => i18n.changeLanguage(e.target.value)}
