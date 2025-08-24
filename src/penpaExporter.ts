@@ -205,7 +205,7 @@ const itemsLine = (
   boardSize: number,
   margin: number,
   items: Item[],
-): string => {
+): { data: string; hasConflicts: boolean } => {
   const texts: Record<string, unknown> = {};
   const smallTexts: Record<string, unknown> = {};
   const symbols: Record<string, unknown> = {};
@@ -216,23 +216,36 @@ const itemsLine = (
   const arrows: number[][] = [];
   const thermos: number[][] = [];
 
+  let hasConflicts = false;
+  const update = (
+    target: Record<string, unknown>,
+    key: string,
+    value: unknown,
+  ) => {
+    if (key in target) {
+      hasConflicts = true;
+    } else {
+      target[key] = value;
+    }
+  };
+
   for (const item of items) {
     if (item.kind === "text") {
       const idx = positionId(boardSize, margin, item.position);
-      texts[idx.toString()] = [item.value, item.color, item.style];
+      update(texts, idx.toString(), [item.value, item.color, item.style]);
     } else if (item.kind === "smallText") {
       const idx = positionId(boardSize, margin, item.position);
-      smallTexts[idx.toString()] = [item.value, item.style];
+      update(smallTexts, idx.toString(), [item.value, item.style]);
     } else if (item.kind === "symbol") {
       const idx = positionId(boardSize, margin, item.position);
-      symbols[idx.toString()] = [
+      update(symbols, idx.toString(), [
         item.color,
         item.symbolName,
         item.isFront ? 2 : 1,
-      ];
+      ]);
     } else if (item.kind === "cell") {
       const idx = positionId(boardSize, margin, item.position);
-      cells[idx.toString()] = item.style;
+      update(cells, idx.toString(), item.style);
     } else if (item.kind === "edge") {
       const dy1 = item.position.direction === "horizontal" ? 1 : 0;
       const dx1 = item.position.direction === "horizontal" ? 0 : 1;
@@ -244,22 +257,22 @@ const itemsLine = (
         y: item.position.y + 1,
         x: item.position.x + 1,
       });
-      edges[`${idx1},${idx2}`] = item.style;
+      update(edges, `${idx1},${idx2}`, item.style);
     } else if (item.kind === "line") {
       const idx1 = positionId(boardSize, margin, item.position1);
       const idx2 = positionId(boardSize, margin, item.position2);
 
       if (idx1 < idx2) {
-        lines[`${idx1},${idx2}`] = item.style;
+        update(lines, `${idx1},${idx2}`, item.style);
       } else {
-        lines[`${idx2},${idx1}`] = item.style;
+        update(lines, `${idx2},${idx1}`, item.style);
       }
     } else if (item.kind === "diagonal") {
       if (item.direction === "main") {
         for (let i = 0; i < boardSize; ++i) {
           const idx1 = vertexId(boardSize, margin, { y: i, x: i });
           const idx2 = vertexId(boardSize, margin, { y: i + 1, x: i + 1 });
-          edges[`${idx1},${idx2}`] = 12;
+          update(edges, `${idx1},${idx2}`, 12);
         }
       } else {
         for (let i = 0; i < boardSize; ++i) {
@@ -268,7 +281,7 @@ const itemsLine = (
             y: i + 1,
             x: boardSize - (i + 1),
           });
-          edges[`${idx1},${idx2}`] = 12;
+          update(edges, `${idx1},${idx2}`, 12);
         }
       }
     } else if (item.kind === "arrow") {
@@ -282,9 +295,9 @@ const itemsLine = (
         const idx2 = positionId(boardSize, margin, line[1]);
 
         if (idx1 < idx2) {
-          frames[`${idx1},${idx2}`] = item.style;
+          update(frames, `${idx1},${idx2}`, item.style);
         } else {
-          frames[`${idx2},${idx1}`] = item.style;
+          update(frames, `${idx2},${idx1}`, item.style);
         }
       }
     }
@@ -300,13 +313,14 @@ const itemsLine = (
   const zL = JSON.stringify(lines);
   const zC = JSON.stringify(frames);
 
-  return `{zR:{z_:[]},zU:{z_:[]},z8:{z_:[]},zS:${zS},zN:${zN},z1:${z1},zY:${zY},zF:{},z2:{},zT:${zT},z3:${z3},zD:[],z0:[],z5:[],zL:${zL},zE:${zE},zW:{},zC:${zC},z4:{},z6:[],z7:[]}`;
+  const data = `{zR:{z_:[]},zU:{z_:[]},z8:{z_:[]},zS:${zS},zN:${zN},z1:${z1},zY:${zY},zF:{},z2:{},zT:${zT},z3:${z3},zD:[],z0:[],z5:[],zL:${zL},zE:${zE},zW:{},zC:${zC},z4:{},z6:[],z7:[]}`;
+  return { data, hasConflicts };
 };
 
 const exportBoardDataToPenpa = (
   boardSize: number,
   data: BoardData[],
-): string => {
+): { url: string; hasConflicts: boolean } => {
   let margin = 0;
   for (const item of data) {
     margin = Math.max(margin, item.margin);
@@ -320,10 +334,12 @@ const exportBoardDataToPenpa = (
     }
   }
 
+  const itemsData = itemsLine(boardSize, margin, allItems);
+
   const res = `${headerLine(n)}
 ${marginLine(margin)}
 ["1","2","1"]~zS~["",1]
-${itemsLine(boardSize, margin, allItems)}
+${itemsData.data}
 
 ${cellsLine(boardSize, margin)}
 []
@@ -340,11 +356,13 @@ x
 []
 false`;
   const urlPrefix = "https://opt-pan.github.io/penpa-edit/#m=solve&p=";
-  return urlPrefix + deflateBase64(res);
+  const url = urlPrefix + deflateBase64(res);
+
+  return { url, hasConflicts: itemsData.hasConflicts };
 };
 
 export type ExportResult =
-  | { status: "ok"; url: string }
+  | { status: "ok"; url: string; hasConflicts: boolean }
   | { status: "error"; reason: string };
 
 export const exportProblemToPenpa = (problem: Problem): ExportResult => {
@@ -355,5 +373,5 @@ export const exportProblemToPenpa = (problem: Problem): ExportResult => {
     }
   }
   const url = exportBoardDataToPenpa(problem.size, data);
-  return { status: "ok", url };
+  return { status: "ok", url: url.url, hasConflicts: url.hasConflicts };
 };

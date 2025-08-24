@@ -14,6 +14,7 @@
     "copyToClipboard": "クリップボードにコピー",
     "saveDialogNote": "注意: 選択されていないルールのデータは失われます。",
     "openInPenpa": "penpa-editor で開く",
+    "exportConflicts": "エクスポート時に、盤面要素に競合が発生しました。出力結果が正しくない可能性があります。",
     "undo": "元に戻す",
     "redo": "やり直し",
     "zoomIn": "拡大",

@@ -25,6 +25,7 @@ export const ExportDialog = (props: {
   const result = exportProblemToPenpa(initialValues.problem);
   const url = result.status === "ok" ? result.url : null;
   const error = result.status === "error" ? result.reason : null;
+  const hasConflicts = result.status === "ok" && result.hasConflicts;
 
   return (
     <AutoMuiDialog>
@@ -37,6 +38,9 @@ export const ExportDialog = (props: {
                 {t("ui.openInPenpa")}
               </a>
             </Typography>
+            {hasConflicts && (
+              <Typography color="error">{t("ui.exportConflicts")}</Typography>
+            )}
             <TextField
               value={url}
               multiline
