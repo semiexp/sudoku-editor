@@ -22,6 +22,12 @@ export type Item =
       style: string;
     }
   | {
+      kind: "smallText";
+      position: SmallCell;
+      value: string;
+      style: number;
+    }
+  | {
       kind: "symbol";
       position: Cell | Edge;
       color: number;
@@ -58,7 +64,7 @@ const positionId = (
       40 * n +
       104 +
       (position.y + margin) * 4 * (n + 4) +
-      position.x * 4;
+      (position.x + margin) * 4;
     switch (position.position) {
       case "ul":
         return base + 0;
@@ -201,6 +207,7 @@ const itemsLine = (
   items: Item[],
 ): string => {
   let texts: Record<string, any> = {};
+  let smallTexts: Record<string, any> = {};
   let symbols: Record<string, any> = {};
   let cells: Record<string, any> = {};
   let edges: Record<string, any> = {};
@@ -213,6 +220,9 @@ const itemsLine = (
     if (item.kind === "text") {
       const idx = positionId(boardSize, margin, item.position);
       texts[idx.toString()] = [item.value, item.color, item.style];
+    } else if (item.kind === "smallText") {
+      const idx = positionId(boardSize, margin, item.position);
+      smallTexts[idx.toString()] = [item.value, item.style];
     } else if (item.kind === "symbol") {
       const idx = positionId(boardSize, margin, item.position);
       symbols[idx.toString()] = [
@@ -281,6 +291,7 @@ const itemsLine = (
   }
 
   const zN = JSON.stringify(texts);
+  const z1 = JSON.stringify(smallTexts);
   const zY = JSON.stringify(symbols);
   const zS = JSON.stringify(cells);
   const zE = JSON.stringify(edges);
@@ -289,7 +300,7 @@ const itemsLine = (
   const zL = JSON.stringify(lines);
   const zC = JSON.stringify(frames);
 
-  return `{zR:{z_:[]},zU:{z_:[]},z8:{z_:[]},zS:${zS},zN:${zN},z1:{},zY:${zY},zF:{},z2:{},zT:${zT},z3:${z3},zD:[],z0:[],z5:[],zL:${zL},zE:${zE},zW:{},zC:${zC},z4:{},z6:[],z7:[]}`;
+  return `{zR:{z_:[]},zU:{z_:[]},z8:{z_:[]},zS:${zS},zN:${zN},z1:${z1},zY:${zY},zF:{},z2:{},zT:${zT},z3:${z3},zD:[],z0:[],z5:[],zL:${zL},zE:${zE},zW:{},zC:${zC},z4:{},z6:[],z7:[]}`;
 };
 
 const exportBoardDataToPenpa = (

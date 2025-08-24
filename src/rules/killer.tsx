@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
 import { Rule, PRIORITY_KILLER } from "../rule";
 import { reducerForRegions, rendererForRegions } from "./regionsUtil";
+import { Item } from "../penpaExporter";
 
 type Region = { cells: { y: number; x: number }[]; extraValue?: number | null };
 
@@ -107,5 +108,34 @@ export const killerRule: Rule<KillerState, KillerData> = {
       item: <g>{items}</g>,
     });
     return ret;
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = [];
+
+    for (const region of data.regions) {
+      items.push({
+        kind: "region",
+        cells: region.cells,
+        style: 10,
+      });
+
+      if (
+        region.cells.length > 0 &&
+        region.extraValue !== null &&
+        region.extraValue !== undefined
+      ) {
+        const smallestCell = region.cells.reduce((a, b) =>
+          a.y < b.y || (a.y === b.y && a.x < b.x) ? a : b,
+        );
+        items.push({
+          kind: "smallText",
+          position: { y: smallestCell.y, x: smallestCell.x, position: "ul" },
+          value: region.extraValue.toString(),
+          style: 1,
+        });
+      }
+    }
+
+    return { items, margin: 0 };
   },
 };
