@@ -1,4 +1,5 @@
 import { Rule, PRIORITY_DIAGNOAL } from "../rule";
+import { Item } from "../penpaExporter";
 
 type DiagonalState = object;
 type DiagonalData = {
@@ -61,5 +62,15 @@ export const diagonalRule: Rule<DiagonalState, DiagonalData> = {
         item: <g>{items}</g>,
       },
     ];
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = [];
+    if (data.mainDiagonal) {
+      items.push({ kind: "diagonal", direction: "main" });
+    }
+    if (data.antiDiagonal) {
+      items.push({ kind: "diagonal", direction: "anti" });
+    }
+    return { items, margin: 0 };
   },
 };

@@ -23,7 +23,8 @@ export type Item =
       symbolName: string;
       isFront: boolean;
     }
-  | { kind: "edge"; position: Edge; style: number };
+  | { kind: "edge"; position: Edge; style: number }
+  | { kind: "diagonal"; direction: "main" | "anti" };
 export type BoardData = {
   items: Item[];
   margin: number;
@@ -117,6 +118,23 @@ const itemsLine = (
         x: item.position.x + 1,
       });
       edges[`${idx1},${idx2}`] = item.style;
+    } else if (item.kind === "diagonal") {
+      if (item.direction === "main") {
+        for (let i = 0; i < boardSize; ++i) {
+          const idx1 = vertexId(boardSize, margin, { y: i, x: i });
+          const idx2 = vertexId(boardSize, margin, { y: i + 1, x: i + 1 });
+          edges[`${idx1},${idx2}`] = 12;
+        }
+      } else {
+        for (let i = 0; i < boardSize; ++i) {
+          const idx1 = vertexId(boardSize, margin, { y: i, x: boardSize - i });
+          const idx2 = vertexId(boardSize, margin, {
+            y: i + 1,
+            x: boardSize - (i + 1),
+          });
+          edges[`${idx1},${idx2}`] = 12;
+        }
+      }
     }
   }
 
