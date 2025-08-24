@@ -3,6 +3,11 @@ import { Problem } from "./puzzle";
 import { allRules } from "./rules/rules";
 
 export type Cell = { y: number; x: number };
+export type SmallCell = {
+  y: number;
+  x: number;
+  position: "ul" | "ur" | "dl" | "dr";
+};
 export type Edge = {
   y: number;
   x: number;
@@ -23,6 +28,7 @@ export type Item =
       symbolName: string;
       isFront: boolean;
     }
+  | { kind: "cell"; position: Cell; style: number }
   | { kind: "edge"; position: Edge; style: number }
   | {
       kind: "line";
@@ -32,7 +38,8 @@ export type Item =
     }
   | { kind: "diagonal"; direction: "main" | "anti" }
   | { kind: "arrow"; cells: Cell[] }
-  | { kind: "thermo"; cells: Cell[] };
+  | { kind: "thermo"; cells: Cell[] }
+  | { kind: "region"; cells: Cell[]; style: number };
 export type BoardData = {
   items: Item[];
   margin: number;
@@ -41,11 +48,28 @@ export type BoardData = {
 const positionId = (
   boardSize: number,
   margin: number,
-  position: Cell | Edge,
+  position: Cell | SmallCell | Edge,
 ): number => {
   const n = boardSize + margin * 2;
   const coord = (position.y + margin) * (n + 4) + (position.x + margin);
-  if ("direction" in position) {
+  if ("position" in position) {
+    const base =
+      4 * n * n +
+      40 * n +
+      104 +
+      (position.y + margin) * 4 * (n + 4) +
+      position.x * 4;
+    switch (position.position) {
+      case "ul":
+        return base + 0;
+      case "ur":
+        return base + 1;
+      case "dl":
+        return base + 2;
+      case "dr":
+        return base + 3;
+    }
+  } else if ("direction" in position) {
     if (position.direction === "horizontal") {
       return 2 * n * n + 18 * n + 42 + coord;
     } else {
@@ -94,6 +118,83 @@ const cellsLine = (boardSize: number, margin: number): string => {
   return JSON.stringify(res);
 };
 
+const makeFrameLines = (cells: Cell[]): [SmallCell, SmallCell][] => {
+  const ret: [SmallCell, SmallCell][] = [];
+
+  for (const { y, x } of cells) {
+    const neighbors = [
+      [false, false, false],
+      [false, false, false],
+      [false, false, false],
+    ];
+    for (let dy = -1; dy <= 1; ++dy) {
+      for (let dx = -1; dx <= 1; ++dx) {
+        if (dy === 0 && dx === 0) {
+          continue;
+        }
+        if (cells.some((c) => c.y === y + dy && c.x === x + dx)) {
+          neighbors[dy + 1][dx + 1] = true;
+        }
+      }
+    }
+
+    if (!neighbors[0][1]) {
+      ret.push([
+        { y, x, position: "ul" },
+        { y, x, position: "ur" },
+      ]);
+    }
+    if (!neighbors[1][0]) {
+      ret.push([
+        { y, x, position: "ul" },
+        { y, x, position: "dl" },
+      ]);
+    }
+    if (!neighbors[2][1]) {
+      ret.push([
+        { y, x, position: "dl" },
+        { y, x, position: "dr" },
+      ]);
+    }
+    if (!neighbors[1][2]) {
+      ret.push([
+        { y, x, position: "ur" },
+        { y, x, position: "dr" },
+      ]);
+    }
+    if (neighbors[0][1]) {
+      if (!(neighbors[0][0] && neighbors[1][0])) {
+        ret.push([
+          { y, x, position: "ul" },
+          { y: y - 1, x, position: "dl" },
+        ]);
+      }
+      if (!(neighbors[0][2] && neighbors[1][2])) {
+        ret.push([
+          { y, x, position: "ur" },
+          { y: y - 1, x, position: "dr" },
+        ]);
+      }
+    }
+    if (neighbors[1][0]) {
+      if (!(neighbors[0][0] && neighbors[0][1])) {
+        ret.push([
+          { y, x, position: "ul" },
+          { y, x: x - 1, position: "ur" },
+        ]);
+      }
+      if (!(neighbors[2][0] && neighbors[2][1])) {
+        ret.push([
+          { y, x, position: "dl" },
+          { y, x: x - 1, position: "dr" },
+        ]);
+      }
+    }
+  }
+
+  return ret;
+};
+
 const itemsLine = (
   boardSize: number,
   margin: number,
@@ -101,8 +202,10 @@ const itemsLine = (
 ): string => {
   let texts: Record<string, any> = {};
   let symbols: Record<string, any> = {};
+  let cells: Record<string, any> = {};
   let edges: Record<string, any> = {};
   let lines: Record<string, any> = {};
+  let frames: Record<string, any> = {};
   let arrows: number[][] = [];
   let thermos: number[][] = [];
 
@@ -117,6 +220,9 @@ const itemsLine = (
         item.symbolName,
         item.isFront ? 2 : 1,
       ];
+    } else if (item.kind === "cell") {
+      const idx = positionId(boardSize, margin, item.position);
+      cells[idx.toString()] = item.style;
     } else if (item.kind === "edge") {
       const dy1 = item.position.direction === "horizontal" ? 1 : 0;
       const dx1 = item.position.direction === "horizontal" ? 0 : 1;
@@ -159,17 +265,31 @@ const itemsLine = (
       arrows.push(item.cells.map((c) => positionId(boardSize, margin, c)));
     } else if (item.kind === "thermo") {
       thermos.push(item.cells.map((c) => positionId(boardSize, margin, c)));
+    } else if (item.kind === "region") {
+      const lines = makeFrameLines(item.cells);
+      for (const line of lines) {
+        const idx1 = positionId(boardSize, margin, line[0]);
+        const idx2 = positionId(boardSize, margin, line[1]);
+
+        if (idx1 < idx2) {
+          frames[`${idx1},${idx2}`] = item.style;
+        } else {
+          frames[`${idx2},${idx1}`] = item.style;
+        }
+      }
     }
   }
 
   const zN = JSON.stringify(texts);
   const zY = JSON.stringify(symbols);
+  const zS = JSON.stringify(cells);
   const zE = JSON.stringify(edges);
   const z3 = JSON.stringify(arrows);
   const zT = JSON.stringify(thermos);
   const zL = JSON.stringify(lines);
+  const zC = JSON.stringify(frames);
 
-  return `{zR:{z_:[]},zU:{z_:[]},z8:{z_:[]},zS:{},zN:${zN},z1:{},zY:${zY},zF:{},z2:{},zT:${zT},z3:${z3},zD:[],z0:[],z5:[],zL:${zL},zE:${zE},zW:{},zC:{},z4:{},z6:[],z7:[]}`;
+  return `{zR:{z_:[]},zU:{z_:[]},z8:{z_:[]},zS:${zS},zN:${zN},z1:{},zY:${zY},zF:{},z2:{},zT:${zT},z3:${z3},zD:[],z0:[],z5:[],zL:${zL},zE:${zE},zW:{},zC:${zC},z4:{},z6:[],z7:[]}`;
 };
 
 const exportBoardDataToPenpa = (
