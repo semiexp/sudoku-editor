@@ -11,7 +11,13 @@
     "cancel": "Cancel",
     "close": "Close",
     "copyToClipboard": "Copy to Clipboard",
-    "saveDialogNote": "Note: data for unselected rules will be lost."
+    "saveDialogNote": "Note: data for unselected rules will be lost.",
+    "undo": "Undo",
+    "redo": "Redo",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "keypad": "Toggle Keypad",
+    "help": "Help"
   },
   "help": {
     "usage": {

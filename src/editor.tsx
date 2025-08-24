@@ -22,7 +22,6 @@ import {
   Switch,
   Toolbar,
   Typography,
-  IconButton,
   MenuItem,
   Select,
 } from "@mui/material";
@@ -35,6 +34,7 @@ import HelpIcon from "@mui/icons-material/Help";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import KeyboardIcon from "@mui/icons-material/Keyboard";
+import { TooltipButton } from "./components/tooltipButton";
 import { NewBoardDialog } from "./dialogs/newBoardDialog";
 import { LoadDialog } from "./dialogs/loadDialog";
 import { SaveDialog } from "./dialogs/saveDialog";
@@ -447,7 +447,7 @@ export const Editor = (props: EditorProps) => {
   return (
     <Box>
       <Toolbar variant="dense" sx={{ backgroundColor: "#eeeeee", pl: "20px" }}>
-        <IconButton
+        <TooltipButton
           onClick={async () => {
             const newProblemSpec = await openDialog(NewBoardDialog, {
               size: 9,
@@ -464,10 +464,12 @@ export const Editor = (props: EditorProps) => {
             setAutoSolverAnswer(null);
           }}
           sx={{ ml: -2 }}
+          title={t("ui.newBoard")}
         >
           <AddBox />
-        </IconButton>
-        <IconButton
+        </TooltipButton>
+        <TooltipButton
+          title={t("ui.load")}
           onClick={async () => {
             const loaded = await openDialog(LoadDialog, { content: "" });
             if (loaded === undefined) {
@@ -478,38 +480,44 @@ export const Editor = (props: EditorProps) => {
           }}
         >
           <FileOpenIcon />
-        </IconButton>
-        <IconButton
+        </TooltipButton>
+        <TooltipButton
+          title={t("ui.save")}
           onClick={async () => {
             const problemAsString = saveProblemAsString(problem);
             await openDialog(SaveDialog, { content: problemAsString });
           }}
         >
           <SaveIcon />
-        </IconButton>
-        <IconButton
+        </TooltipButton>
+        <TooltipButton
+          title={t("ui.undo")}
           onClick={problemHistory.undo}
           disabled={!problemHistory.canUndo}
         >
           <UndoIcon />
-        </IconButton>
-        <IconButton
+        </TooltipButton>
+        <TooltipButton
+          title={t("ui.redo")}
           onClick={problemHistory.redo}
           disabled={!problemHistory.canRedo}
         >
           <RedoIcon />
-        </IconButton>
-        <IconButton
-          onClick={() => setCellSize((prev) => Math.min(prev + 10, 100))} // Zoom In
+        </TooltipButton>
+        <TooltipButton
+          title={t("ui.zoomIn")}
+          onClick={() => setCellSize((prev) => Math.min(prev + 10, 100))}
         >
           <ZoomInIcon />
-        </IconButton>
-        <IconButton
-          onClick={() => setCellSize((prev) => Math.max(prev - 10, 20))} // Zoom Out
+        </TooltipButton>
+        <TooltipButton
+          title={t("ui.zoomOut")}
+          onClick={() => setCellSize((prev) => Math.max(prev - 10, 20))}
         >
           <ZoomOutIcon />
-        </IconButton>
-        <IconButton
+        </TooltipButton>
+        <TooltipButton
+          title={t("ui.keypad")}
           onClick={() => setKeypadVisible(!keypadVisible)}
           sx={{
             backgroundColor: keypadVisible ? "primary.main" : "transparent",
@@ -520,7 +528,7 @@ export const Editor = (props: EditorProps) => {
           }}
         >
           <KeyboardIcon />
-        </IconButton>
+        </TooltipButton>
         <FormControlLabel
           control={
             <Switch
@@ -539,13 +547,14 @@ export const Editor = (props: EditorProps) => {
           <MenuItem value="en">English</MenuItem>
           <MenuItem value="ja">日本語</MenuItem>
         </Select>
-        <IconButton
+        <TooltipButton
+          title={t("ui.help")}
           onClick={async () => {
             await openDialog(HelpDialog, { initialValues: {} });
           }}
         >
           <HelpIcon />
-        </IconButton>
+        </TooltipButton>
       </Toolbar>
       <Box sx={{ display: "flex" }}>
         <Box sx={{ border: "1px solid black", margin: "5px" }}>

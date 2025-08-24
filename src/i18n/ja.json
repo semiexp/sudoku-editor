@@ -11,7 +11,13 @@
     "cancel": "キャンセル",
     "close": "閉じる",
     "copyToClipboard": "クリップボードにコピー",
-    "saveDialogNote": "注意: 選択されていないルールのデータは失われます。"
+    "saveDialogNote": "注意: 選択されていないルールのデータは失われます。",
+    "undo": "元に戻す",
+    "redo": "やり直し",
+    "zoomIn": "拡大",
+    "zoomOut": "縮小",
+    "keypad": "キーパッド",
+    "help": "ヘルプ"
   },
   "help": {
     "usage": {
