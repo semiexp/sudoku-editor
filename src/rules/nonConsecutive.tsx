@@ -17,4 +17,7 @@ export const nonConsecutiveRule: Rule<NonConsecutiveState, NonConsecutiveData> =
     render: () => {
       return [];
     },
+    exportToPenpa: () => {
+      return { items: [], margin: 0 };
+    },
   };
