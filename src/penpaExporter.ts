@@ -24,6 +24,12 @@ export type Item =
       isFront: boolean;
     }
   | { kind: "edge"; position: Edge; style: number }
+  | {
+      kind: "line";
+      position1: Cell | Edge;
+      position2: Cell | Edge;
+      style: number;
+    }
   | { kind: "diagonal"; direction: "main" | "anti" }
   | { kind: "arrow"; cells: Cell[] }
   | { kind: "thermo"; cells: Cell[] };
@@ -96,6 +102,7 @@ const itemsLine = (
   let texts: Record<string, any> = {};
   let symbols: Record<string, any> = {};
   let edges: Record<string, any> = {};
+  let lines: Record<string, any> = {};
   let arrows: number[][] = [];
   let thermos: number[][] = [];
 
@@ -122,6 +129,15 @@ const itemsLine = (
         x: item.position.x + 1,
       });
       edges[`${idx1},${idx2}`] = item.style;
+    } else if (item.kind === "line") {
+      const idx1 = positionId(boardSize, margin, item.position1);
+      const idx2 = positionId(boardSize, margin, item.position2);
+
+      if (idx1 < idx2) {
+        lines[`${idx1},${idx2}`] = item.style;
+      } else {
+        lines[`${idx2},${idx1}`] = item.style;
+      }
     } else if (item.kind === "diagonal") {
       if (item.direction === "main") {
         for (let i = 0; i < boardSize; ++i) {
@@ -151,8 +167,9 @@ const itemsLine = (
   const zE = JSON.stringify(edges);
   const z3 = JSON.stringify(arrows);
   const zT = JSON.stringify(thermos);
+  const zL = JSON.stringify(lines);
 
-  return `{zR:{z_:[]},zU:{z_:[]},z8:{z_:[]},zS:{},zN:${zN},z1:{},zY:${zY},zF:{},z2:{},zT:${zT},z3:${z3},zD:[],z0:[],z5:[],zL:{},zE:${zE},zW:{},zC:{},z4:{},z6:[],z7:[]}`;
+  return `{zR:{z_:[]},zU:{z_:[]},z8:{z_:[]},zS:{},zN:${zN},z1:{},zY:${zY},zF:{},z2:{},zT:${zT},z3:${z3},zD:[],z0:[],z5:[],zL:${zL},zE:${zE},zW:{},zC:{},z4:{},z6:[],z7:[]}`;
 };
 
 const exportBoardDataToPenpa = (

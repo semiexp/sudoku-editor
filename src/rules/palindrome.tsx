@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
 import { Rule, PRIORITY_PALINDROME } from "../rule";
 import { reducerForLines } from "./linesUtil";
+import { Item } from "../penpaExporter";
 
 type Palindrome = { y: number; x: number }[];
 
@@ -80,5 +81,21 @@ export const palindromeRule: Rule<PalindromeState, PalindromeData> = {
         item: <g>{items}</g>,
       },
     ];
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = [];
+
+    for (const palindrome of data.palindromes) {
+      for (let i = 0; i < palindrome.length - 1; ++i) {
+        items.push({
+          kind: "line",
+          position1: palindrome[i],
+          position2: palindrome[i + 1],
+          style: 5,
+        });
+      }
+    }
+
+    return { items, margin: 0 };
   },
 };
