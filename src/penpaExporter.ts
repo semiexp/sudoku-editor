@@ -167,14 +167,24 @@ false`;
   return urlPrefix + deflateBase64(res);
 };
 
-export const exportProblemToPenpa = (problem: Problem): string => {
+export type ExportResult =
+  | { status: "ok"; url: string }
+  | { status: "error"; reason: string };
+
+export const exportProblemToPenpa = (problem: Problem): ExportResult => {
   const data: BoardData[] = [];
   for (const rule of allRules) {
     if (problem.enabledRules.includes(rule.name)) {
       if (rule.exportToPenpa !== undefined) {
         data.push(rule.exportToPenpa(problem.ruleData.get(rule.name)));
+      } else {
+        return {
+          status: "error",
+          reason: `Export function not defined for rule "${rule.name}"`,
+        };
       }
     }
   }
-  return exportBoardDataToPenpa(problem.size, data);
+  const url = exportBoardDataToPenpa(problem.size, data);
+  return { status: "ok", url };
 };

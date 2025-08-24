@@ -22,32 +22,41 @@ export const ExportDialog = (props: {
 
   const { t } = useTranslation();
 
-  const url = exportProblemToPenpa(initialValues.problem);
+  const result = exportProblemToPenpa(initialValues.problem);
+  const url = result.status === "ok" ? result.url : null;
+  const error = result.status === "error" ? result.reason : null;
 
   return (
     <AutoMuiDialog>
       <DialogTitle>{t("ui.export")}</DialogTitle>
       <DialogContent>
-        <Typography>
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            {t("ui.openInPenpa")}
-          </a>
-        </Typography>
-        <TextField
-          value={url}
-          multiline
-          minRows={10}
-          maxRows={10}
-          sx={{ width: "100%", minWidth: 400 }}
-          slotProps={{
-            htmlInput: { readOnly: true },
-          }}
-        />
+        {url !== null && (
+          <>
+            <Typography>
+              <a href={url} target="_blank" rel="noopener noreferrer">
+                {t("ui.openInPenpa")}
+              </a>
+            </Typography>
+            <TextField
+              value={url}
+              multiline
+              minRows={10}
+              maxRows={10}
+              sx={{ width: "100%", minWidth: 400 }}
+              slotProps={{
+                htmlInput: { readOnly: true },
+              }}
+            />
+          </>
+        )}
+        {url === null && <Typography color="error">{error}</Typography>}
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => navigator.clipboard.writeText(url)}>
-          {t("ui.copyToClipboard")}
-        </Button>
+        {url !== null && (
+          <Button onClick={() => navigator.clipboard.writeText(url)}>
+            {t("ui.copyToClipboard")}
+          </Button>
+        )}
         <Button onClick={() => close()}>{t("ui.close")}</Button>
       </DialogActions>
     </AutoMuiDialog>
