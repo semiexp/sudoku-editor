@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
 import { Rule, PRIORITY_THERMO } from "../rule";
 import { reducerForLines } from "./linesUtil";
+import { Item } from "../penpaExporter";
 
 type Thermo = { y: number; x: number }[];
 
@@ -86,5 +87,12 @@ export const thermoRule: Rule<ThermoState, ThermoData> = {
         item: <g>{items}</g>,
       },
     ];
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = data.thermos.map((thermo) => ({
+      kind: "thermo",
+      cells: thermo,
+    }));
+    return { items, margin: 0 };
   },
 };
