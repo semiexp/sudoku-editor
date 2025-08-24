@@ -338,7 +338,7 @@ const exportBoardDataToPenpa = (
 
   const res = `${headerLine(n)}
 ${marginLine(margin)}
-["1","2","1"]~zS~["",1]
+["1","2","1"]~"sudoku"~["1",2]
 ${itemsData.data}
 
 ${cellsLine(boardSize, margin)}
