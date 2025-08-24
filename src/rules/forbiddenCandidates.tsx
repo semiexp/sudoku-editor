@@ -3,6 +3,7 @@ import {
   PRIORITY_FORBIDDEN_CANDIDATES,
   PRIORITY_SELECTED_CELL_MARKER,
 } from "../rule";
+import { Item } from "../penpaExporter";
 
 type ForbiddenCandidatesState = {
   selectedCell: { y: number; x: number } | null;
@@ -181,5 +182,27 @@ export const forbiddenCandidatesRule: Rule<
     });
 
     return items;
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = [];
+
+    for (let y = 0; y < data.isForbidden.length; ++y) {
+      for (let x = 0; x < data.isForbidden[y].length; ++x) {
+        const forbiddens = data.isForbidden[y][x];
+        if (forbiddens.some((v) => v)) {
+          const value = forbiddens
+            .map((v, i) => (v ? (i + 1).toString() : null))
+            .filter((v) => v !== null)
+            .join("");
+          items.push({
+            kind: "smallText",
+            position: { y, x, position: "ul" },
+            value: "X" + value,
+            style: 10,
+          });
+        }
+      }
+    }
+    return { items, margin: 0 };
   },
 };
