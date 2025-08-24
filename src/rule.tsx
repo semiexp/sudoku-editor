@@ -35,7 +35,7 @@ export interface Rule<State, Data> {
     priority: number;
     item: ReactElement;
   }[];
-  exportToPenpa?: (data: Data) => BoardData;
+  exportToPenpa: (data: Data) => BoardData;
 }
 
 export const PRIORITY_EXTRA_REGION = -200;
