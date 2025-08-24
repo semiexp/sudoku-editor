@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 import { Rule, PRIORITY_XV } from "../rule";
+import { Item } from "../penpaExporter";
 
 type XVState = object;
 
@@ -122,5 +123,50 @@ export const xvRule: Rule<XVState, XVData> = {
         item: <g>{items}</g>,
       },
     ];
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = [];
+    for (let y = 0; y < data.horizontalBorder.length; ++y) {
+      for (let x = 0; x < data.horizontalBorder[y].length; ++x) {
+        if (data.horizontalBorder[y][x] !== 0) {
+          items.push({
+            kind: "text",
+            position: { y, x, direction: "horizontal" },
+            value: data.horizontalBorder[y][x] === 1 ? "X" : "V",
+            color: 1,
+            style: "6",
+          });
+          items.push({
+            kind: "symbol",
+            position: { y, x, direction: "horizontal" },
+            color: 7,
+            symbolName: "square_S",
+            isFront: true,
+          });
+        }
+      }
+    }
+    for (let y = 0; y < data.verticalBorder.length; ++y) {
+      for (let x = 0; x < data.verticalBorder[y].length; ++x) {
+        if (data.verticalBorder[y][x]) {
+          items.push({
+            kind: "text",
+            position: { y, x, direction: "vertical" },
+            value: data.verticalBorder[y][x] === 1 ? "X" : "V",
+            color: 1,
+            style: "6",
+          });
+          items.push({
+            kind: "symbol",
+            position: { y, x, direction: "vertical" },
+            color: 7,
+            symbolName: "square_S",
+            isFront: true,
+          });
+        }
+      }
+    }
+
+    return { items, margin: 0 };
   },
 };
