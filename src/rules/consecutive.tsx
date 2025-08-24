@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 import { Rule, PRIORITY_CONSECUTIVE } from "../rule";
+import { Item } from "../penpaExporter";
 
 type ConsecutiveState = object;
 
@@ -117,5 +118,36 @@ export const consecutiveRule: Rule<ConsecutiveState, ConsecutiveData> = {
         item: <g>{items}</g>,
       },
     ];
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = [];
+    for (let y = 0; y < data.horizontalBorder.length; ++y) {
+      for (let x = 0; x < data.horizontalBorder[y].length; ++x) {
+        if (data.horizontalBorder[y][x]) {
+          items.push({
+            kind: "symbol",
+            position: { y, x, direction: "horizontal" },
+            color: 2,
+            symbolName: "bars_G",
+            isFront: true,
+          });
+        }
+      }
+    }
+    for (let y = 0; y < data.verticalBorder.length; ++y) {
+      for (let x = 0; x < data.verticalBorder[y].length; ++x) {
+        if (data.verticalBorder[y][x]) {
+          items.push({
+            kind: "symbol",
+            position: { y, x, direction: "vertical" },
+            color: 1,
+            symbolName: "bars_G",
+            isFront: true,
+          });
+        }
+      }
+    }
+
+    return { items, margin: 0 };
   },
 };
