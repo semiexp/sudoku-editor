@@ -1,4 +1,5 @@
 import { Rule, PRIORITY_ODD_EVEN } from "../rule";
+import { Item } from "../penpaExporter";
 
 type OddEvenState = object;
 
@@ -69,5 +70,31 @@ export const oddEvenRule: Rule<OddEvenState, OddEvenData> = {
         item: <g>{items}</g>,
       },
     ];
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = [];
+    for (let y = 0; y < data.cellKind.length; y++) {
+      for (let x = 0; x < data.cellKind[y].length; x++) {
+        const kind = data.cellKind[y][x];
+        if (kind === 1) {
+          items.push({
+            kind: "symbol",
+            position: { y, x },
+            color: 3,
+            symbolName: "circle_L",
+            isFront: false,
+          });
+        } else if (kind === 2) {
+          items.push({
+            kind: "symbol",
+            position: { y, x },
+            color: 3,
+            symbolName: "square_L",
+            isFront: false,
+          });
+        }
+      }
+    }
+    return { items, margin: 0 };
   },
 };
