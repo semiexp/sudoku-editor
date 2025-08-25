@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
 import { Rule, PRIORITY_ARROW } from "../rule";
 import { reducerForLines } from "./linesUtil";
+import { Item } from "../penpaExporter";
 
 type Arrow = { y: number; x: number }[];
 
@@ -124,5 +125,12 @@ export const arrowRule: Rule<ArrowState, ArrowData> = {
         item: <g>{items}</g>,
       },
     ];
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = data.arrows.map((arrow) => ({
+      kind: "arrow",
+      cells: arrow,
+    }));
+    return { items, margin: 0 };
   },
 };

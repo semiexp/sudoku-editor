@@ -3,6 +3,7 @@ import {
   PRIORITY_SELECTED_CELL_MARKER,
   PRIORITY_SKYSCRAPERS_NUMBERS,
 } from "../rule";
+import { Item } from "../penpaExporter";
 
 import { SelectedOutsiceCell, reducerForOutsideCell } from "./outsideUtil";
 
@@ -143,5 +144,50 @@ export const skyscrapersRule: Rule<SkyscrapersState, SkyscrapersData> = {
     });
 
     return items;
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = [];
+
+    const n = data.up.length;
+    for (let i = 0; i < n; ++i) {
+      if (data.up[i] !== null) {
+        items.push({
+          kind: "text",
+          position: { y: -1, x: i },
+          value: data.up[i]!.toString(),
+          color: 1,
+          style: "1",
+        });
+      }
+      if (data.down[i] !== null) {
+        items.push({
+          kind: "text",
+          position: { y: n, x: i },
+          value: data.down[i]!.toString(),
+          color: 1,
+          style: "1",
+        });
+      }
+      if (data.left[i] !== null) {
+        items.push({
+          kind: "text",
+          position: { y: i, x: -1 },
+          value: data.left[i]!.toString(),
+          color: 1,
+          style: "1",
+        });
+      }
+      if (data.right[i] !== null) {
+        items.push({
+          kind: "text",
+          position: { y: i, x: n },
+          value: data.right[i]!.toString(),
+          color: 1,
+          style: "1",
+        });
+      }
+    }
+
+    return { items, margin: 1 };
   },
 };

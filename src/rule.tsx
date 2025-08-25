@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 import { EditorEvent, EditorEventType } from "./events";
+import { BoardData } from "./penpaExporter";
 
 export type RenderOptions = {
   boardSize: number;
@@ -34,6 +35,7 @@ export interface Rule<State, Data> {
     priority: number;
     item: ReactElement;
   }[];
+  exportToPenpa: (data: Data) => BoardData;
 }
 
 export const PRIORITY_EXTRA_REGION = -200;

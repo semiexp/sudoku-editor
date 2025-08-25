@@ -4,6 +4,7 @@ import {
   PRIORITY_CLUE_NUMBERS,
   PRIORITY_SELECTED_CELL_MARKER,
 } from "../rule";
+import { Item } from "../penpaExporter";
 
 type GivenNumbersState = {
   selectedCell: { y: number; x: number } | null;
@@ -157,5 +158,23 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
       });
     }
     return items;
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = [];
+    for (let y = 0; y < data.numbers.length; y++) {
+      for (let x = 0; x < data.numbers[y].length; x++) {
+        const number = data.numbers[y][x];
+        if (number !== null) {
+          items.push({
+            kind: "text",
+            position: { y, x },
+            value: number.toString(),
+            color: 1,
+            style: "1",
+          });
+        }
+      }
+    }
+    return { items, margin: 0 };
   },
 };

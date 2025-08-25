@@ -1,4 +1,5 @@
 import { Rule, PRIORITY_BORDER } from "../rule";
+import { Item } from "../penpaExporter";
 
 type BlocksState = object;
 
@@ -124,5 +125,31 @@ export const blocksRule: Rule<BlocksState, BlocksData> = {
         item: <g>{backgroundItems}</g>,
       },
     ];
+  },
+  exportToPenpa: (data) => {
+    const items: Item[] = [];
+    for (let y = 0; y < data.horizontalBorder.length; ++y) {
+      for (let x = 0; x < data.horizontalBorder[y].length; ++x) {
+        if (data.horizontalBorder[y][x]) {
+          items.push({
+            kind: "edge",
+            position: { y, x, direction: "horizontal" },
+            style: 2,
+          });
+        }
+      }
+    }
+    for (let y = 0; y < data.verticalBorder.length; ++y) {
+      for (let x = 0; x < data.verticalBorder[y].length; ++x) {
+        if (data.verticalBorder[y][x]) {
+          items.push({
+            kind: "edge",
+            position: { y, x, direction: "vertical" },
+            style: 2,
+          });
+        }
+      }
+    }
+    return { items, margin: 0 };
   },
 };

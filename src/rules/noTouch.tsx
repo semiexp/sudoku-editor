@@ -16,4 +16,7 @@ export const noTouchRule: Rule<NoTouchState, NoTouchData> = {
   render: () => {
     return [];
   },
+  exportToPenpa: () => {
+    return { items: [], margin: 0 };
+  },
 };
