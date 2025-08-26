@@ -430,6 +430,7 @@ export const Editor = (props: EditorProps) => {
     selectedRuleIndex: -1,
     ruleState: null,
   });
+  const [lastRuleIdx, setLastRuleIdx] = useState(-1);
   const [enableSolver, setEnableSolver] = useState(false);
   const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
   const [cellSize, setCellSize] = useState(40); // Make cellSize dynamic
@@ -469,7 +470,21 @@ export const Editor = (props: EditorProps) => {
     ruleState,
     setRuleState,
   );
-  useKeyDown((e) => handleKeyDown(e, dispatchEventRef.current));
+  const onTab = () => {
+    if (ruleState.selectedRuleIndex !== 0) {
+      setLastRuleIdx(ruleState.selectedRuleIndex);
+      setRuleState({
+        selectedRuleIndex: 0,
+        ruleState: null,
+      });
+    } else if (lastRuleIdx !== -1) {
+      setRuleState({
+        selectedRuleIndex: lastRuleIdx,
+        ruleState: null,
+      });
+    }
+  };
+  useKeyDown((e) => handleKeyDown(e, dispatchEventRef.current, onTab));
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {

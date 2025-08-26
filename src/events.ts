@@ -28,7 +28,14 @@ export type EditorEventType =
 export const handleKeyDown = (
   e: KeyboardEvent,
   dispatch: ((event: EditorEvent) => void) | null,
+  onTab: () => void,
 ) => {
+  if (e.key === "Tab") {
+    e.preventDefault();
+    onTab();
+    return;
+  }
+
   if (dispatch === null) {
     return;
   }
