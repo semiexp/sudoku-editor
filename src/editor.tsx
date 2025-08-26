@@ -197,6 +197,7 @@ const autoSolverItems = (
 
 type RuleState = {
   selectedRuleIndex: number;
+  lastSelectedRuleIndex: number;
   ruleState: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
@@ -260,6 +261,10 @@ const RuleSelector = (props: {
             if (ruleState.selectedRuleIndex !== index) {
               setRuleState({
                 selectedRuleIndex: index,
+                lastSelectedRuleIndex:
+                  ruleState.selectedRuleIndex === 0
+                    ? ruleState.lastSelectedRuleIndex
+                    : ruleState.selectedRuleIndex,
                 ruleState: rule.initialState,
               });
             }
@@ -429,9 +434,9 @@ export const Editor = (props: EditorProps) => {
 
   const [ruleState, setRuleState] = useState<RuleState>({
     selectedRuleIndex: -1,
+    lastSelectedRuleIndex: -1,
     ruleState: null,
   });
-  const [lastRuleIdx, setLastRuleIdx] = useState(-1);
   const [enableSolver, setEnableSolver] = useState(false);
   const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
   const [cellSize, setCellSize] = useState(40); // Make cellSize dynamic
@@ -473,15 +478,16 @@ export const Editor = (props: EditorProps) => {
   );
   const onTab = () => {
     if (ruleState.selectedRuleIndex !== 0) {
-      setLastRuleIdx(ruleState.selectedRuleIndex);
       setRuleState({
         selectedRuleIndex: 0,
+        lastSelectedRuleIndex: ruleState.selectedRuleIndex,
         ruleState: allRules[0].initialState,
       });
-    } else if (lastRuleIdx !== -1) {
+    } else if (ruleState.lastSelectedRuleIndex !== -1) {
       setRuleState({
-        selectedRuleIndex: lastRuleIdx,
-        ruleState: allRules[lastRuleIdx].initialState,
+        selectedRuleIndex: ruleState.lastSelectedRuleIndex,
+        lastSelectedRuleIndex: ruleState.selectedRuleIndex,
+        ruleState: allRules[ruleState.lastSelectedRuleIndex].initialState,
       });
     }
   };
