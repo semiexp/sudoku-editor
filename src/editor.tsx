@@ -476,12 +476,12 @@ export const Editor = (props: EditorProps) => {
       setLastRuleIdx(ruleState.selectedRuleIndex);
       setRuleState({
         selectedRuleIndex: 0,
-        ruleState: null,
+        ruleState: allRules[0].initialState,
       });
     } else if (lastRuleIdx !== -1) {
       setRuleState({
         selectedRuleIndex: lastRuleIdx,
-        ruleState: null,
+        ruleState: allRules[lastRuleIdx].initialState,
       });
     }
   };
