@@ -124,9 +124,10 @@ const autoSolverItems = (
       }
 
       let hasMismatch = false;
-      if (answerNumbers[y][x] !== null) {
+      const answerNum = answerNumbers[y][x];
+      if (answerNum !== null) {
         for (let i = 0; i < size; ++i) {
-          if (answer.candidates[y][x][i] !== (answerNumbers[y][x] === i - 1)) {
+          if (answer.candidates[y][x][i] !== (answerNum - 1 === i)) {
             hasMismatch = true;
           }
         }
@@ -146,7 +147,7 @@ const autoSolverItems = (
         }
       }
       if (answer.decidedNumbers[y][x] !== null) {
-        if (answerNumbers[y][x] !== answer.decidedNumbers[y][x]) {
+        if (answerNum !== answer.decidedNumbers[y][x]) {
           items.push(
             <text
               key={`auto-solver-${y}-${x}`}
