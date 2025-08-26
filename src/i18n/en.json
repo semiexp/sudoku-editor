@@ -38,6 +38,10 @@
     "licenses": "Licenses"
   },
   "rule": {
+    "answer": {
+      "title": "Edit Answer",
+      "explanation": "You can input the answer numbers."
+    },
     "givenNumbers": {
       "title": "Given Numbers",
       "explanation": "Already given numbers as clues."

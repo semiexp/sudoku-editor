@@ -112,6 +112,9 @@ const autoSolverItems = (
     hasClue.push(row);
   }
 
+  const answerRule: any = problem.ruleData.get("answer"); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const answerNumbers: (number | null)[][] = answerRule.numbers; // eslint-disable-line @typescript-eslint/no-explicit-any
+
   const { cellSize, margin } = options;
   const items = [];
   for (let y = 0; y < size; ++y) {
@@ -120,21 +123,45 @@ const autoSolverItems = (
         continue;
       }
 
+      let hasMismatch = false;
+      if (answerNumbers[y][x] !== null) {
+        for (let i = 0; i < size; ++i) {
+          if (answer.candidates[y][x][i] !== (answerNumbers[y][x] === i - 1)) {
+            hasMismatch = true;
+          }
+        }
+        if (hasMismatch) {
+          items.push(
+            <rect
+              key={`auto-solver-${y}-${x}-mismatch`}
+              x={margin + x * cellSize + 2}
+              y={margin + y * cellSize + 2}
+              width={cellSize - 4}
+              height={cellSize - 4}
+              strokeWidth={2}
+              stroke="rgba(255, 0, 0)"
+              fill="rgba(255, 0, 255, 0.3)"
+            />,
+          );
+        }
+      }
       if (answer.decidedNumbers[y][x] !== null) {
-        items.push(
-          <text
-            key={`auto-solver-${y}-${x}`}
-            x={margin + x * cellSize + cellSize * 0.5}
-            y={margin + y * cellSize + cellSize * 0.5}
-            textAnchor="middle"
-            dominantBaseline="central"
-            fontSize={cellSize * 0.7}
-            style={{ userSelect: "none" }}
-            fill="green"
-          >
-            {answer.decidedNumbers[y][x]}
-          </text>,
-        );
+        if (answerNumbers[y][x] !== answer.decidedNumbers[y][x]) {
+          items.push(
+            <text
+              key={`auto-solver-${y}-${x}`}
+              x={margin + x * cellSize + cellSize * 0.5}
+              y={margin + y * cellSize + cellSize * 0.5}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize={cellSize * 0.7}
+              style={{ userSelect: "none" }}
+              fill="rgb(64, 128, 255)"
+            >
+              {answer.decidedNumbers[y][x]}
+            </text>,
+          );
+        }
       } else {
         const candidates = answer.candidates[y][x];
         const w = Math.ceil(Math.sqrt(size));
@@ -153,7 +180,7 @@ const autoSolverItems = (
                 dominantBaseline="central"
                 fontSize={(cellSize / w) * 0.9}
                 style={{ userSelect: "none" }}
-                fill="green"
+                fill="rgb(64, 128, 255)"
               >
                 {i + 1}
               </text>,
@@ -250,7 +277,9 @@ const RuleSelector = (props: {
                       onChangeEnabledRules(rule.name, e.target.checked);
                     }}
                     checked={problem.enabledRules.indexOf(rule.name) >= 0}
-                    disabled={rule.name === "givenNumbers"}
+                    disabled={
+                      rule.name === "givenNumbers" || rule.name === "answer"
+                    }
                     sx={{ verticalAlign: "middle" }}
                   />
                   <Typography component="span" sx={{ verticalAlign: "middle" }}>

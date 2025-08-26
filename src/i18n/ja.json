@@ -38,6 +38,10 @@
     "licenses": "ライセンス"
   },
   "rule": {
+    "answer": {
+      "title": "解答を編集",
+      "explanation": "解答の数字を入力できます。"
+    },
     "givenNumbers": {
       "title": "ヒント数字",
       "explanation": "ヒントとしてあらかじめ与えられている数字を設定します。"
