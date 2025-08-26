@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { Rule, PRIORITY_SELECTED_CELL_MARKER, PRIORITY_ANSWER } from "../rule";
 
-type AnswerState = {};
+type AnswerState = object;
 
 type AnswerData = {
   selectedCell: { y: number; x: number } | null;

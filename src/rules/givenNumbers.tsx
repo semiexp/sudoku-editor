@@ -6,7 +6,7 @@ import {
 } from "../rule";
 import { Item } from "../penpaExporter";
 
-type GivenNumbersState = {};
+type GivenNumbersState = object;
 
 type GivenNumbersData = {
   selectedCell: { y: number; x: number } | null;
