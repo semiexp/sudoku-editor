@@ -21,6 +21,7 @@
 }
 
 .ruleContainerInner {
+  border-top: 3px solid rgb(144, 144, 144);
   overflow-y: scroll;
   flex-grow: 1;
   width: 100%;
