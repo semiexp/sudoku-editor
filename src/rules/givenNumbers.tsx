@@ -38,4 +38,5 @@ export const givenNumbersRule: Rule<CellNumbersState, CellNumbersData> = {
     }
     return { items, margin: 0 };
   },
+  persistentStateKeys: ["selectedCell"],
 };

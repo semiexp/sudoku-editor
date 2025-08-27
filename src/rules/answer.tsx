@@ -22,4 +22,5 @@ export const answerRule: Rule<CellNumbersState, CellNumbersData> = {
   exportToPenpa: () => {
     return { items: [], margin: 0 };
   },
+  persistentStateKeys: ["selectedCell"],
 };
