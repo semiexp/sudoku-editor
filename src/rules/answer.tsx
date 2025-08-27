@@ -1,20 +1,15 @@
 import { ReactElement } from "react";
-import {
-  Rule,
-  PRIORITY_CLUE_NUMBERS,
-  PRIORITY_SELECTED_CELL_MARKER,
-} from "../rule";
-import { Item } from "../penpaExporter";
+import { Rule, PRIORITY_SELECTED_CELL_MARKER, PRIORITY_ANSWER } from "../rule";
 
-type GivenNumbersState = object;
+type AnswerState = object;
 
-type GivenNumbersData = {
+type AnswerData = {
   selectedCell: { y: number; x: number } | null;
   numbers: (number | null)[][];
 };
 
-export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
-  name: "givenNumbers",
+export const answerRule: Rule<AnswerState, AnswerData> = {
+  name: "answer",
   initialState: {},
   initialData: (size: number) => {
     const numbers = [];
@@ -135,6 +130,7 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
               textAnchor="middle"
               dominantBaseline="central"
               fontSize={cellSize * 0.7}
+              fill="rgb(0, 128, 0)"
               style={{ userSelect: "none" }}
             >
               {number}
@@ -146,7 +142,7 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
 
     const items = [
       {
-        priority: PRIORITY_CLUE_NUMBERS,
+        priority: PRIORITY_ANSWER,
         item: <g>{foregroundItems}</g>,
       },
     ];
@@ -158,22 +154,7 @@ export const givenNumbersRule: Rule<GivenNumbersState, GivenNumbersData> = {
     }
     return items;
   },
-  exportToPenpa: (data) => {
-    const items: Item[] = [];
-    for (let y = 0; y < data.numbers.length; y++) {
-      for (let x = 0; x < data.numbers[y].length; x++) {
-        const number = data.numbers[y][x];
-        if (number !== null) {
-          items.push({
-            kind: "text",
-            position: { y, x },
-            value: number.toString(),
-            color: 1,
-            style: "1",
-          });
-        }
-      }
-    }
-    return { items, margin: 0 };
+  exportToPenpa: () => {
+    return { items: [], margin: 0 };
   },
 };

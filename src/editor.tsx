@@ -10,7 +10,7 @@ import {
   handleMouseUp,
   useKeyDown,
 } from "./events";
-import { RenderOptions } from "./rule";
+import { RenderOptions, Rule } from "./rule";
 import { allRules } from "./rules/rules";
 import { solve } from "./solver";
 import { Answer, Problem, defaultProblem } from "./puzzle";
@@ -112,6 +112,9 @@ const autoSolverItems = (
     hasClue.push(row);
   }
 
+  const answerRule: any = problem.ruleData.get("answer"); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const answerNumbers: (number | null)[][] = answerRule.numbers; // eslint-disable-line @typescript-eslint/no-explicit-any
+
   const { cellSize, margin } = options;
   const items = [];
   for (let y = 0; y < size; ++y) {
@@ -120,21 +123,46 @@ const autoSolverItems = (
         continue;
       }
 
+      let hasMismatch = false;
+      const answerNum = answerNumbers[y][x];
+      if (answerNum !== null) {
+        for (let i = 0; i < size; ++i) {
+          if (answer.candidates[y][x][i] !== (answerNum - 1 === i)) {
+            hasMismatch = true;
+          }
+        }
+        if (hasMismatch) {
+          items.push(
+            <rect
+              key={`auto-solver-${y}-${x}-mismatch`}
+              x={margin + x * cellSize + 2}
+              y={margin + y * cellSize + 2}
+              width={cellSize - 4}
+              height={cellSize - 4}
+              strokeWidth={2}
+              stroke="rgba(255, 0, 0)"
+              fill="rgba(255, 0, 255, 0.3)"
+            />,
+          );
+        }
+      }
       if (answer.decidedNumbers[y][x] !== null) {
-        items.push(
-          <text
-            key={`auto-solver-${y}-${x}`}
-            x={margin + x * cellSize + cellSize * 0.5}
-            y={margin + y * cellSize + cellSize * 0.5}
-            textAnchor="middle"
-            dominantBaseline="central"
-            fontSize={cellSize * 0.7}
-            style={{ userSelect: "none" }}
-            fill="green"
-          >
-            {answer.decidedNumbers[y][x]}
-          </text>,
-        );
+        if (answerNum !== answer.decidedNumbers[y][x]) {
+          items.push(
+            <text
+              key={`auto-solver-${y}-${x}`}
+              x={margin + x * cellSize + cellSize * 0.5}
+              y={margin + y * cellSize + cellSize * 0.5}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize={cellSize * 0.7}
+              style={{ userSelect: "none" }}
+              fill="rgb(64, 128, 255)"
+            >
+              {answer.decidedNumbers[y][x]}
+            </text>,
+          );
+        }
       } else {
         const candidates = answer.candidates[y][x];
         const w = Math.ceil(Math.sqrt(size));
@@ -153,7 +181,7 @@ const autoSolverItems = (
                 dominantBaseline="central"
                 fontSize={(cellSize / w) * 0.9}
                 style={{ userSelect: "none" }}
-                fill="green"
+                fill="rgb(64, 128, 255)"
               >
                 {i + 1}
               </text>,
@@ -169,6 +197,7 @@ const autoSolverItems = (
 
 type RuleState = {
   selectedRuleIndex: number;
+  lastSelectedRuleIndex: number;
   ruleState: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
@@ -221,73 +250,82 @@ const RuleSelector = (props: {
     });
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ruleBox = (rule: Rule<any, any>, index: number) => {
+    const isSelected = ruleState.selectedRuleIndex === index;
+    return (
+      <div className="ruleBox" key={`rule-${index}`}>
+        <Box
+          className={isSelected ? "ruleTitle selectedRuleTitle" : "ruleTitle"}
+          onClick={() => {
+            if (ruleState.selectedRuleIndex !== index) {
+              setRuleState({
+                selectedRuleIndex: index,
+                lastSelectedRuleIndex:
+                  ruleState.selectedRuleIndex === 0
+                    ? ruleState.lastSelectedRuleIndex
+                    : ruleState.selectedRuleIndex,
+                ruleState: rule.initialState,
+              });
+            }
+          }}
+        >
+          <Box sx={{ padding: "5px" }}>
+            <Checkbox
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              onChange={(e) => {
+                onChangeEnabledRules(rule.name, e.target.checked);
+              }}
+              checked={problem.enabledRules.indexOf(rule.name) >= 0}
+              disabled={rule.name === "givenNumbers" || rule.name === "answer"}
+              sx={{ verticalAlign: "middle" }}
+            />
+            <Typography component="span" sx={{ verticalAlign: "middle" }}>
+              {t(`rule.${rule.name}.title`)}
+            </Typography>
+          </Box>
+        </Box>
+        {isSelected && rule.name !== "answer" && (
+          <Box sx={{ padding: "5px", borderTop: "1px solid black" }}>
+            <Typography>{t(`rule.${rule.name}.explanation`)}</Typography>
+            {rule.booleanFlags &&
+              rule.booleanFlags.map((flag) => {
+                return (
+                  <FormControlLabel
+                    key={flag}
+                    control={
+                      <Checkbox
+                        checked={problem.ruleData.get(rule.name)[flag]}
+                        onChange={(e) =>
+                          onChangeRuleBooleanFlags(
+                            rule.name,
+                            flag,
+                            e.target.checked,
+                          )
+                        }
+                        sx={{ pl: 2 }}
+                      />
+                    }
+                    label={t(`rule.${rule.name}.${flag}`)}
+                  />
+                );
+              })}
+          </Box>
+        )}
+      </div>
+    );
+  };
   return (
     <Box className="ruleContainerOuter">
+      {allRules.map(
+        (rule, index) => rule.name === "answer" && ruleBox(rule, index),
+      )}
       <div className="ruleContainerInner">
-        {allRules.map((rule, index) => {
-          const isSelected = ruleState.selectedRuleIndex === index;
-          return (
-            <div className="ruleBox" key={`rule-${index}`}>
-              <Box
-                className={
-                  isSelected ? "ruleTitle selectedRuleTitle" : "ruleTitle"
-                }
-                onClick={() => {
-                  if (ruleState.selectedRuleIndex !== index) {
-                    setRuleState({
-                      selectedRuleIndex: index,
-                      ruleState: rule.initialState,
-                    });
-                  }
-                }}
-              >
-                <Box sx={{ padding: "5px" }}>
-                  <Checkbox
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    onChange={(e) => {
-                      onChangeEnabledRules(rule.name, e.target.checked);
-                    }}
-                    checked={problem.enabledRules.indexOf(rule.name) >= 0}
-                    disabled={rule.name === "givenNumbers"}
-                    sx={{ verticalAlign: "middle" }}
-                  />
-                  <Typography component="span" sx={{ verticalAlign: "middle" }}>
-                    {t(`rule.${rule.name}.title`)}
-                  </Typography>
-                </Box>
-              </Box>
-              {isSelected && (
-                <Box sx={{ padding: "5px" }}>
-                  <Typography>{t(`rule.${rule.name}.explanation`)}</Typography>
-                  {rule.booleanFlags &&
-                    rule.booleanFlags.map((flag) => {
-                      return (
-                        <FormControlLabel
-                          key={flag}
-                          control={
-                            <Checkbox
-                              checked={problem.ruleData.get(rule.name)[flag]}
-                              onChange={(e) =>
-                                onChangeRuleBooleanFlags(
-                                  rule.name,
-                                  flag,
-                                  e.target.checked,
-                                )
-                              }
-                              sx={{ pl: 2 }}
-                            />
-                          }
-                          label={t(`rule.${rule.name}.${flag}`)}
-                        />
-                      );
-                    })}
-                </Box>
-              )}
-            </div>
-          );
-        })}
+        {allRules.map(
+          (rule, index) => rule.name !== "answer" && ruleBox(rule, index),
+        )}
       </div>
     </Box>
   );
@@ -396,13 +434,16 @@ export const Editor = (props: EditorProps) => {
 
   const [ruleState, setRuleState] = useState<RuleState>({
     selectedRuleIndex: -1,
+    lastSelectedRuleIndex: -1,
     ruleState: null,
   });
   const [enableSolver, setEnableSolver] = useState(false);
   const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
   const [cellSize, setCellSize] = useState(40); // Make cellSize dynamic
   const [keypadVisible, setKeypadVisible] = useState(false);
+  const [svgContainerHeight, setSvgContainerHeight] = useState(0);
 
+  const svgContainerRef = useRef<HTMLDivElement>(null);
   const problemHistory = useHistory(problem, props.onChangeProblem);
 
   const margin = cellSize + 10;
@@ -435,7 +476,38 @@ export const Editor = (props: EditorProps) => {
     ruleState,
     setRuleState,
   );
-  useKeyDown((e) => handleKeyDown(e, dispatchEventRef.current));
+  const onTab = () => {
+    if (ruleState.selectedRuleIndex !== 0) {
+      setRuleState({
+        selectedRuleIndex: 0,
+        lastSelectedRuleIndex: ruleState.selectedRuleIndex,
+        ruleState: allRules[0].initialState,
+      });
+    } else if (ruleState.lastSelectedRuleIndex !== -1) {
+      setRuleState({
+        selectedRuleIndex: ruleState.lastSelectedRuleIndex,
+        lastSelectedRuleIndex: ruleState.selectedRuleIndex,
+        ruleState: allRules[ruleState.lastSelectedRuleIndex].initialState,
+      });
+    }
+  };
+  useKeyDown((e) => handleKeyDown(e, dispatchEventRef.current, onTab));
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      if (entries[0]) {
+        setSvgContainerHeight(entries[0].contentRect.height);
+      }
+    });
+
+    if (svgContainerRef.current) {
+      resizeObserver.observe(svgContainerRef.current);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   const { t, i18n } = useTranslation();
 
@@ -570,7 +642,7 @@ export const Editor = (props: EditorProps) => {
         </TooltipButton>
       </Toolbar>
       <Box sx={{ display: "flex" }}>
-        <Box sx={{ border: "1px solid black", margin: "5px" }}>
+        <Box ref={svgContainerRef}>
           <svg
             width={svgSize}
             height={svgSize}
@@ -583,17 +655,23 @@ export const Editor = (props: EditorProps) => {
             onMouseUp={() => handleMouseUp(dispatchEventRef.current)}
             onMouseLeave={() => handleMouseUp(dispatchEventRef.current)}
             onContextMenu={(e) => e.preventDefault()}
-            style={{ fontFamily: "sans-serif" }}
+            style={{
+              fontFamily: "sans-serif",
+              border: "1px solid black",
+              margin: "5px",
+            }}
           >
             {renderResults}
           </svg>
         </Box>
-        <RuleSelector
-          ruleState={ruleState}
-          setRuleState={setRuleState}
-          problem={problem}
-          updateProblem={problemHistory.update}
-        />
+        <Box sx={{ height: svgContainerHeight, width: "100%" }}>
+          <RuleSelector
+            ruleState={ruleState}
+            setRuleState={setRuleState}
+            problem={problem}
+            updateProblem={problemHistory.update}
+          />
+        </Box>
       </Box>
       <NumberKeypad
         onKeyPress={handleKeypadPress}

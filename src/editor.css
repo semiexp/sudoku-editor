@@ -9,18 +9,20 @@
 }
 
 .selectedRuleTitle {
-  border-bottom: 1px solid black;
   background-color: lightblue;
 }
 
 .ruleContainerOuter {
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   position: relative;
 }
 
 .ruleContainerInner {
+  border-top: 3px solid rgb(144, 144, 144);
   overflow-y: scroll;
-  height: 100%;
+  flex-grow: 1;
   width: 100%;
-  position: absolute;
 }

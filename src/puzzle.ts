@@ -18,7 +18,7 @@ export const defaultProblem = (size: number, blockWidth: number): Problem => {
   }
   return {
     size: size,
-    enabledRules: ["givenNumbers", "blocks"],
+    enabledRules: ["answer", "givenNumbers", "blocks"],
     ruleData: ruleData,
   };
 };

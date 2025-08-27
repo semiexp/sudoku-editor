@@ -1,5 +1,6 @@
 import { Rule } from "../rule";
 
+import { answerRule } from "./answer";
 import { givenNumbersRule } from "./givenNumbers";
 import { blocksRule } from "./blocks";
 import { oddEvenRule } from "./oddEven";
@@ -20,6 +21,7 @@ import { noTouchRule } from "./noTouch";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const allRules: Rule<any, any>[] = [
+  answerRule,
   givenNumbersRule,
   blocksRule,
   extraRegionsRule,
