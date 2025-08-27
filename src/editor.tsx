@@ -203,11 +203,11 @@ type RuleState = {
 
 const RuleSelector = (props: {
   ruleState: RuleState;
-  setRuleState: (newRuleState: RuleState) => void;
+  changeSelectedRule: (newRuleIndex: number) => void;
   problem: Problem;
   updateProblem: (newProblem: Problem) => void;
 }) => {
-  const { ruleState, setRuleState, problem, updateProblem } = props;
+  const { ruleState, changeSelectedRule, problem, updateProblem } = props;
   const { t } = useTranslation();
 
   const onChangeEnabledRules = (
@@ -257,18 +257,7 @@ const RuleSelector = (props: {
       <div className="ruleBox" key={`rule-${index}`}>
         <Box
           className={isSelected ? "ruleTitle selectedRuleTitle" : "ruleTitle"}
-          onClick={() => {
-            if (ruleState.selectedRuleIndex !== index) {
-              setRuleState({
-                selectedRuleIndex: index,
-                lastSelectedRuleIndex:
-                  ruleState.selectedRuleIndex === 0
-                    ? ruleState.lastSelectedRuleIndex
-                    : ruleState.selectedRuleIndex,
-                ruleState: rule.initialState,
-              });
-            }
-          }}
+          onClick={() => changeSelectedRule(index)}
         >
           <Box sx={{ padding: "5px" }}>
             <Checkbox
@@ -476,19 +465,24 @@ export const Editor = (props: EditorProps) => {
     ruleState,
     setRuleState,
   );
+  const changeSelectedRule = (newRuleIndex: number) => {
+    if (newRuleIndex === ruleState.selectedRuleIndex) {
+      return;
+    }
+    setRuleState({
+      selectedRuleIndex: newRuleIndex,
+      lastSelectedRuleIndex:
+        ruleState.selectedRuleIndex === 0
+          ? ruleState.lastSelectedRuleIndex
+          : ruleState.selectedRuleIndex,
+      ruleState: allRules[newRuleIndex].initialState,
+    });
+  };
   const onTab = () => {
     if (ruleState.selectedRuleIndex !== 0) {
-      setRuleState({
-        selectedRuleIndex: 0,
-        lastSelectedRuleIndex: ruleState.selectedRuleIndex,
-        ruleState: allRules[0].initialState,
-      });
-    } else if (ruleState.lastSelectedRuleIndex !== -1) {
-      setRuleState({
-        selectedRuleIndex: ruleState.lastSelectedRuleIndex,
-        lastSelectedRuleIndex: ruleState.selectedRuleIndex,
-        ruleState: allRules[ruleState.lastSelectedRuleIndex].initialState,
-      });
+      changeSelectedRule(0);
+    } else {
+      changeSelectedRule(ruleState.lastSelectedRuleIndex);
     }
   };
   useKeyDown((e) => handleKeyDown(e, dispatchEventRef.current, onTab));
@@ -667,7 +661,7 @@ export const Editor = (props: EditorProps) => {
         <Box sx={{ height: svgContainerHeight, width: "100%" }}>
           <RuleSelector
             ruleState={ruleState}
-            setRuleState={setRuleState}
+            changeSelectedRule={changeSelectedRule}
             problem={problem}
             updateProblem={problemHistory.update}
           />
