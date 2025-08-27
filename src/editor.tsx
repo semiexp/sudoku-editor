@@ -199,6 +199,7 @@ type RuleState = {
   selectedRuleIndex: number;
   lastSelectedRuleIndex: number;
   ruleState: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  persistentStates: Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 const RuleSelector = (props: {
@@ -425,6 +426,7 @@ export const Editor = (props: EditorProps) => {
     selectedRuleIndex: -1,
     lastSelectedRuleIndex: -1,
     ruleState: null,
+    persistentStates: {},
   });
   const [enableSolver, setEnableSolver] = useState(false);
   const [autoSolverAnswer, setAutoSolverAnswer] = useState<Answer | null>(null);
@@ -469,13 +471,35 @@ export const Editor = (props: EditorProps) => {
     if (newRuleIndex === ruleState.selectedRuleIndex) {
       return;
     }
+    const currentRule =
+      ruleState.selectedRuleIndex >= 0
+        ? allRules[ruleState.selectedRuleIndex]
+        : null;
+    const newRule = allRules[newRuleIndex];
+
+    const newState = {
+      ...newRule.initialState,
+      ...(newRule.name in ruleState.persistentStates
+        ? ruleState.persistentStates[newRule.name]
+        : {}),
+    };
+    const newPersistentState = { ...ruleState.persistentStates };
+    if (currentRule !== null) {
+      const record: Record<string, any> = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
+      for (const key of currentRule.persistentStateKeys ?? []) {
+        record[String(key)] = ruleState.ruleState[key];
+      }
+      newPersistentState[currentRule.name] = record;
+    }
+
     setRuleState({
       selectedRuleIndex: newRuleIndex,
       lastSelectedRuleIndex:
         ruleState.selectedRuleIndex === 0
           ? ruleState.lastSelectedRuleIndex
           : ruleState.selectedRuleIndex,
-      ruleState: allRules[newRuleIndex].initialState,
+      ruleState: newState,
+      persistentStates: newPersistentState,
     });
   };
   const onTab = () => {

@@ -36,6 +36,7 @@ export interface Rule<State, Data> {
     item: ReactElement;
   }[];
   exportToPenpa: (data: Data) => BoardData;
+  persistentStateKeys?: (keyof State)[];
 }
 
 export const PRIORITY_EXTRA_REGION = -200;
