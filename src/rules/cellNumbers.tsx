@@ -2,21 +2,22 @@ import { ReactElement } from "react";
 import { EditorEvent, EditorEventType } from "../events";
 import { PRIORITY_SELECTED_CELL_MARKER, RenderOptions } from "../rule";
 
-export type CellNumbersState = object;
+export type CellNumbersState = {
+  selectedCell: { y: number; x: number } | null;
+};
 
 export type CellNumbersData = {
-  selectedCell: { y: number; x: number } | null;
   numbers: (number | null)[][];
 };
 
 export const cellNumbersRule = {
-  initialState: {},
+  initialState: { selectedCell: null },
   initialData: (size: number) => {
     const numbers = [];
     for (let i = 0; i < size; i++) {
       numbers.push(new Array(size).fill(null));
     }
-    return { selectedCell: null, numbers };
+    return { numbers };
   },
   eventTypes: ["cellMouseDown", "keyDown"] as EditorEventType[],
   reducer: (
@@ -37,37 +38,37 @@ export const cellNumbersRule = {
         0 <= x &&
         x < data.numbers[y].length
       ) {
-        const newData = { ...data, selectedCell: { y, x } };
-        return { data: newData };
+        const newState = { ...state, selectedCell: { y, x } };
+        return { state: newState };
       }
     } else if (event.type === "keyDown") {
-      if (data.selectedCell === null) {
+      if (state.selectedCell === null) {
         return {};
       }
-      const { selectedCell } = data;
+      const { selectedCell } = state;
       const { y, x } = selectedCell;
 
       const key = event.key;
 
       if (key === "ArrowUp" || key === "w") {
         if (y > 0) {
-          const newData = { ...data, selectedCell: { y: y - 1, x } };
-          return { data: newData };
+          const newState = { ...state, selectedCell: { y: y - 1, x } };
+          return { state: newState };
         }
       } else if (key === "ArrowDown" || key === "s") {
         if (y < data.numbers.length - 1) {
-          const newData = { ...data, selectedCell: { y: y + 1, x } };
-          return { data: newData };
+          const newState = { ...state, selectedCell: { y: y + 1, x } };
+          return { state: newState };
         }
       } else if (key === "ArrowLeft" || key === "a") {
         if (x > 0) {
-          const newData = { ...data, selectedCell: { y, x: x - 1 } };
-          return { data: newData };
+          const newState = { ...state, selectedCell: { y, x: x - 1 } };
+          return { state: newState };
         }
       } else if (key === "ArrowRight" || key === "d") {
         if (x < data.numbers[y].length - 1) {
-          const newData = { ...data, selectedCell: { y, x: x + 1 } };
-          return { data: newData };
+          const newState = { ...state, selectedCell: { y, x: x + 1 } };
+          return { state: newState };
         }
       } else if (key === "Backspace" || key === "Delete" || key === " ") {
         const newNumbers = data.numbers.map((row) => row.slice());
@@ -104,8 +105,8 @@ export const cellNumbersRule = {
   ) => {
     let background: ReactElement | undefined = undefined;
 
-    if (state !== null && data.selectedCell) {
-      const { x, y } = data.selectedCell;
+    if (state !== null && state.selectedCell) {
+      const { x, y } = state.selectedCell;
       const cellSize = options.cellSize;
       const margin = options.margin;
       const rectX = x * cellSize + margin;
