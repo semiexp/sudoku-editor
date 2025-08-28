@@ -53,7 +53,6 @@ export const ExportDialog = (props: {
     } else if (mode === "solver") {
       const ans = solve(initialValues.problem);
 
-      console.log(ans);
       if (ans === null) {
         setSolverResult("noAnswer");
         setAnswer(undefined);
