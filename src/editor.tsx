@@ -505,7 +505,7 @@ export const Editor = (props: EditorProps) => {
   const onTab = () => {
     if (ruleState.selectedRuleIndex !== 0) {
       changeSelectedRule(0);
-    } else {
+    } else if (ruleState.lastSelectedRuleIndex !== -1) {
       changeSelectedRule(ruleState.lastSelectedRuleIndex);
     }
   };
