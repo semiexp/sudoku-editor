@@ -320,6 +320,7 @@ const itemsLine = (
 const exportBoardDataToPenpa = (
   boardSize: number,
   data: BoardData[],
+  answer?: (number | null)[][],
 ): { url: string; hasConflicts: boolean } => {
   let margin = 0;
   for (const item of data) {
@@ -356,7 +357,22 @@ x
 []
 false`;
   const urlPrefix = "https://opt-pan.github.io/penpa-edit/#m=solve&p=";
-  const url = urlPrefix + deflateBase64(res);
+  let url = urlPrefix + deflateBase64(res);
+
+  if (answer !== undefined) {
+    const answerCellItems = [];
+    for (let y = 0; y < boardSize; ++y) {
+      for (let x = 0; x < boardSize; ++x) {
+        const a = answer[y][x];
+        if (a !== null) {
+          const pos = positionId(boardSize, margin, { y, x });
+          answerCellItems.push(`${pos},${a}`);
+        }
+      }
+    }
+    const answerData = `[[],[],[],[],${JSON.stringify(answerCellItems)},[]]`;
+    url += "&a=" + deflateBase64(answerData);
+  }
 
   return { url, hasConflicts: itemsData.hasConflicts };
 };
@@ -365,13 +381,33 @@ export type ExportResult =
   | { status: "ok"; url: string; hasConflicts: boolean }
   | { status: "error"; reason: string };
 
-export const exportProblemToPenpa = (problem: Problem): ExportResult => {
+export const exportProblemToPenpa = (
+  problem: Problem,
+  answer?: (number | null)[][],
+): ExportResult => {
   const data: BoardData[] = [];
   for (const rule of allRules) {
     if (problem.enabledRules.includes(rule.name)) {
       data.push(rule.exportToPenpa(problem.ruleData.get(rule.name)));
     }
   }
-  const url = exportBoardDataToPenpa(problem.size, data);
+
+  let answerWithoutGivenNumbers: (number | null)[][] | undefined = undefined;
+  if (answer !== undefined) {
+    const givenNumbers = problem.ruleData.get("givenNumbers").numbers;
+    answerWithoutGivenNumbers = answer.map((row) => row.slice());
+    for (let y = 0; y < problem.size; ++y) {
+      for (let x = 0; x < problem.size; ++x) {
+        if (givenNumbers[y][x] !== null) {
+          answerWithoutGivenNumbers[y][x] = null;
+        }
+      }
+    }
+  }
+  const url = exportBoardDataToPenpa(
+    problem.size,
+    data,
+    answerWithoutGivenNumbers,
+  );
   return { status: "ok", url: url.url, hasConflicts: url.hasConflicts };
 };
