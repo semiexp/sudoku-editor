@@ -1,11 +1,18 @@
 import {
+  Box,
   Button,
   DialogActions,
   DialogContent,
   DialogTitle,
   TextField,
   Typography,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AutoMuiDialog } from "./dialog";
@@ -19,10 +26,16 @@ export const ExportDialog = (props: {
   close: (value?: ExportDialogType) => void;
 }) => {
   const { initialValues, close } = props;
+  const [exportAnswerMode, setExportAnswerMode] = useState<
+    "none" | "manual" | "solver"
+  >("none");
 
   const { t } = useTranslation();
 
-  const result = exportProblemToPenpa(initialValues.problem);
+  const result = exportProblemToPenpa(
+    initialValues.problem,
+    exportAnswerMode === "manual",
+  );
   const url = result.status === "ok" ? result.url : null;
   const error = result.status === "error" ? result.reason : null;
   const hasConflicts = result.status === "ok" && result.hasConflicts;
@@ -33,6 +46,31 @@ export const ExportDialog = (props: {
       <DialogContent>
         {url !== null && (
           <>
+            <Box>
+              <FormControl>
+                <FormLabel>{t("ui.exportAnswer.title")}</FormLabel>
+                <RadioGroup
+                  value={exportAnswerMode}
+                  onChange={(e) => setExportAnswerMode(e.target.value as "none" | "manual" | "solver")}
+                >
+                  <FormControlLabel
+                    value="none"
+                    control={<Radio />}
+                    label={t("ui.exportAnswer.none")}
+                  />
+                  <FormControlLabel
+                    value="manual"
+                    control={<Radio />}
+                    label={t("ui.exportAnswer.manual")}
+                  />
+                  <FormControlLabel
+                    value="solver"
+                    control={<Radio disabled />}
+                    label={t("ui.exportAnswer.solver")}
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Box>
             <Typography>
               <a href={url} target="_blank" rel="noopener noreferrer">
                 {t("ui.openInPenpa")}

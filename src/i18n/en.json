@@ -14,6 +14,12 @@
     "copyToClipboard": "Copy to Clipboard",
     "saveDialogNote": "Note: data for unselected rules will be lost.",
     "openInPenpa": "Open in penpa-editor",
+    "exportAnswer": {
+      "title": "Exporting answer for automatic check by penpa-edit",
+      "none": "Do not export answer",
+      "manual": "Export answer set in 'Edit Answer'",
+      "solver": "Export answer by solver"
+    },
     "exportConflicts": "Conflicts occurred in the board elements during export. The output may be incorrect.",
     "undo": "Undo",
     "redo": "Redo",
