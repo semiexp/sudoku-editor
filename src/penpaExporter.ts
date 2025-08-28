@@ -383,20 +383,13 @@ export type ExportResult =
 
 export const exportProblemToPenpa = (
   problem: Problem,
-  withAnswer?: boolean,
+  answer?: (number | null)[][],
 ): ExportResult => {
   const data: BoardData[] = [];
   for (const rule of allRules) {
     if (problem.enabledRules.includes(rule.name)) {
       data.push(rule.exportToPenpa(problem.ruleData.get(rule.name)));
     }
-  }
-
-  let answer: (number | null)[][] | undefined = undefined;
-  if (withAnswer) {
-    const answerRuleData: (number | null)[][] =
-      problem.ruleData.get("answer").numbers;
-    answer = answerRuleData;
   }
 
   const url = exportBoardDataToPenpa(problem.size, data, answer);

@@ -18,7 +18,9 @@
       "title": "Exporting answer for automatic check by penpa-edit",
       "none": "Do not export answer",
       "manual": "Export answer set in 'Edit Answer'",
-      "solver": "Export answer by solver"
+      "solver": "Export answer by solver",
+      "noAnswer": "No answer exists. Answer data is not exported.",
+      "notUnique": "Multiple answers exist. Only decided numbers are exported."
     },
     "exportConflicts": "Conflicts occurred in the board elements during export. The output may be incorrect.",
     "undo": "Undo",
