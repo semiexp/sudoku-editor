@@ -392,6 +392,22 @@ export const exportProblemToPenpa = (
     }
   }
 
-  const url = exportBoardDataToPenpa(problem.size, data, answer);
+  let answerWithoutGivenNumbers: (number | null)[][] | undefined = undefined;
+  if (answer !== undefined) {
+    const givenNumbers = problem.ruleData.get("givenNumbers").numbers;
+    answerWithoutGivenNumbers = answer.map((row) => row.slice());
+    for (let y = 0; y < problem.size; ++y) {
+      for (let x = 0; x < problem.size; ++x) {
+        if (givenNumbers[y][x] !== null) {
+          answerWithoutGivenNumbers[y][x] = null;
+        }
+      }
+    }
+  }
+  const url = exportBoardDataToPenpa(
+    problem.size,
+    data,
+    answerWithoutGivenNumbers,
+  );
   return { status: "ok", url: url.url, hasConflicts: url.hasConflicts };
 };
