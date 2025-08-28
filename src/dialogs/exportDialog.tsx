@@ -46,10 +46,12 @@ export const ExportDialog = (props: {
     setExportAnswerMode(mode);
     if (mode === "none") {
       setAnswer(undefined);
+      setSolverResult(null);
     } else if (mode === "manual") {
       const answerRuleData: (number | null)[][] =
         initialValues.problem.ruleData.get("answer").numbers;
       setAnswer(answerRuleData);
+      setSolverResult(null);
     } else if (mode === "solver") {
       const ans = solve(initialValues.problem);
 
