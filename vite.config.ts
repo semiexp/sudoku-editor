@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import topLevelAwait from "vite-plugin-top-level-await";
@@ -23,5 +24,10 @@ export default defineConfig({
         assetFileNames: "assets/[name].[ext]",
       }
     }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
   },
 })
