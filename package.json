@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "npx prettier --write src/ && cd solver && cargo fmt",
-    "format-check": "npx prettier --check src/ && cd solver && cargo fmt --check"
+    "format-check": "npx prettier --check src/ && cd solver && cargo fmt --check",
+    "test": "vitest run"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -38,6 +39,7 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
-    "vite-plugin-top-level-await": "^1.6.0"
+    "vite-plugin-top-level-await": "^1.6.0",
+    "vitest": "^3.2.4"
   }
 }
