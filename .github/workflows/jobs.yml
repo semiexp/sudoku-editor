@@ -1,4 +1,4 @@
-name: Lint
+name: Checks
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   pull_request: {}
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-node@v4
@@ -18,3 +18,14 @@ jobs:
         npm install
         npm run format-check
         npm run lint
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
+    - uses: actions/checkout@v4
+    - name: Test
+      run: |
+        npm install
+        npm run test
