@@ -6,6 +6,10 @@ import topLevelAwait from "vite-plugin-top-level-await";
 export default defineConfig({
   plugins: [react(), topLevelAwait()],
   base: "./",
+  server: {
+    host: "127.0.0.1",
+    port: 5173,
+  },
   build: {
     rollupOptions: {
       output: {
