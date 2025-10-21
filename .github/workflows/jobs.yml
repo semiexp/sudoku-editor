@@ -19,7 +19,7 @@ jobs:
         pnpm setup
     - name: Lint
       run: |
-        pnpm install
+        pnpm install --frozen-lockfile
         pnpm run format-check
         pnpm run lint
   test:
@@ -35,5 +35,5 @@ jobs:
         pnpm setup
     - name: Test
       run: |
-        pnpm install
+        pnpm install --frozen-lockfile
         pnpm run test
