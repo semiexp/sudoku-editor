@@ -13,11 +13,15 @@ jobs:
       with:
         node-version: '22.x'
     - uses: actions/checkout@v4
+    - name: Setup pnpm
+      run: |
+        npm install -g pnpm@10.18.2
+        pnpm setup
     - name: Lint
       run: |
-        npm install
-        npm run format-check
-        npm run lint
+        pnpm install
+        pnpm run format-check
+        pnpm run lint
   test:
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +29,11 @@ jobs:
       with:
         node-version: '22.x'
     - uses: actions/checkout@v4
+    - name: Setup pnpm
+      run: |
+        npm install -g pnpm@10.18.2
+        pnpm setup
     - name: Test
       run: |
-        npm install
-        npm run test
+        pnpm install
+        pnpm run test
